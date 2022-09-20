@@ -1,0 +1,11 @@
+package flat/parser
+
+import flat/parser/Parser
+
+testable class {
+  test `can create`() {
+    let value = Parser()
+
+    expect(value).toNotBe(null)
+  }
+}

@@ -1,0 +1,9 @@
+package flat/parser
+
+import flat/ast/Node
+
+class {
+  public static async parse(String sourceCode, Node parent) {
+
+  }
+}
