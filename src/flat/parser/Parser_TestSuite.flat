@@ -9,6 +9,7 @@ import flat/parser/Parser
 [TestSuite [
   Parser_Test,
   PackageParser_Test,
+  ImportParser_Test,
   ClassParser_Test
 ]]
 class {

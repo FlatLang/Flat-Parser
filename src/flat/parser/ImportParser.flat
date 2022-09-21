@@ -1,0 +1,39 @@
+package flat/parser
+
+import flat/ast/ImportNode
+
+import flat/extensions/SyntaxStringFunctions
+
+class extends Parser {
+  let static String KEYWORD = "import"
+
+  override public async parse(
+    String sourceCode,
+    ParseContext context
+  ) => ParseResult() {
+    if (!sourceCode.startsWith(KEYWORD))
+      return ParseResult(errorMessage: "Import declaration doesn't start with \"#{KEYWORD}\"")
+
+    if (sourceCode.count <= KEYWORD.count + 1)
+      return ParseResult(errorMessage: "Import declaration doesn't contain anything after the \"#{KEYWORD}\" keyword")
+
+    if (!String.WHITESPACE.contains(sourceCode[KEYWORD.count]))
+      return ParseResult(errorMessage: "Import declaration doesn't have whitespace after the \"#{KEYWORD}\" keyword")
+
+    let locationContents = sourceCode.substring(KEYWORD.count + 1).trim()
+
+    let strippedLocationContents = if (locationContents.isSurroundedByQuotes()) {
+      locationContents.removeSurroundingQuotes()
+    } else {
+      locationContents
+    }
+
+    let importNode = ImportNode(
+      location: strippedLocationContents
+    )
+
+    return ParseResult(
+      node: importNode
+    )
+  }
+}
