@@ -19,7 +19,8 @@ testable class {
     expect(result.success).toBe(true)
 
     let expected = ClassNode(
-      name: "Bob"
+      name: "Bob",
+      implicitName: false
     )
 
     expect(result.node).toBe(expected)
@@ -38,7 +39,8 @@ testable class {
     expect(result.success).toBe(true)
 
     let expected = ClassNode(
-      name: "test"
+      name: "test",
+      implicitName: true
     )
 
     expect(result.node).toBe(expected)

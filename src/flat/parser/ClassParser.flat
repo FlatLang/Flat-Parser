@@ -14,12 +14,14 @@ class extends Parser {
 
     let classSignatureContents = sourceCode.substring(KEYWORD.count).trim()
 
-    let className = classSignatureContents.count == 0 ?
+    let implicitName = classSignatureContents.count == 0
+    let className = implicitName ?
       context.parent.fileNode.file.rootName :
       classSignatureContents
 
     let classNode = ClassNode(
-      name: className
+      name: className,
+      implicitName
     )
 
     return ParseResult(
