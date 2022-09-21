@@ -14,7 +14,8 @@
       "dependencies": {
         "github:FlatLang/System": "master",
         "github:FlatLang/IO": "master",
-        "github:FlatLang/Flat-AST": "master"
+        "github:FlatLang/Flat-AST": "master",
+        "github:FlatLang/Compiler-String-Extensions": "master"
       }
     },
     "test": {

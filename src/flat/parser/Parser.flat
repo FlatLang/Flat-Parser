@@ -2,8 +2,20 @@ package flat/parser
 
 import flat/ast/Node
 
-class {
-  public async parse(String sourceCode, Node parent) {
+abstract class {
+  let lazy Parser[] childParsers = Array<Parser>()
 
-  }
+  public async parse(String sourceCode, ParseContext context) => ParseResult()
+
+  public async parseChild(
+    String sourceCode,
+    ParseContext context
+  ) -> ParseResult =>
+    childParsers.firstNonNullAsync({
+      if ((let result = _.parse(sourceCode, context)) && result.success) {
+        return result
+      } else {
+        return null
+      }
+    }) ?: ParseResult()
 }

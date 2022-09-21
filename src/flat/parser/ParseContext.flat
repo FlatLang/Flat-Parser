@@ -1,0 +1,9 @@
+package flat/parser
+
+import flat/ast/Node
+
+data class {
+  public construct(
+    visible Node parent
+  ) {}
+}

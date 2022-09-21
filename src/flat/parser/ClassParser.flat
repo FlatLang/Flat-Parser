@@ -1,0 +1,12 @@
+package flat/parser
+
+import flat/ast/ClassNode
+
+class extends Parser {
+  override public async parse(
+    String sourceCode,
+    ParseContext context
+  ) => ParseResult() {
+
+  }
+}

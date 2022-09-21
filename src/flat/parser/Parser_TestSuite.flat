@@ -7,7 +7,8 @@ import flat/io/FancyOutputStream
 import flat/parser/Parser
 
 [TestSuite [
-  Parser_Test
+  Parser_Test,
+  PackageParser_Test
 ]]
 class {
   public static async main(String args[]) {

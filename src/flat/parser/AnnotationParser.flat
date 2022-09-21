@@ -1,0 +1,26 @@
+package flat/parser
+
+import flat/ast/annotations/AnnotationNode
+
+import flat/extensions/SyntaxStringFunctions
+
+class extends Parser {
+  override public async parse(
+    String sourceCode,
+    ParseContext context
+  ) -> ParseResult {
+    let annotations = Array<AnnotationNode>()
+
+    let wordsIterator = sourceCode.splitWhitespace().iterator
+
+    while (wordsIterator.hasNext) {
+      let word = wordsIterator.next
+
+      if (word) {
+
+      }
+    }
+
+    return ParseResult(annotations)
+  }
+}

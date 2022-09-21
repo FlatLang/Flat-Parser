@@ -1,0 +1,101 @@
+package flat/parser
+
+import flat/parser/Parser
+import flat/ast/FileNode
+import flat/ast/PackageNode
+import flat/io/File
+
+testable class {
+  async test `can parse package declaration`() {
+    let parser = PackageParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let result = parser.parse("package flat/thing/test", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PackageNode("flat/thing/test")
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse single letter package declaration`() {
+    let parser = PackageParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let result = parser.parse("package a", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PackageNode("a")
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `fails parse if doesnt contain package keyword`() {
+    let parser = PackageParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let results = Array<ParseResult>():addAll([
+      parser.parse("parckage", context),
+      parser.parse(" package", context),
+      parser.parse("test package", context)
+    ])
+
+    results.forEachAsync((result) => {
+      expect(result).toNotBe(null)
+      expect(result.success).toBe(false)
+      expect(result.errorMessage).toBe("Package declaration doesn't start with \"package\"")
+    })
+  }
+
+  async test `fails parse if doesnt contain anything after the package keyword`() {
+    let parser = PackageParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let results = Array<ParseResult>():addAll([
+      parser.parse("package", context),
+      parser.parse("package ", context)
+    ])
+
+    results.forEachAsync((result) => {
+      expect(result).toNotBe(null)
+      expect(result.success).toBe(false)
+      expect(result.errorMessage).toBe("Package declaration doesn't contain anything after the \"package\" keyword")
+    })
+  }
+
+  async test `fails parse if doesnt have whitespace after the package keyword`() {
+    let parser = PackageParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let results = Array<ParseResult>():addAll([
+      parser.parse("package\"aoeu", context),
+      parser.parse("packageaoeu", context),
+      parser.parse("packagea test", context)
+    ])
+
+    results.forEachAsync((result) => {
+      expect(result).toNotBe(null)
+      expect(result.success).toBe(false)
+      expect(result.errorMessage).toBe("Package declaration doesn't have whitespace after the \"package\" keyword")
+    })
+  }
+}
