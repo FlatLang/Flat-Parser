@@ -1,6 +1,6 @@
 package flat/parser
 
-import flat/ast/annotations/AnnotationNode
+import flat/ast/AnnotationNode
 
 import flat/extensions/SyntaxStringFunctions
 
