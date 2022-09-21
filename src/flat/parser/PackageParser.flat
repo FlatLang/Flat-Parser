@@ -12,13 +12,13 @@ class extends Parser {
     ParseContext context
   ) => ParseResult() {
     if (!sourceCode.startsWith(KEYWORD))
-      return ParseResult(errorMessage: "Package declaration doesn't start with \"package\"")
+      return ParseResult(errorMessage: "Package declaration doesn't start with \"#{KEYWORD}\"")
 
     if (sourceCode.count <= KEYWORD.count + 1)
-      return ParseResult(errorMessage: "Package declaration doesn't contain anything after the \"package\" keyword")
+      return ParseResult(errorMessage: "Package declaration doesn't contain anything after the \"#{KEYWORD}\" keyword")
 
     if (!String.WHITESPACE.contains(sourceCode[KEYWORD.count]))
-      return ParseResult(errorMessage: "Package declaration doesn't have whitespace after the \"package\" keyword")
+      return ParseResult(errorMessage: "Package declaration doesn't have whitespace after the \"#{KEYWORD}\" keyword")
 
     let locationContents = sourceCode.substring(KEYWORD.count + 1).trim()
 
