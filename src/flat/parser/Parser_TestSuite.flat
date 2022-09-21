@@ -8,7 +8,8 @@ import flat/parser/Parser
 
 [TestSuite [
   Parser_Test,
-  PackageParser_Test
+  PackageParser_Test,
+  ClassParser_Test
 ]]
 class {
   public static async main(String args[]) {

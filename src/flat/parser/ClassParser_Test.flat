@@ -1,0 +1,46 @@
+package flat/parser
+
+import flat/parser/Parser
+import flat/ast/FileNode
+import flat/ast/ClassNode
+import flat/io/File
+
+testable class {
+  async test `can parse declaration`() {
+    let parser = ClassParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let result = parser.parse("class Bob", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = ClassNode(
+      name: "Bob"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `inherits name from file name`() {
+    let parser = ClassParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let result = parser.parse("class", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = ClassNode(
+      name: "test"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+}

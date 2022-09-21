@@ -3,10 +3,27 @@ package flat/parser
 import flat/ast/ClassNode
 
 class extends Parser {
+  let static String KEYWORD = "class"
+
   override public async parse(
     String sourceCode,
     ParseContext context
   ) => ParseResult() {
+    if (!sourceCode.startsWith(KEYWORD))
+      return ParseResult(errorMessage: "Class declaration doesn't start with \"class\"")
 
+    let classSignatureContents = sourceCode.substring(KEYWORD.count).trim()
+
+    let className = classSignatureContents.count == 0 ?
+      context.parent.fileNode.file.rootName :
+      classSignatureContents
+
+    let classNode = ClassNode(
+      name: className
+    )
+
+    return ParseResult(
+      node: classNode
+    )
   }
 }
