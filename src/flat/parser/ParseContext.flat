@@ -1,9 +1,9 @@
 package flat/parser
 
 import flat/ast/Node
+import flat/ast/AnnotationNode
 
 data class {
-  public construct(
-    visible Node parent
-  ) {}
+  visible Node parent = null
+  visible AnnotationNode[] annotations = AnnotationNode[]
 }
