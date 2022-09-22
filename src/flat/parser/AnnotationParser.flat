@@ -5,6 +5,10 @@ import flat/ast/AnnotationNode
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
+  override let lazy Parser[] childParsers = Array<Parser>().addAll([
+    ModifierParser()
+  ])
+
   override public async parse(
     String sourceCode,
     ParseContext context

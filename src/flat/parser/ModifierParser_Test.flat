@@ -1,0 +1,207 @@
+package flat/parser
+
+import flat/parser/Parser
+import flat/annotations/VisibleModifier
+import flat/annotations/PublicModifier
+import flat/annotations/PrivateModifier
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
+import flat/ast/FileNode
+import flat/ast/ClassNode
+import flat/ast/FieldNode
+import flat/ast/Node
+import flat/io/File
+
+testable class {
+  async test `can parse visible modifier`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("[Visible]", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = VisibleModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: null
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse visible modifier by alias`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("visible", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = VisibleModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: "visible"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse private modifier`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("[Private]", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PrivateModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: null
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse private modifier by alias`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("private", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PrivateModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: "private"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse public modifier`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("[Public]", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PublicModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: null
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse public modifier by alias`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("public", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = PublicModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: "public"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse let modifier by alias`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("let", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = LetModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: "let"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+
+  async test `can parse var modifier by alias`() {
+    let parser = ModifierParser()
+    let fileNode = FileNode(File("Test.flat"))
+    let classNode = ClassNode(name: "Test", implicitName: false)
+    let fieldNode = FieldNode(name: "test", type: "Type")
+
+    let context = ParseContext(
+      parent: fieldNode
+    )
+
+    let result = parser.parse("var", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = VarModifier(
+      parent: context.parent,
+      children: Array<Node>(),
+      aliasUsed: "var"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+}

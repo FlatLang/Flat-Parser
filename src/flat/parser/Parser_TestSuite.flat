@@ -11,7 +11,8 @@ import flat/parser/Parser
   PackageParser_Test,
   ImportParser_Test,
   FieldParser_Test,
-  ClassParser_Test
+  ClassParser_Test,
+  ModifierParser_Test
 ]]
 class {
   public static async main(String args[]) {

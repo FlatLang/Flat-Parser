@@ -1,0 +1,100 @@
+package flat/parser
+
+import flat/annotations/VisibleModifier
+import flat/annotations/PublicModifier
+import flat/annotations/PrivateModifier
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
+import flat/ast/AnnotationNode
+import flat/ast/Node
+
+import flat/extensions/SyntaxStringFunctions
+
+class extends Parser {
+  override public async parse(
+    String sourceCode,
+    ParseContext context
+  ) => ParseResult() {
+    var ParseResult result
+
+    result = parseBracketSyntax(sourceCode, VisibleModifier.identifier, {
+      VisibleModifier(parent: context.parent, children: Array<Node>(), aliasUsed: null)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseAliasSyntax(sourceCode, VisibleModifier.aliases, {
+      VisibleModifier(parent: context.parent, children: Array<Node>(), aliasUsed: _)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseBracketSyntax(sourceCode, PublicModifier.identifier, {
+      PublicModifier(parent: context.parent, children: Array<Node>(), aliasUsed: null)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseAliasSyntax(sourceCode, PublicModifier.aliases, {
+      PublicModifier(parent: context.parent, children: Array<Node>(), aliasUsed: _)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseBracketSyntax(sourceCode, PrivateModifier.identifier, {
+      PrivateModifier(parent: context.parent, children: Array<Node>(), aliasUsed: null)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseAliasSyntax(sourceCode, PrivateModifier.aliases, {
+      PrivateModifier(parent: context.parent, children: Array<Node>(), aliasUsed: _)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseAliasSyntax(sourceCode, LetModifier.aliases, {
+      LetModifier(parent: context.parent, children: Array<Node>(), aliasUsed: _)
+    })
+
+    if (result.success) {
+      return result
+    }
+
+    result = parseAliasSyntax(sourceCode, VarModifier.aliases, {
+      VarModifier(parent: context.parent, children: Array<Node>(), aliasUsed: _)
+    })
+
+    if (result.success) {
+      return result
+    }
+  }
+
+  async parseBracketSyntax(String sourceCode, String identifier, generateNode() -> AnnotationNode) => ParseResult() {
+    if (sourceCode.isSurroundedByBrackets()) {
+      let inner = sourceCode.removeSurroundingBrackets().trim()
+
+      if (inner == identifier) {
+        return ParseResult(generateNode())
+      }
+    }
+  }
+
+  async parseAliasSyntax(String sourceCode, String[] aliases, generateNode(String) -> AnnotationNode) => ParseResult() {
+    if (let alias = aliases.firstOrNull({ _ == sourceCode })) {
+      return ParseResult(generateNode(alias))
+    }
+  }
+}

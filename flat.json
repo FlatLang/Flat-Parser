@@ -16,7 +16,8 @@
         "github:FlatLang/IO": "master",
         "github:FlatLang/Flat-AST": "master",
         "github:FlatLang/Compiler-String-Extensions": "master",
-        "github:FlatLang/Time": "master"
+        "github:FlatLang/Time": "master",
+        "github:FlatLang/Flat-Annotations": "master"
       }
     },
     "test": {
