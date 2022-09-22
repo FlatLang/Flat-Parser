@@ -5,7 +5,7 @@ import flat/ast/AnnotationNode
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
-  override let lazy Parser[] childParsers = Array<Parser>().addAll([
+  let lazy Parser[] annotationParsers = Array<Parser>().addAll([
     ModifierParser()
   ])
 
@@ -18,9 +18,16 @@ class extends Parser {
     let wordsIterator = sourceCode.splitWhitespace().iterator
 
     while (wordsIterator.hasNext) {
-      let word = wordsIterator.next
+      let word = wordsIterator.stepNext
+      let result = annotationParsers.firstNonNullAsync({
+        if ((let x = _.parse(sourceCode, context)) && x.success) {
+          return x
+        } else {
+          return null
+        }
+      })
 
-      if (word) {
+      if (result) {
 
       }
     }
