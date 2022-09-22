@@ -16,9 +16,6 @@ testable class {
 
     let result = parser.parse("public let String test", context)
 
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true)
-
     let expected = ParseResult.Builder()
       .success(true)
       .remainder("String test")
