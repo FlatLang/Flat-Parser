@@ -56,4 +56,25 @@ testable class {
     expect(result.success).toBe(false)
     expect(result.errorMessage).toBe("Variable declaration missing type or name value")
   }
+  async test `can parse declaration with array type`() {
+    let parser = VariableDeclarationParser()
+
+    let request = ParseRequest(
+      parent: FileNode(File("test.flat")),
+      sourceCode: "String[] test"
+    )
+
+    let result = parser.parse(request)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true, result.errorMessage)
+
+    let expected = VariableDeclarationNode(
+      name: "test",
+      type: "String",
+      arrayBrackets: "[]"
+    )
+
+    expect(result.node).toBe(expected)
+  }
 }

@@ -14,13 +14,25 @@ class extends Parser {
       return ParseResult(errorMessage: "Variable declaration missing type or name value")
 
     let name = request.sourceCode.substring(lastWhitespaceIndex + 1)
-    let type = request.sourceCode.substring(end: lastWhitespaceIndex).trim()
+    var remainder = request.sourceCode.substring(end: lastWhitespaceIndex).trim()
+    var String arrayBrackets = null
 
-    if ((let whitespaceIndex = type.findLastWhitespaceOnTopLevel()) != -1)
-      return ParseResult(errorMessage: "Variable declaration contains extraneous words: \"#{type.substring(end: whitespaceIndex).trim()}\"")
+    if (remainder.endsWith("]")) {
+      let startBracket = remainder.findEndingMatch(remainder.count - 1, '[', ']', direction: -1)
 
+      arrayBrackets = remainder.substring(startBracket)
+      remainder = remainder.substring(end: startBracket).trim()
+    }
 
-    let variableDeclaration = VariableDeclarationNode(name: name, type: type)
+    if ((let whitespaceIndex = remainder.findLastWhitespaceOnTopLevel()) != -1) {
+      remainder = remainder.substring(end: whitespaceIndex).trim()
+
+      return ParseResult(errorMessage: "Variable declaration contains extraneous words: \"#{remainder}\"")
+    }
+
+    let type = remainder
+
+    let variableDeclaration = VariableDeclarationNode(name: name, type: type, arrayBrackets: arrayBrackets)
 
     return ParseResult(
       node: variableDeclaration
