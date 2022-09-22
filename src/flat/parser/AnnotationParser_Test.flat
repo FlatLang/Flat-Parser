@@ -22,10 +22,10 @@ testable class {
     let expected = ParseResult.Builder()
       .success(true)
       .remainder("String test")
-      .nodes(Array<AnnotationNode>():addAll([
+      .nodes([
         PublicModifier(aliasUsed: "public", parent: context.parent),
         LetModifier(aliasUsed: "let", parent: context.parent)
-      ]))
+      ])
       .build()
 
     expect(result).toBe(expected)
