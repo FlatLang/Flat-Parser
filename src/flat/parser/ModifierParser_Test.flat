@@ -28,11 +28,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VisibleModifier(
+    let expected = VisibleModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: null
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -52,11 +51,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VisibleModifier(
+    let expected = VisibleModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: "visible"
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -76,11 +74,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PrivateModifier(
+    let expected = PrivateModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: null
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -100,11 +97,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PrivateModifier(
+    let expected = PrivateModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: "private"
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -124,11 +120,9 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PublicModifier(
-      parent: context.parent,
-      children: Array<Node>(),
-      aliasUsed: null
-    )
+    let expected = PublicModifier.Builder(
+      parent: context.parent
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -148,11 +142,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PublicModifier(
+    let expected = PublicModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: "public"
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -172,11 +165,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = LetModifier(
+    let expected = LetModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: "let"
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
@@ -196,11 +188,10 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VarModifier(
+    let expected = VarModifier.Builder(
       parent: context.parent,
-      children: Array<Node>(),
       aliasUsed: "var"
-    )
+    ).build()
 
     expect(result.node).toBe(expected)
   }
