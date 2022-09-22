@@ -6,13 +6,12 @@ class extends Parser {
   let static String KEYWORD = "class"
 
   override public async parse(
-    String sourceCode,
     ParseRequest request
   ) => ParseResult() {
-    if (!sourceCode.startsWith(KEYWORD))
+    if (!request.sourceCode.startsWith(KEYWORD))
       return ParseResult(errorMessage: "Class declaration doesn't start with \"class\"")
 
-    let classSignatureContents = sourceCode.substring(KEYWORD.count).trim()
+    let classSignatureContents = request.sourceCode.substring(KEYWORD.count).trim()
 
     let implicitName = classSignatureContents.count == 0
     let className = implicitName ?

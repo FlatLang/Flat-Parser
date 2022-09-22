@@ -10,10 +10,11 @@ testable class {
     let parser = ImportParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "import flat/thing/test"
     )
 
-    let result = parser.parse("import flat/thing/test", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -27,10 +28,11 @@ testable class {
     let parser = ImportParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "import a"
     )
 
-    let result = parser.parse("import a", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -48,9 +50,9 @@ testable class {
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("imporrt", request),
-      parser.parse(" import", request),
-      parser.parse("test import", request)
+      parser.parse(request.copy(sourceCode: "imporrt")),
+      parser.parse(request.copy(sourceCode: " import")),
+      parser.parse(request.copy(sourceCode: "test import"))
     ])
 
     results.forEachAsync((result) => {
@@ -68,8 +70,8 @@ testable class {
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("import", request),
-      parser.parse("import ", request)
+      parser.parse(request.copy(sourceCode: "import")),
+      parser.parse(request.copy(sourceCode: "import "))
     ])
 
     results.forEachAsync((result) => {
@@ -87,9 +89,9 @@ testable class {
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("import\"aoeu", request),
-      parser.parse("importaoeu", request),
-      parser.parse("importa test", request)
+      parser.parse(request.copy(sourceCode: "import\"aoeu")),
+      parser.parse(request.copy(sourceCode: "importaoeu")),
+      parser.parse(request.copy(sourceCode: "importa test"))
     ])
 
     results.forEachAsync((result) => {

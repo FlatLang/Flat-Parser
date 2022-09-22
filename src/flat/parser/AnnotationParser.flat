@@ -10,20 +10,19 @@ class extends Parser {
   ])
 
   override public async parse(
-    String sourceCode,
     ParseRequest request
   ) => ParseResult() {
     let annotations = Array<AnnotationNode>()
 
-    let wordsIterator = sourceCode.splitWhitespace().iterator
+    let wordsIterator = request.sourceCode.splitWhitespace().iterator
     var Int index = -1
 
     while (wordsIterator.hasNext) {
       let word = wordsIterator.stepNext
-      index = sourceCode.indexOf(word, start: index + 1)
+      index = request.sourceCode.indexOf(word, start: index + 1)
 
       let result = annotationParsers.firstNonNullAsync<ParseResult>({
-        if ((let x = _.parse(word, request)) && x.success) {
+        if ((let x = _.parse(request.copy(sourceCode: word))) && x.success) {
           return x
         } else {
           return null
@@ -40,7 +39,7 @@ class extends Parser {
     if (annotations.isNotEmpty) {
       return ParseResult(
         annotations,
-        remainder: sourceCode.substring(index).trim()
+        remainder: request.sourceCode.substring(index).trim()
       )
     }
   }

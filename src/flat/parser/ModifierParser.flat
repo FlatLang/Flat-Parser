@@ -12,12 +12,11 @@ import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
   override public async parse(
-    String sourceCode,
     ParseRequest request
   ) => ParseResult() {
     var ParseResult result
 
-    result = parseBracketSyntax(sourceCode, VisibleModifier.identifier, {
+    result = parseBracketSyntax(request, VisibleModifier.identifier, {
       VisibleModifier(parent: request.parent, children: Array<Node>(), aliasUsed: null)
     })
 
@@ -25,7 +24,7 @@ class extends Parser {
       return result
     }
 
-    result = parseAliasSyntax(sourceCode, VisibleModifier.aliases, {
+    result = parseAliasSyntax(request, VisibleModifier.aliases, {
       VisibleModifier(parent: request.parent, children: Array<Node>(), aliasUsed: _)
     })
 
@@ -33,7 +32,7 @@ class extends Parser {
       return result
     }
 
-    result = parseBracketSyntax(sourceCode, PublicModifier.identifier, {
+    result = parseBracketSyntax(request, PublicModifier.identifier, {
       PublicModifier(parent: request.parent, children: Array<Node>(), aliasUsed: null)
     })
 
@@ -41,7 +40,7 @@ class extends Parser {
       return result
     }
 
-    result = parseAliasSyntax(sourceCode, PublicModifier.aliases, {
+    result = parseAliasSyntax(request, PublicModifier.aliases, {
       PublicModifier(parent: request.parent, children: Array<Node>(), aliasUsed: _)
     })
 
@@ -49,7 +48,7 @@ class extends Parser {
       return result
     }
 
-    result = parseBracketSyntax(sourceCode, PrivateModifier.identifier, {
+    result = parseBracketSyntax(request, PrivateModifier.identifier, {
       PrivateModifier(parent: request.parent, children: Array<Node>(), aliasUsed: null)
     })
 
@@ -57,7 +56,7 @@ class extends Parser {
       return result
     }
 
-    result = parseAliasSyntax(sourceCode, PrivateModifier.aliases, {
+    result = parseAliasSyntax(request, PrivateModifier.aliases, {
       PrivateModifier(parent: request.parent, children: Array<Node>(), aliasUsed: _)
     })
 
@@ -65,7 +64,7 @@ class extends Parser {
       return result
     }
 
-    result = parseAliasSyntax(sourceCode, LetModifier.aliases, {
+    result = parseAliasSyntax(request, LetModifier.aliases, {
       LetModifier(parent: request.parent, children: Array<Node>(), aliasUsed: _)
     })
 
@@ -73,7 +72,7 @@ class extends Parser {
       return result
     }
 
-    result = parseAliasSyntax(sourceCode, VarModifier.aliases, {
+    result = parseAliasSyntax(request, VarModifier.aliases, {
       VarModifier(parent: request.parent, children: Array<Node>(), aliasUsed: _)
     })
 
@@ -82,9 +81,9 @@ class extends Parser {
     }
   }
 
-  async parseBracketSyntax(String sourceCode, String identifier, generateNode() -> AnnotationNode) => ParseResult() {
-    if (sourceCode.isSurroundedByBrackets()) {
-      let inner = sourceCode.removeSurroundingBrackets().trim()
+  async parseBracketSyntax(ParseRequest request, String identifier, generateNode() -> AnnotationNode) => ParseResult() {
+    if (request.sourceCode.isSurroundedByBrackets()) {
+      let inner = request.sourceCode.removeSurroundingBrackets().trim()
 
       if (inner == identifier) {
         return ParseResult(generateNode())
@@ -92,8 +91,8 @@ class extends Parser {
     }
   }
 
-  async parseAliasSyntax(String sourceCode, String[] aliases, generateNode(String) -> AnnotationNode) => ParseResult() {
-    if (let alias = aliases.firstOrNull({ _ == sourceCode })) {
+  async parseAliasSyntax(ParseRequest request, String[] aliases, generateNode(String) -> AnnotationNode) => ParseResult() {
+    if (let alias = aliases.firstOrNull({ _ == request.sourceCode })) {
       return ParseResult(generateNode(alias))
     }
   }

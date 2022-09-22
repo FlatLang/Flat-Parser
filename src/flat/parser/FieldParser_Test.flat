@@ -10,10 +10,11 @@ testable class {
     let parser = FieldParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "String test"
     )
 
-    let result = parser.parse("String test", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)

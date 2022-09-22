@@ -20,10 +20,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "[Visible]"
     )
 
-    let result = parser.parse("[Visible]", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -43,10 +44,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "visible"
     )
 
-    let result = parser.parse("visible", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -66,10 +68,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "[Private]"
     )
 
-    let result = parser.parse("[Private]", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -89,10 +92,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "private"
     )
 
-    let result = parser.parse("private", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -112,10 +116,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "[Public]"
     )
 
-    let result = parser.parse("[Public]", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -134,10 +139,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "public"
     )
 
-    let result = parser.parse("public", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -157,10 +163,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "let"
     )
 
-    let result = parser.parse("let", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -180,10 +187,11 @@ testable class {
     let fieldNode = FieldNode(name: "test", type: "Type")
 
     let request = ParseRequest(
-      parent: fieldNode
+      parent: fieldNode,
+      sourceCode: "var"
     )
 
-    let result = parser.parse("var", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)

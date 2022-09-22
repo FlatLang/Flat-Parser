@@ -6,10 +6,9 @@ import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
   override public async parse(
-    String sourceCode,
     ParseRequest request
   ) => ParseResult() {
-    let words = sourceCode.splitWhitespace()
+    let words = request.sourceCode.splitWhitespace()
     let wordsIterator = words.iterator
 
     var String type

@@ -10,10 +10,11 @@ testable class {
     let parser = ClassParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "class Bob"
     )
 
-    let result = parser.parse("class Bob", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -30,10 +31,11 @@ testable class {
     let parser = ClassParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "class"
     )
 
-    let result = parser.parse("class", request)
+    let result = parser.parse(request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)

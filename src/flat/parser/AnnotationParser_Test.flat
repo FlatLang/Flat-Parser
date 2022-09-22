@@ -9,10 +9,11 @@ import flat/io/File
 testable class {
   async test `can parse annotations at front of variable declaration`() {
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "public let String test"
     )
 
-    let result = AnnotationParser().parse("public let String test", request)
+    let result = AnnotationParser().parse(request)
 
     let expected = ParseResult.Builder()
       .success(true)
@@ -28,10 +29,11 @@ testable class {
 
   async test `doesnt parse annotations at end of variable declaration`() {
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(File("test.flat")),
+      sourceCode: "String test public let"
     )
 
-    let result = AnnotationParser().parse("String test public let", request)
+    let result = AnnotationParser().parse(request)
 
     let expected = ParseResult.Builder()
       .success(false)

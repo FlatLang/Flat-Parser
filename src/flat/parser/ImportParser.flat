@@ -8,19 +8,18 @@ class extends Parser {
   let static String KEYWORD = "import"
 
   override public async parse(
-    String sourceCode,
     ParseRequest request
   ) => ParseResult() {
-    if (!sourceCode.startsWith(KEYWORD))
+    if (!request.sourceCode.startsWith(KEYWORD))
       return ParseResult(errorMessage: "Import declaration doesn't start with \"#{KEYWORD}\"")
 
-    if (sourceCode.count <= KEYWORD.count + 1)
+    if (request.sourceCode.count <= KEYWORD.count + 1)
       return ParseResult(errorMessage: "Import declaration doesn't contain anything after the \"#{KEYWORD}\" keyword")
 
-    if (!String.WHITESPACE.contains(sourceCode[KEYWORD.count]))
+    if (!String.WHITESPACE.contains(request.sourceCode[KEYWORD.count]))
       return ParseResult(errorMessage: "Import declaration doesn't have whitespace after the \"#{KEYWORD}\" keyword")
 
-    let locationContents = sourceCode.substring(KEYWORD.count + 1).trim()
+    let locationContents = request.sourceCode.substring(KEYWORD.count + 1).trim()
 
     let strippedLocationContents = if (locationContents.isSurroundedByQuotes()) {
       locationContents.removeSurroundingQuotes()

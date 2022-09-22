@@ -6,4 +6,5 @@ import flat/ast/AnnotationNode
 data class {
   visible Node parent = null
   visible AnnotationNode[] annotations = AnnotationNode[]
+  visible String sourceCode
 }
