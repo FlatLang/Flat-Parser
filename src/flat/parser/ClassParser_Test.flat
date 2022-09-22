@@ -9,11 +9,11 @@ testable class {
   async test `can parse declaration`() {
     let parser = ClassParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
-    let result = parser.parse("class Bob", context)
+    let result = parser.parse("class Bob", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -29,11 +29,11 @@ testable class {
   async test `inherits name from file name`() {
     let parser = ClassParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
-    let result = parser.parse("class", context)
+    let result = parser.parse("class", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)

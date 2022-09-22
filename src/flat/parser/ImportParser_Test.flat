@@ -9,11 +9,11 @@ testable class {
   async test `can parse import declaration`() {
     let parser = ImportParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
-    let result = parser.parse("import flat/thing/test", context)
+    let result = parser.parse("import flat/thing/test", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -26,11 +26,11 @@ testable class {
   async test `can parse single letter import declaration`() {
     let parser = ImportParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
-    let result = parser.parse("import a", context)
+    let result = parser.parse("import a", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
@@ -43,14 +43,14 @@ testable class {
   async test `fails parse if doesnt contain import keyword`() {
     let parser = ImportParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("imporrt", context),
-      parser.parse(" import", context),
-      parser.parse("test import", context)
+      parser.parse("imporrt", request),
+      parser.parse(" import", request),
+      parser.parse("test import", request)
     ])
 
     results.forEachAsync((result) => {
@@ -63,13 +63,13 @@ testable class {
   async test `fails parse if doesnt contain anything after the import keyword`() {
     let parser = ImportParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("import", context),
-      parser.parse("import ", context)
+      parser.parse("import", request),
+      parser.parse("import ", request)
     ])
 
     results.forEachAsync((result) => {
@@ -82,14 +82,14 @@ testable class {
   async test `fails parse if doesnt have whitespace after the import keyword`() {
     let parser = ImportParser()
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: FileNode(File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([
-      parser.parse("import\"aoeu", context),
-      parser.parse("importaoeu", context),
-      parser.parse("importa test", context)
+      parser.parse("import\"aoeu", request),
+      parser.parse("importaoeu", request),
+      parser.parse("importa test", request)
     ])
 
     results.forEachAsync((result) => {

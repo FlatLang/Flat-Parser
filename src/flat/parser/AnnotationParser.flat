@@ -11,7 +11,7 @@ class extends Parser {
 
   override public async parse(
     String sourceCode,
-    ParseContext context
+    ParseRequest request
   ) => ParseResult() {
     let annotations = Array<AnnotationNode>()
 
@@ -23,7 +23,7 @@ class extends Parser {
       index = sourceCode.indexOf(word, start: index + 1)
 
       let result = annotationParsers.firstNonNullAsync<ParseResult>({
-        if ((let x = _.parse(word, context)) && x.success) {
+        if ((let x = _.parse(word, request)) && x.success) {
           return x
         } else {
           return null

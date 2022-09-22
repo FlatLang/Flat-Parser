@@ -5,14 +5,14 @@ import flat/ast/Node
 abstract class {
   let lazy Parser[] childParsers = Array<Parser>()
 
-  public async parse(String sourceCode, ParseContext context) => ParseResult()
+  public async parse(String sourceCode, ParseRequest request) => ParseResult()
 
   public async parseChild(
     String sourceCode,
-    ParseContext context
+    ParseRequest request
   ) -> ParseResult =>
     childParsers.firstNonNullAsync({
-      if ((let result = _.parse(sourceCode, context)) && result.success) {
+      if ((let result = _.parse(sourceCode, request)) && result.success) {
         return result
       } else {
         return null

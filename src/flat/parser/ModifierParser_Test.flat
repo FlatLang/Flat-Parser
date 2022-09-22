@@ -19,17 +19,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("[Visible]", context)
+    let result = parser.parse("[Visible]", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = VisibleModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: null
     ).build()
 
@@ -42,17 +42,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("visible", context)
+    let result = parser.parse("visible", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = VisibleModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: "visible"
     ).build()
 
@@ -65,17 +65,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("[Private]", context)
+    let result = parser.parse("[Private]", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = PrivateModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: null
     ).build()
 
@@ -88,17 +88,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("private", context)
+    let result = parser.parse("private", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = PrivateModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: "private"
     ).build()
 
@@ -111,17 +111,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("[Public]", context)
+    let result = parser.parse("[Public]", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = PublicModifier.Builder(
-      parent: context.parent
+      parent: request.parent
     ).build()
 
     expect(result.node).toBe(expected)
@@ -133,17 +133,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("public", context)
+    let result = parser.parse("public", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = PublicModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: "public"
     ).build()
 
@@ -156,17 +156,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("let", context)
+    let result = parser.parse("let", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = LetModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: "let"
     ).build()
 
@@ -179,17 +179,17 @@ testable class {
     let classNode = ClassNode(name: "Test", implicitName: false)
     let fieldNode = FieldNode(name: "test", type: "Type")
 
-    let context = ParseContext(
+    let request = ParseRequest(
       parent: fieldNode
     )
 
-    let result = parser.parse("var", context)
+    let result = parser.parse("var", request)
 
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
     let expected = VarModifier.Builder(
-      parent: context.parent,
+      parent: request.parent,
       aliasUsed: "var"
     ).build()
 

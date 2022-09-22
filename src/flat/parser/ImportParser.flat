@@ -9,7 +9,7 @@ class extends Parser {
 
   override public async parse(
     String sourceCode,
-    ParseContext context
+    ParseRequest request
   ) => ParseResult() {
     if (!sourceCode.startsWith(KEYWORD))
       return ParseResult(errorMessage: "Import declaration doesn't start with \"#{KEYWORD}\"")

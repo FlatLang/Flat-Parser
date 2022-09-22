@@ -7,7 +7,7 @@ class extends Parser {
 
   override public async parse(
     String sourceCode,
-    ParseContext context
+    ParseRequest request
   ) => ParseResult() {
     if (!sourceCode.startsWith(KEYWORD))
       return ParseResult(errorMessage: "Class declaration doesn't start with \"class\"")
@@ -16,7 +16,7 @@ class extends Parser {
 
     let implicitName = classSignatureContents.count == 0
     let className = implicitName ?
-      context.parent.fileNode.file.rootName :
+      request.parent.fileNode.file.rootName :
       classSignatureContents
 
     let classNode = ClassNode(
