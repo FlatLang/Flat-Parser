@@ -1,0 +1,29 @@
+package flat/parser
+
+import flat/ast/VariableDeclarationNode
+
+import flat/extensions/SyntaxStringFunctions
+
+class extends Parser {
+  override public async parse(
+    ParseRequest request
+  ) => ParseResult() {
+    let lastWhitespaceIndex = request.sourceCode.findLastWhitespaceOnTopLevel()
+
+    if (lastWhitespaceIndex == -1)
+      return ParseResult(errorMessage: "Variable declaration missing type or name value")
+
+    let name = request.sourceCode.substring(lastWhitespaceIndex + 1)
+    let type = request.sourceCode.substring(end: lastWhitespaceIndex).trim()
+
+    if ((let whitespaceIndex = type.findLastWhitespaceOnTopLevel()) != -1)
+      return ParseResult(errorMessage: "Variable declaration contains extraneous words: \"#{type.substring(end: whitespaceIndex).trim()}\"")
+
+
+    let variableDeclaration = VariableDeclarationNode(name: name, type: type)
+
+    return ParseResult(
+      node: variableDeclaration
+    )
+  }
+}

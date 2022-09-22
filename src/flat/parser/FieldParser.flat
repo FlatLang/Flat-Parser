@@ -24,10 +24,7 @@ class extends Parser {
       }
     }
 
-    let fieldNode = FieldNode(
-      name,
-      type
-    )
+    let fieldNode = FieldNode(name: name, type: type)
 
     return ParseResult(
       node: fieldNode
