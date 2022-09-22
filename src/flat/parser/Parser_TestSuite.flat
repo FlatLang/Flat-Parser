@@ -10,6 +10,7 @@ import flat/parser/Parser
   Parser_Test,
   PackageParser_Test,
   ImportParser_Test,
+  FieldParser_Test,
   ClassParser_Test
 ]]
 class {

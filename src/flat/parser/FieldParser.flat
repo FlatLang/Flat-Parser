@@ -1,0 +1,37 @@
+package flat/parser
+
+import flat/ast/FieldNode
+
+import flat/extensions/SyntaxStringFunctions
+
+class extends Parser {
+  override public async parse(
+    String sourceCode,
+    ParseContext context
+  ) => ParseResult() {
+    let words = sourceCode.splitWhitespace()
+    let wordsIterator = words.iterator
+
+    var String type
+    var String name
+
+    while (wordsIterator.hasNext) {
+      let word = wordsIterator.stepNext
+
+      if (!wordsIterator.hasNext) {
+        name = word
+      } else if (wordsIterator.position == words.count - 1) {
+        type = word
+      }
+    }
+
+    let fieldNode = FieldNode(
+      name,
+      type
+    )
+
+    return ParseResult(
+      node: fieldNode
+    )
+  }
+}

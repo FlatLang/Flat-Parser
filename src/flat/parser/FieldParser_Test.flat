@@ -1,0 +1,28 @@
+package flat/parser
+
+import flat/parser/Parser
+import flat/ast/FileNode
+import flat/ast/FieldNode
+import flat/io/File
+
+testable class {
+  async test `can parse declaration`() {
+    let parser = FieldParser()
+
+    let context = ParseContext(
+      parent: FileNode(File("test.flat"))
+    )
+
+    let result = parser.parse("String test", context)
+
+    expect(result).toNotBe(null)
+    expect(result.success).toBe(true)
+
+    let expected = FieldNode(
+      name: "test",
+      type: "String"
+    )
+
+    expect(result.node).toBe(expected)
+  }
+}
