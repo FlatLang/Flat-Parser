@@ -4,30 +4,22 @@ import flat/ast/FieldNode
 
 import flat/extensions/SyntaxStringFunctions
 
+import flat/ast/Node
+
 class extends Parser {
+  let VariableDeclarationParser variableDeclarationParser = VariableDeclarationParser()
+
   override public async parse(
     ParseRequest request
   ) => ParseResult() {
-    let words = request.sourceCode.splitWhitespace()
-    let wordsIterator = words.iterator
+    let result = variableDeclarationParser.parse(request)
 
-    var String type
-    var String name
+    if (result.success && result.nodes.count == 1) {
+      let fieldNode = result.node.copyTo(FieldNode())
 
-    while (wordsIterator.hasNext) {
-      let word = wordsIterator.stepNext
-
-      if (!wordsIterator.hasNext) {
-        name = word
-      } else if (wordsIterator.position == words.count - 1) {
-        type = word
-      }
+      return result.copy(
+        nodes: [fieldNode]
+      )
     }
-
-    let fieldNode = FieldNode(name: name, type: type)
-
-    return ParseResult(
-      node: fieldNode
-    )
   }
 }
