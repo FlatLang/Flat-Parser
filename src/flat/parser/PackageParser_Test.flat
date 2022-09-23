@@ -10,7 +10,7 @@ testable class {
     let parser = PackageParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "package flat/thing/test"
     )
 
@@ -19,7 +19,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PackageNode("flat/thing/test")
+    let expected = PackageNode(location: "flat/thing/test")
 
     expect(result.node).toBe(expected)
   }
@@ -28,7 +28,7 @@ testable class {
     let parser = PackageParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "package a"
     )
 
@@ -37,7 +37,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PackageNode("a")
+    let expected = PackageNode(location: "a")
 
     expect(result.node).toBe(expected)
   }
@@ -46,7 +46,7 @@ testable class {
     let parser = PackageParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(file: File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([
@@ -66,7 +66,7 @@ testable class {
     let parser = PackageParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(file: File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([
@@ -85,7 +85,7 @@ testable class {
     let parser = PackageParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat"))
+      parent: FileNode(file: File("test.flat"))
     )
 
     let results = Array<ParseResult>():addAll([

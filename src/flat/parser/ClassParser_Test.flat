@@ -10,7 +10,7 @@ testable class {
     let parser = ClassParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "class Bob"
     )
 
@@ -31,7 +31,7 @@ testable class {
     let parser = ClassParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "class"
     )
 

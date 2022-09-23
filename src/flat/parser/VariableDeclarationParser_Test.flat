@@ -10,7 +10,7 @@ testable class {
     let parser = VariableDeclarationParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "String test"
     )
 
@@ -31,7 +31,7 @@ testable class {
     let parser = VariableDeclarationParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "let String test"
     )
 
@@ -46,7 +46,7 @@ testable class {
     let parser = VariableDeclarationParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "test"
     )
 
@@ -60,7 +60,7 @@ testable class {
     let parser = VariableDeclarationParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "String[] test"
     )
 

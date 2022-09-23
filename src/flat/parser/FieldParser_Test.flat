@@ -10,7 +10,7 @@ testable class {
     let parser = FieldParser()
 
     let request = ParseRequest(
-      parent: FileNode(File("test.flat")),
+      parent: FileNode(file: File("test.flat")),
       sourceCode: "String test"
     )
 
