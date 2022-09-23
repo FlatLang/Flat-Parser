@@ -16,72 +16,92 @@ class extends Parser {
   ) => ParseResult() {
     var ParseResult result
 
-    result = parseBracketSyntax(request, VisibleModifier.identifier, {
-      VisibleModifier(aliasUsed: null)
-    })
+    result = parseBracketSyntax(
+      request,
+      VisibleModifier.identifier,
+      { VisibleModifier(aliasUsed: null) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseAliasSyntax(request, VisibleModifier.aliases, {
-      VisibleModifier(aliasUsed: _)
-    })
+    result = parseAliasSyntax(
+      request,
+      VisibleModifier.aliases,
+      { VisibleModifier(aliasUsed: _) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseBracketSyntax(request, PublicModifier.identifier, {
-      PublicModifier(aliasUsed: null)
-    })
+    result = parseBracketSyntax(
+      request,
+      PublicModifier.identifier,
+      { PublicModifier(aliasUsed: null) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseAliasSyntax(request, PublicModifier.aliases, {
-      PublicModifier(aliasUsed: _)
-    })
+    result = parseAliasSyntax(
+      request,
+      PublicModifier.aliases,
+      { PublicModifier(aliasUsed: _) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseBracketSyntax(request, PrivateModifier.identifier, {
-      PrivateModifier(aliasUsed: null)
-    })
+    result = parseBracketSyntax(
+      request,
+      PrivateModifier.identifier,
+      { PrivateModifier(aliasUsed: null) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseAliasSyntax(request, PrivateModifier.aliases, {
-      PrivateModifier(aliasUsed: _)
-    })
+    result = parseAliasSyntax(
+      request,
+      PrivateModifier.aliases,
+      { PrivateModifier(aliasUsed: _) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseAliasSyntax(request, LetModifier.aliases, {
-      LetModifier(aliasUsed: _)
-    })
+    result = parseAliasSyntax(
+      request,
+      LetModifier.aliases,
+      { LetModifier(aliasUsed: _) }
+    )
 
     if (result.success) {
       return result
     }
 
-    result = parseAliasSyntax(request, VarModifier.aliases, {
-      VarModifier(aliasUsed: _)
-    })
+    result = parseAliasSyntax(
+      request,
+      VarModifier.aliases,
+      { VarModifier(aliasUsed: _) }
+    )
 
     if (result.success) {
       return result
     }
   }
 
-  async parseBracketSyntax(ParseRequest request, String identifier, generateNode() -> AnnotationNode) => ParseResult() {
+  async parseBracketSyntax(
+    ParseRequest request,
+    String identifier,
+    generateNode() -> AnnotationNode
+  ) => ParseResult() {
     if (request.sourceCode.isSurroundedByBrackets()) {
       let inner = request.sourceCode.removeSurroundingBrackets().trim()
 
@@ -91,7 +111,11 @@ class extends Parser {
     }
   }
 
-  async parseAliasSyntax(ParseRequest request, String[] aliases, generateNode(String) -> AnnotationNode) => ParseResult() {
+  async parseAliasSyntax(
+    ParseRequest request,
+    String[] aliases,
+    generateNode(String) -> AnnotationNode
+  ) => ParseResult() {
     if (let alias = aliases.firstOrNull({ _ == request.sourceCode })) {
       return ParseResult(generateNode(alias))
     }
