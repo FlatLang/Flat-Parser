@@ -10,25 +10,26 @@ abstract class {
 
   public async parseChild(
     ParseRequest request
-  ) -> ParseResult =>
-    childParsers.firstNonNullAsync({
-      let annotationsResponse = annotationParser.parse(request)
+  ) => childParsers.firstNonNullAsync({ parseChild(parseAnnotations(request), _) }) ?: ParseResult()
 
-      let updatedRequest = if (annotationsResponse.success) {
-        request.copy(
-          sourceCode: annotationsResponse.remainder,
-          annotations: annotationsResponse.nodes
-        )
-      } else {
-        request
-      }
+  async parseChild(ParseRequest request, Parser parser) -> ParseResult => null {
+    if ((let result = parser.parse(request)) && result.success) {
+      return result.copy(
+        nodes: result.nodes.map({
+          _.copy(annotations: request.annotations)
+        })
+      )
+    }
+  }
 
-      if ((let result = _.parse(updatedRequest)) && result.success) {
-        return result.copy(
-          nodes: result.nodes.map({ _.copy(annotations: updatedRequest.annotations) })
-        )
-      } else {
-        return null
-      }
-    }) ?: ParseResult()
+  async parseAnnotations(ParseRequest request) => request {
+    let annotationsResponse = annotationParser.parse(request)
+
+    if (annotationsResponse.success) {
+      return request.copy(
+        sourceCode: annotationsResponse.remainder,
+        annotations: annotationsResponse.nodes
+      )
+    }
+  }
 }
