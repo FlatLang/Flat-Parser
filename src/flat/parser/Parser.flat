@@ -3,7 +3,8 @@ package flat/parser
 import flat/ast/Node
 
 abstract class {
-  let lazy Parser[] childParsers = Array<Parser>()
+  let lazy Parser[] childParsers => Array<Parser>()
+  let lazy AnnotationParser annotationParser => AnnotationParser()
 
   public async parse(ParseRequest request) => ParseResult()
 
@@ -11,7 +12,20 @@ abstract class {
     ParseRequest request
   ) -> ParseResult =>
     childParsers.firstNonNullAsync({
-      if ((let result = _.parse(request)) && result.success) {
+      let annotationsResponse = annotationParser.parse(request)
+
+      let updatedRequest = if (annotationsResponse.success) {
+        request.copy(
+          sourceCode: annotationsResponse.remainder,
+          annotations: annotationsResponse.nodes
+        )
+      } else {
+        request
+      }
+
+      if ((let result = _.parse(updatedRequest)) && result.success) {
+        result.nodes.forEach({ _.annotations = updatedRequest.annotations })
+
         return result
       } else {
         return null
