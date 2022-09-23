@@ -3,6 +3,10 @@ package flat/parser
 import flat/ast/ClassNode
 
 class extends Parser {
+  override let lazy Parser[] childParsers => Array<Parser>():addAll([
+    FieldParser()
+  ])
+
   let static String KEYWORD = "class"
 
   override public async parse(
