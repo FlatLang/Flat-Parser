@@ -24,9 +24,9 @@ abstract class {
       }
 
       if ((let result = _.parse(updatedRequest)) && result.success) {
-        result.nodes.forEach({ _.annotations = updatedRequest.annotations })
-
-        return result
+        return result.copy(
+          nodes: result.nodes.map({ _.copy(annotations: updatedRequest.annotations) })
+        )
       } else {
         return null
       }
