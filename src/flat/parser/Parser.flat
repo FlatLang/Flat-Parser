@@ -23,12 +23,10 @@ abstract class {
   }
 
   async parseAnnotations(ParseRequest request) => request {
-    let annotationsResponse = annotationParser.parse(request)
-
-    if (annotationsResponse.success) {
+    if ((let result = annotationParser.parse(request)) && result.success) {
       return request.copy(
-        sourceCode: annotationsResponse.remainder,
-        annotations: annotationsResponse.nodes
+        sourceCode: result.remainder,
+        annotations: result.nodes
       )
     }
   }
