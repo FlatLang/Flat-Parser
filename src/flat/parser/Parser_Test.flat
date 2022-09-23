@@ -7,7 +7,7 @@ import flat/ast/ClassNode
 import flat/ast/FieldNode
 
 testable class {
-  async test `fails parse on too many words`() {
+  async test `can parse annotations and children`() {
     let parser = ClassParser()
 
     let request = ParseRequest(
