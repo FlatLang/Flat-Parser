@@ -29,10 +29,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VisibleModifier.Builder(
-      parent: request.parent,
-      aliasUsed: null
-    ).build()
+    let expected = VisibleModifier(aliasUsed: null)
 
     expect(result.node).toBe(expected)
   }
@@ -53,10 +50,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VisibleModifier.Builder(
-      parent: request.parent,
-      aliasUsed: "visible"
-    ).build()
+    let expected = VisibleModifier(aliasUsed: "visible")
 
     expect(result.node).toBe(expected)
   }
@@ -77,10 +71,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PrivateModifier.Builder(
-      parent: request.parent,
-      aliasUsed: null
-    ).build()
+    let expected = PrivateModifier(aliasUsed: null)
 
     expect(result.node).toBe(expected)
   }
@@ -101,10 +92,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PrivateModifier.Builder(
-      parent: request.parent,
-      aliasUsed: "private"
-    ).build()
+    let expected = PrivateModifier(aliasUsed: "private")
 
     expect(result.node).toBe(expected)
   }
@@ -125,9 +113,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PublicModifier.Builder(
-      parent: request.parent
-    ).build()
+    let expected = PublicModifier()
 
     expect(result.node).toBe(expected)
   }
@@ -148,10 +134,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = PublicModifier.Builder(
-      parent: request.parent,
-      aliasUsed: "public"
-    ).build()
+    let expected = PublicModifier(aliasUsed: "public")
 
     expect(result.node).toBe(expected)
   }
@@ -172,10 +155,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = LetModifier.Builder(
-      parent: request.parent,
-      aliasUsed: "let"
-    ).build()
+    let expected = LetModifier(aliasUsed: "let")
 
     expect(result.node).toBe(expected)
   }
@@ -196,10 +176,7 @@ testable class {
     expect(result).toNotBe(null)
     expect(result.success).toBe(true)
 
-    let expected = VarModifier.Builder(
-      parent: request.parent,
-      aliasUsed: "var"
-    ).build()
+    let expected = VarModifier(aliasUsed: "var")
 
     expect(result.node).toBe(expected)
   }

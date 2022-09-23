@@ -19,8 +19,8 @@ testable class {
       .success(true)
       .remainder("String test")
       .nodes([
-        PublicModifier(aliasUsed: "public", parent: request.parent),
-        LetModifier(aliasUsed: "let", parent: request.parent)
+        PublicModifier(aliasUsed: "public"),
+        LetModifier(aliasUsed: "let")
       ])
       .build()
 
