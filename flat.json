@@ -18,7 +18,8 @@
         "github:FlatLang/Compiler-String-Extensions": "master",
         "github:FlatLang/Time": "master",
         "github:FlatLang/Flat-Annotations": "master",
-        "github:FlatLang/Flat-Compiler-Models": "master"
+        "github:FlatLang/Flat-Compiler-Models": "master",
+        "github:FlatLang/Logger": "master"
       }
     },
     "test": {

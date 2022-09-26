@@ -3,8 +3,11 @@ package flat/parser
 import flat/datastruct/HashMap
 import flat/datastruct/list/Queue
 import flat/compiler/models/Token
+import flat/log/Logger
 
 data class extends TokenMatcher {
+  let static Logger log = Logger(TokenMatcherGroup.class)
+
   public construct(
     visible Array<TokenMatcher> matchers,
     this Bool optional = false,
@@ -35,7 +38,14 @@ data class extends TokenMatcher {
         var TokenMatch currentTokenMatch
         tokensToMatch.add(currentTokenQueue.dequeue())
 
+        log.trace("Attempting match '#{tokensToMatch.map(t => t.value).join(", ")}': #{matcher}")
         while (currentTokenMatch = matcher.matches(tokensToMatch)) {
+          log.trace("|
+            Matched
+              tokenType: #{matcher.tokenType}
+              tokensMatched: '#{tokensToMatch.map(t => t.value).join(", ")}'
+              remainingTokens: '#{currentTokenQueue.map(t => t.value).join(", ")}'
+            |")
           tokenMatch = currentTokenMatch
           successfulTokenQueue = Queue(currentTokenQueue)
           tokenMatch.values.forEach((entry) => {
@@ -69,6 +79,7 @@ data class extends TokenMatcher {
       matcherQueue.dequeue()
     }
 
+    log.trace("Remaining: #{matcherQueue}, #{tokenQueue}")
     if (matcherQueue.isEmpty && tokenQueue.isEmpty) {
       return TokenMatch(outputLabels)
     }
