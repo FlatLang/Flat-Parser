@@ -7,7 +7,7 @@ import flat/extensions/SyntaxStringFunctions
 
 import flat/ast/Node
 
-class extends Parser {
+class extends ParserBase {
   override let lazy TokenMatcher pattern => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_type"),
     TokenMatcherGroup([

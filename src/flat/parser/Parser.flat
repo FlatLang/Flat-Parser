@@ -3,10 +3,6 @@ package flat/parser
 import flat/ast/Node
 import flat/compiler/models/Token
 
-abstract class {
-  let lazy Parser[] childParsers => Array<Parser>()
-  let lazy AnnotationParser annotationParser => AnnotationParser()
-  let lazy TokenMatcher pattern => null
+class {
 
-  public abstract async generateNode(ParseContext context, TokenMatch match) -> Node
 }

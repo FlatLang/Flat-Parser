@@ -2,7 +2,7 @@ package flat/parser
 
 import flat/ast/FileNode
 
-class extends Parser {
+class extends ParserBase {
   override let lazy Parser[] childParsers => Array<Parser>():addAll([
     ImportParser(),
     PackageParser(),

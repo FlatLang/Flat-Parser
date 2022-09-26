@@ -3,7 +3,7 @@ package flat/parser
 import flat/ast/ClassNode
 import flat/compiler/models/Token
 
-class extends Parser {
+class extends ParserBase {
   override let lazy Parser[] childParsers => Array<Parser>():addAll([
     FieldParser()
   ])
