@@ -116,4 +116,22 @@ testable class {
 
     expect(result?.values).toBe(expected)
   }
+
+  async test `can match against matcher with multiple values`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, label: "alias", values: Array():addAll([
+          "test1", "test2", "test3", "test4"
+        ])
+      )
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "test3", type: Token.Type.IDENTIFIER)
+    ])
+
+    let expected = HashMap()
+      :add("alias", Array():addAll(["test3"]))
+
+    expect(result?.values).toBe(expected)
+  }
 }

@@ -9,6 +9,7 @@ data class {
 
   visible Int tokenType
   visible String value = null
+  visible String[] values = null
   visible String label = null
   visible Bool optional = false
   visible Bool repeat = false
@@ -19,6 +20,7 @@ data class {
       if (!repeat && i > 0) return false
       if (tokenType != t.type) return false
       if (value && value != t.value) return false
+      if (values && values.none({ _ == t.value})) return false
 
       return true
     }).toArray()
