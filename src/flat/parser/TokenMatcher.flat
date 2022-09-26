@@ -2,30 +2,85 @@ package flat/parser
 
 import flat/datastruct/HashMap
 import flat/compiler/models/Token
+import flat/log/Logger
+import flat/regex/Regex
+import flat/regex/Pattern
+import flat/regex/MatchGroup
 
 data class {
+  let static Logger log = Logger(TokenMatcher.class)
+
   visible Int tokenType
   visible String value = null
   visible String label = null
   visible Bool optional = false
   visible Bool repeat = false
+  visible Bool greedy = true
 
-  public matches(Token[] tokens) -> TokenMatch => null {
-    let isMatch = tokens.all((token, i) => {
-      if (tokenType != token.type) return false
-      if (value && value != token.value) return false
+  let lazy Pattern pattern => Pattern(generatePatternString())
 
-      return true
-    })
-
-    if (isMatch) {
+  public matches(Token[] tokens, Bool requireAllTokensConsumed = true) -> TokenMatch => null {
+    if (let groups = getRegexMatches(tokens)) {
       let outputLabels = HashMap<String, Array<String>>()
 
       if (label) {
-        outputLabels.getOrDefault(label, { Array() }).addAll(tokens.map({ _.value }))
+        let labelValues = groups
+          .filter(g => g.value.count > 0 && g.groupIndex == 2 && (repeat || g.matchIndex == 0))
+          .map(g => g.value)
+
+        if (labelValues.isNotEmpty) {
+          outputLabels.getOrDefault(label, { Array() }).addAll(labelValues)
+        }
       }
 
-      return TokenMatch(outputLabels)
+      return TokenMatch(tokens.take(1), outputLabels)
     }
+  }
+
+  public getRegexMatches(Token[] tokens) -> MatchGroup[] => null {
+    let search = generateTokensSearchString(tokens)
+
+    let matches = Regex.getMatchGroups(pattern, search)
+
+    log.trace("|
+      Matched
+        tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+        pattern: #{pattern}
+        search: #{search}
+        matches: #{matches.count > 25 ? matches.count.toString() : matches.toString()}
+      |")
+
+    return matches
+  }
+
+  generateTokensSearchString(Token[] tokens) =>
+    tokens.map(token => " #{token.type}:#{token.value}").join()
+
+  public generatePatternString() -> String {
+    var pattern = "(\\s#{tokenType}:(#{value ?: "\\w+"}))"
+
+    if (optional && repeat) {
+      if (greedy) {
+        pattern = "#{pattern}*"
+      } else {
+        pattern = "#{pattern}*?"
+      }
+    } else if (optional) {
+      if (greedy) {
+        pattern = "#{pattern}?"
+      } else {
+        pattern = "#{pattern}??"
+      }
+    } else if (repeat) {
+      if (greedy) {
+        pattern = "#{pattern}+"
+      } else {
+        pattern = "#{pattern}+?"
+      }
+    } else {
+      pattern = "#{pattern}"
+    }
+
+    return pattern
   }
 }

@@ -19,15 +19,13 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER)
     ])
 
-    let expected = TokenMatch(
-      HashMap()
-        :add(
-          "package_location_component",
-          Array():addAll(["test"])
-        )
-    )
+    let expected = HashMap()
+      :add(
+        "package_location_component",
+        Array():addAll(["test"])
+      )
 
-    expect(result).toBe(expected)
+    expect(result?.values).toBe(expected)
   }
 
   async test `can match package matcher group with unmatched optional repeating package_location_component`() {
@@ -45,15 +43,13 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER)
     ])
 
-    let expected = TokenMatch(
-      HashMap()
-        :add(
-          "package_location_component",
-          Array():addAll(["test"])
-        )
-    )
+    let expected = HashMap()
+      :add(
+        "package_location_component",
+        Array():addAll(["test"])
+      )
 
-    expect(result).toBe(expected)
+    expect(result?.values).toBe(expected)
   }
 
   async test `can match package matcher group with matched optional repeating package_location_component`() {
@@ -75,14 +71,49 @@ testable class {
       Token(value: "thing2", type: Token.Type.IDENTIFIER)
     ])
 
-    let expected = TokenMatch(
-      HashMap()
-        :add(
-          "package_location_component",
-          Array():addAll(["test", "/", "thing", "/", "thing2"])
-        )
-    )
+    let expected = HashMap()
+      :add(
+        "package_location_component",
+        Array():addAll(["test", "/", "thing", "/", "thing2"])
+      )
 
-    expect(result).toBe(expected)
+    expect(result?.values).toBe(expected)
+  }
+
+  async test `can match multiple nested matcher groups with matched optional repeating values`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "class"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.IDENTIFIER, "extends"),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "extends_class_name")
+      ], optional: true),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.IDENTIFIER, "implements"),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        TokenMatcherGroup([
+          TokenMatcher(Token.Type.SYMBOL, ","),
+          TokenMatcher(Token.Type.IDENTIFIER, label: "implements_class_name")
+        ], repeat: true, optional: true)
+      ], optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "extends", type: Token.Type.IDENTIFIER),
+      Token(value: "Extended", type: Token.Type.IDENTIFIER),
+      Token(value: "implements", type: Token.Type.IDENTIFIER),
+      Token(value: "I1", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL),
+      Token(value: "I2", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL),
+      Token(value: "I3", type: Token.Type.IDENTIFIER)
+    ])
+
+    let expected = HashMap()
+      :add("extends_class_name", Array():addAll(["Extended"]))
+      :add("implements_class_name", Array():addAll(["I1", "I2", "I3"]))
+
+    expect(result?.values).toBe(expected)
   }
 }

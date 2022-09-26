@@ -12,6 +12,7 @@ testable class {
     let parser = FieldParser()
 
     let match = TokenMatch(
+      null,
       HashMap()
         :add("declaration_type", Array<String>():add("String"))
         :add("declaration_name", Array<String>():add("test"))
@@ -31,6 +32,7 @@ testable class {
     let parser = FieldParser()
 
     let match = TokenMatch(
+      null,
       HashMap()
         :add("declaration_type", Array<String>():add("String"))
         :add("declaration_name", Array<String>():add("test"))

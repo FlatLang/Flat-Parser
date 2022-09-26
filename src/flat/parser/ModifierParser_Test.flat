@@ -19,6 +19,7 @@ testable class {
     let parser = ModifierParser()
 
     let match = TokenMatch(
+      null,
       HashMap()
         :add("alias", Array<String>():add("visible"))
     )

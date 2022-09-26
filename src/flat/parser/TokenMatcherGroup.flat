@@ -11,77 +11,40 @@ data class extends TokenMatcher {
   public construct(
     visible Array<TokenMatcher> matchers,
     this Bool optional = false,
-    this Bool repeat = false
+    this Bool repeat = false,
+    this Bool greedy = true
   ) {}
 
-  public matches(Token[] tokens) -> TokenMatch => null {
-    var tokenQueue = Queue<Token>(tokens)
-    let matcherQueue = Queue<TokenMatcher>(matchers)
+  override public matches(var Token[] tokens, Bool requireAllTokensConsumed = true) -> TokenMatch => null {
+    tokens = tokens.toArray()
+
     let outputLabels = HashMap<String, Array<String>>()
-    var TokenMatcher matcher
+    let matchedTokens = Token[]
 
-    while (tokenQueue.isNotEmpty) {
-      if (matcherQueue.isEmpty) {
-        if (!matcher || !matcher.repeat) {
-          break
+    for (i in 0..matchers.count) {
+      let matcher = matchers[i]
+
+      if (matcher.optional && !matcher.greedy) {
+        if (matchers.count > i + 1 && matchers[i + 1].matches(tokens, false)) {
+          continue
         }
-      } else {
-        matcher = matcherQueue.dequeue()
       }
+      while (let match = matcher.matches(tokens, false)) {
+        match.tokens.forEach({ tokens.shift() })
 
-      let currentTokenQueue = Queue<Token>(tokenQueue)
-      let tokensToMatch = Array<Token>()
-      var TokenMatch tokenMatch
-      var Queue<Token> successfulTokenQueue
+        matchedTokens.addAll(match.tokens)
+        match.values.forEach((entry) => {
+          outputLabels.getOrDefault(entry.key, { Array() }).addAll(entry.value)
+        })
 
-      while (!currentTokenQueue.isEmpty) {
-        var TokenMatch currentTokenMatch
-        tokensToMatch.add(currentTokenQueue.dequeue())
-
-        log.trace("Attempting match '#{tokensToMatch.map(t => t.value).join(", ")}': #{matcher}")
-        while (currentTokenMatch = matcher.matches(tokensToMatch)) {
-          log.trace("|
-            Matched
-              tokenType: #{matcher.tokenType}
-              tokensMatched: '#{tokensToMatch.map(t => t.value).join(", ")}'
-              remainingTokens: '#{currentTokenQueue.map(t => t.value).join(", ")}'
-            |")
-          tokenMatch = currentTokenMatch
-          successfulTokenQueue = Queue(currentTokenQueue)
-          tokenMatch.values.forEach((entry) => {
-            outputLabels.getOrDefault(entry.key, { Array() }).addAll(entry.value)
-          })
-
-          if (!matcher.repeat || currentTokenQueue.isEmpty) {
-            break
-          }
-
-          tokensToMatch.add(currentTokenQueue.dequeue())
-        }
-
-        if (currentTokenMatch && !matcher.repeat) {
+        if (!matcher.repeat || tokens.isEmpty) {
           break
         }
       }
-
-      if (tokenMatch) {
-        tokenQueue = successfulTokenQueue
-      } else if (!matcher.optional) {
-        return null
-      }
     }
 
-    while (matcherQueue.isNotEmpty) {
-      if (!matcherQueue.first.optional) {
-        break
-      }
-
-      matcherQueue.dequeue()
-    }
-
-    log.trace("Remaining: #{matcherQueue}, #{tokenQueue}")
-    if (matcherQueue.isEmpty && tokenQueue.isEmpty) {
-      return TokenMatch(outputLabels)
+    if (!requireAllTokensConsumed || tokens.isEmpty) {
+      return TokenMatch(matchedTokens, outputLabels)
     }
   }
 }

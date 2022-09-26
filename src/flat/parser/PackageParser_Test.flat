@@ -12,6 +12,7 @@ testable class {
     let parser = PackageParser()
 
     let match = TokenMatch(
+      null,
       HashMap():add(
         "package_location_component",
         Array<String>():addAll(["flat", "/", "thing", "/", "test"])
@@ -29,6 +30,7 @@ testable class {
     let parser = PackageParser()
 
     let match = TokenMatch(
+      null,
       HashMap():add(
         "package_location_component",
         Array<String>():addAll(["a"])

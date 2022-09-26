@@ -4,7 +4,8 @@ import flat/datastruct/HashMap
 import flat/compiler/models/Token
 
 data class {
-  visible HashMap<String, Array<Object>> values
+  visible Token[] tokens
+  visible HashMap<String, Array<Object>> values = HashMap()
 
   public getValue(String label) -> String {
     let obj = values[label]

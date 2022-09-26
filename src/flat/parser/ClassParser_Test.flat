@@ -12,6 +12,7 @@ testable class {
     let parser = ClassParser()
 
     let match = TokenMatch(
+      null,
       HashMap():add("class_name", Array():add("Bob"))
     )
 
@@ -32,7 +33,7 @@ testable class {
       parent: FileNode(file: File("test.flat"))
     )
 
-    let match = TokenMatch(HashMap())
+    let match = TokenMatch(null, HashMap())
 
     let result = parser.generateNode(context, match)
 
