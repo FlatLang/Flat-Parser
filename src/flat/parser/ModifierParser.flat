@@ -14,7 +14,13 @@ import flat/extensions/SyntaxStringFunctions
 
 class extends ParserBase {
   override let lazy TokenMatcher pattern => TokenMatcherGroup([
-    TokenMatcher(Token.Type.IDENTIFIER, label: "alias")
+    TokenMatcher(Token.Type.IDENTIFIER, label: "alias", values: Array()
+      :addAll(VisibleModifier.aliases)
+      :addAll(PublicModifier.aliases)
+      :addAll(PrivateModifier.aliases)
+      :addAll(LetModifier.aliases)
+      :addAll(VarModifier.aliases)
+    )
   ])
 
   override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
