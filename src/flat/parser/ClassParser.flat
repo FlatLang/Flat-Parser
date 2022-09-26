@@ -21,7 +21,7 @@ class extends ParserBase {
       TokenMatcherGroup([
         TokenMatcher(Token.Type.SYMBOL, ","),
         TokenMatcher(Token.Type.IDENTIFIER, label: "implements_class_name")
-      ], repeat: true)
+      ], repeat: true, optional: true)
     ], optional: true)
   ])
 

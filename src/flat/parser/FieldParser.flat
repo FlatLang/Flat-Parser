@@ -13,7 +13,7 @@ class extends ParserBase {
     TokenMatcherGroup([
       TokenMatcher(Token.Type.SYMBOL, "[", label: "bracket_start"),
       TokenMatcher(Token.Type.SYMBOL, "]", label: "bracket_end")
-    ], repeat: true),
+    ], repeat: true, optional: true),
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_name")
   ])
 
