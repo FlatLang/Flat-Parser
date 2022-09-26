@@ -6,7 +6,7 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 class extends ParserBase {
-  let lazy Parser[] annotationParsers = Array<Parser>().addAll([
+  let lazy ParserBase[] annotationParsers = Array().addAll([
     ModifierParser()
   ])
 
