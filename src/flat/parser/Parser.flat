@@ -11,9 +11,12 @@ class {
   public async parse(Stream tokenStream) -> Stream {
     let stream = Stream(true)
 
+    let handler = ParseHandler(stream)
+
     tokenStream.on<Token>("data", (token) => {
       Parser.log.trace("Received data from Token Stream: #{token}")
 
+      handler.consume(token)
     })$
 
     tokenStream.on<String>("error", (error) => {
@@ -27,5 +30,14 @@ class {
     })$
 
     return stream
+  }
+
+  private class ParseHandler {
+    construct(
+      private Stream stream
+    ) {}
+
+    consume(Token token) {
+    }
   }
 }
