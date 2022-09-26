@@ -2,7 +2,30 @@ package flat/parser
 
 import flat/ast/Node
 import flat/compiler/models/Token
+import flat/log/Logger
+import flat/stream/Stream
 
 class {
+  let static Logger log = Logger(Parser.class)
 
+  public async parse(Stream tokenStream) -> Stream {
+    let stream = Stream(true)
+
+    tokenStream.on<Token>("data", (token) => {
+      Parser.log.trace("Received data from Token Stream: #{token}")
+
+    })$
+
+    tokenStream.on<String>("error", (error) => {
+      Parser.log.trace("Received error from Token Stream: #{error}")
+      stream.emit("error", error)$
+    })$
+
+    tokenStream.on("close", {
+      Parser.log.trace("Token Stream closed")
+      stream.emit("close")$
+    })$
+
+    return stream
+  }
 }
