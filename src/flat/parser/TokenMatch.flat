@@ -22,7 +22,7 @@ data class {
     let obj = values[label]
 
     if (obj) {
-      return (String[])obj
+      return (Array)obj
     } else {
       return String[]
     }
