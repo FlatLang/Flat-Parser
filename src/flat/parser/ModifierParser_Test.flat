@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/datastruct/HashMap
 import flat/parser/Parser
 import flat/annotations/VisibleModifier
 import flat/annotations/PublicModifier
@@ -14,4 +15,20 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
+  async test `can parse visible modifier`() {
+    let parser = ModifierParser()
+
+    let match = TokenMatch(
+      HashMap()
+        :add("alias", Array<String>():add("visible"))
+    )
+
+    let result = parser.generateNode(null, match)
+
+    let expected = VisibleModifier(
+      aliasUsed: "visible"
+    )
+
+    expect(result).toBe(expected)
+  }
 }

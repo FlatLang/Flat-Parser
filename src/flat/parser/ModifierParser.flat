@@ -13,7 +13,29 @@ import flat/ast/Node
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "alias")
+  ])
+
   override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    let alias = match.getValue("alias")
+
+    if (VisibleModifier.aliases.any({ _ == alias})) {
+      return VisibleModifier(aliasUsed: alias)
+    }
+    if (PublicModifier.aliases.any({ _ == alias})) {
+      return PublicModifier(aliasUsed: alias)
+    }
+    if (PrivateModifier.aliases.any({ _ == alias})) {
+      return PrivateModifier(aliasUsed: alias)
+    }
+    if (LetModifier.aliases.any({ _ == alias})) {
+      return LetModifier(aliasUsed: alias)
+    }
+    if (VarModifier.aliases.any({ _ == alias})) {
+      return VarModifier(aliasUsed: alias)
+    }
+
     return null
   }
 }
