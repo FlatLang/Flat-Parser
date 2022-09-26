@@ -7,5 +7,4 @@ import flat/compiler/models/Token
 data class {
   visible Node parent = null
   visible AnnotationNode[] annotations = AnnotationNode[]
-  visible Token token
 }

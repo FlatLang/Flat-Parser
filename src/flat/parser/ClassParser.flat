@@ -1,34 +1,38 @@
 package flat/parser
 
 import flat/ast/ClassNode
+import flat/compiler/models/Token
 
 class extends Parser {
   override let lazy Parser[] childParsers => Array<Parser>():addAll([
     FieldParser()
   ])
 
-  let static String KEYWORD = "class"
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, "class"),
+    TokenMatcher(Token.Type.IDENTIFIER, label: "class_name", optional: true),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "extends"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "extends_class_name")
+    ], optional: true),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "implements"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "implements_class_name"),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, ","),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "implements_class_name")
+      ], repeat: true)
+    ], optional: true)
+  ])
 
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    if (!request.sourceCode.startsWith(KEYWORD))
-      return ParseResult(errorMessage: "Class declaration doesn't start with \"class\"")
+  override public async generateNode(ParseContext context, TokenMatch match) -> ClassNode {
+    let className = match.getValue("class_name")
+    let extendedClassName = match.getValue("extends_class_name")
+    let implementsClassNames = match.getValues("implements_class_name")
 
-    let classSignatureContents = request.sourceCode.substring(KEYWORD.count).trim()
-
-    let implicitName = classSignatureContents.count == 0
-    let className = implicitName ?
-      request.parent.fileNode.file.rootName :
-      classSignatureContents
-
-    let classNode = ClassNode(
-      name: className,
-      implicitName
-    )
-
-    return ParseResult(
-      node: classNode
+    return ClassNode(
+      name: className ?: context.parent.fileNode.file.rootName,
+      implicitName: className == null
     )
   }
 }

@@ -1,103 +1,44 @@
 package flat/parser
 
+import flat/datastruct/HashMap
 import flat/parser/Parser
 import flat/ast/FileNode
 import flat/ast/ImportNode
+import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
   async test `can parse import declaration`() {
     let parser = ImportParser()
 
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "import flat/thing/test"
+    let match = TokenMatch(
+      HashMap():add(
+        "import_location_component",
+        Array<String>():addAll(["flat", "/", "thing", "/", "test"])
+      )
     )
 
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true)
+    let result = parser.generateNode(null, match)
 
     let expected = ImportNode(location: "flat/thing/test")
 
-    expect(result.node).toBe(expected)
+    expect(result).toBe(expected)
   }
 
   async test `can parse single letter import declaration`() {
     let parser = ImportParser()
 
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "import a"
+    let match = TokenMatch(
+      HashMap():add(
+        "import_location_component",
+        Array<String>():addAll(["a"])
+      )
     )
 
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true)
+    let result = parser.generateNode(null, match)
 
     let expected = ImportNode(location: "a")
 
-    expect(result.node).toBe(expected)
-  }
-
-  async test `fails parse if doesnt contain import keyword`() {
-    let parser = ImportParser()
-
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat"))
-    )
-
-    let results = Array<ParseResult>():addAll([
-      parser.parse(request.copy(sourceCode: "imporrt")),
-      parser.parse(request.copy(sourceCode: " import")),
-      parser.parse(request.copy(sourceCode: "test import"))
-    ])
-
-    results.forEachAsync((result) => {
-      expect(result).toNotBe(null)
-      expect(result.success).toBe(false)
-      expect(result.errorMessage).toBe("Import declaration doesn't start with \"import\"")
-    })
-  }
-
-  async test `fails parse if doesnt contain anything after the import keyword`() {
-    let parser = ImportParser()
-
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat"))
-    )
-
-    let results = Array<ParseResult>():addAll([
-      parser.parse(request.copy(sourceCode: "import")),
-      parser.parse(request.copy(sourceCode: "import "))
-    ])
-
-    results.forEachAsync((result) => {
-      expect(result).toNotBe(null)
-      expect(result.success).toBe(false)
-      expect(result.errorMessage).toBe("Import declaration doesn't contain anything after the \"import\" keyword")
-    })
-  }
-
-  async test `fails parse if doesnt have whitespace after the import keyword`() {
-    let parser = ImportParser()
-
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat"))
-    )
-
-    let results = Array<ParseResult>():addAll([
-      parser.parse(request.copy(sourceCode: "import\"aoeu")),
-      parser.parse(request.copy(sourceCode: "importaoeu")),
-      parser.parse(request.copy(sourceCode: "importa test"))
-    ])
-
-    results.forEachAsync((result) => {
-      expect(result).toNotBe(null)
-      expect(result.success).toBe(false)
-      expect(result.errorMessage).toBe("Import declaration doesn't have whitespace after the \"import\" keyword")
-    })
+    expect(result).toBe(expected)
   }
 }

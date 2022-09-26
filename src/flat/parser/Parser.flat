@@ -1,33 +1,12 @@
 package flat/parser
 
 import flat/ast/Node
+import flat/compiler/models/Token
 
 abstract class {
   let lazy Parser[] childParsers => Array<Parser>()
   let lazy AnnotationParser annotationParser => AnnotationParser()
+  let lazy TokenMatcher pattern => null
 
-  public async parse(ParseRequest request) => ParseResult()
-
-  public async parseChild(
-    ParseRequest request
-  ) => childParsers.firstNonNullAsync({ parseChild(parseAnnotations(request), _) }) ?: ParseResult()
-
-  async parseChild(ParseRequest request, Parser parser) -> ParseResult => null {
-    if ((let result = parser.parse(request)) && result.success) {
-      return result.copy(
-        nodes: result.nodes.map({
-          _.copy(annotations: request.annotations)
-        })
-      )
-    }
-  }
-
-  async parseAnnotations(ParseRequest request) => request {
-    if ((let result = annotationParser.parse(request)) && result.success) {
-      return request.copy(
-        sourceCode: result.remainder,
-        annotations: result.nodes
-      )
-    }
-  }
+  public abstract async generateNode(ParseContext context, TokenMatch match) -> Node
 }

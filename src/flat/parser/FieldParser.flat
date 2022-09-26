@@ -1,25 +1,31 @@
 package flat/parser
 
 import flat/ast/FieldNode
+import flat/compiler/models/Token
 
 import flat/extensions/SyntaxStringFunctions
 
 import flat/ast/Node
 
 class extends Parser {
-  let VariableDeclarationParser variableDeclarationParser = VariableDeclarationParser()
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_type"),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "[", label: "bracket_start"),
+      TokenMatcher(Token.Type.SYMBOL, "]", label: "bracket_end")
+    ], repeat: true),
+    TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_name")
+  ])
 
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    let result = variableDeclarationParser.parse(request)
+  override public async generateNode(ParseContext context, TokenMatch match) -> FieldNode {
+    let type = match.getValue("declaration_type")
+    let name = match.getValue("declaration_name")
+    let bracketCount = match.getValues("bracket_start").count
 
-    if (result.success && result.nodes.count == 1) {
-      let fieldNode = result.node.copyTo(FieldNode())
-
-      return result.copy(
-        nodes: [fieldNode]
-      )
-    }
+    return FieldNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount
+    )
   }
 }

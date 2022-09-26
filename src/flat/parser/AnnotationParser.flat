@@ -1,6 +1,7 @@
 package flat/parser
 
 import flat/ast/AnnotationNode
+import flat/compiler/models/Token
 
 import flat/extensions/SyntaxStringFunctions
 
@@ -9,38 +10,7 @@ class extends Parser {
     ModifierParser()
   ])
 
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    let annotations = Array<AnnotationNode>()
-
-    let wordsIterator = request.sourceCode.splitWhitespace().iterator
-    var Int index = -1
-
-    while (wordsIterator.hasNext) {
-      let word = wordsIterator.stepNext
-      index = request.sourceCode.indexOf(word, start: index + 1)
-
-      let result = annotationParsers.firstNonNullAsync<ParseResult>({
-        if ((let x = _.parse(request.copy(sourceCode: word))) && x.success) {
-          return x
-        } else {
-          return null
-        }
-      })
-
-      if (result) {
-        annotations.addAll(result.nodes)
-      } else {
-        break
-      }
-    }
-
-    if (annotations.isNotEmpty) {
-      return ParseResult(
-        annotations,
-        remainder: request.sourceCode.substring(index).trim()
-      )
-    }
+  override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    return null
   }
 }

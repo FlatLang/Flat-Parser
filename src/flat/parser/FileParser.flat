@@ -8,4 +8,8 @@ class extends Parser {
     PackageParser(),
     ClassParser()
   ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> FileNode {
+    return null
+  }
 }

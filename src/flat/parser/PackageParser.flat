@@ -1,38 +1,25 @@
 package flat/parser
 
 import flat/ast/PackageNode
+import flat/compiler/models/Token
 
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
-  let static String KEYWORD = "package"
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, "package"),
+    TokenMatcher(Token.Type.IDENTIFIER, label: "package_location_component"),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "/", label: "package_location_component"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "package_location_component")
+    ], repeat: true)
+  ])
 
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    if (!request.sourceCode.startsWith(KEYWORD))
-      return ParseResult(errorMessage: "Package declaration doesn't start with \"#{KEYWORD}\"")
+  override public async generateNode(ParseContext context, TokenMatch match) -> PackageNode {
+    let components = match.getValues("package_location_component")
 
-    if (request.sourceCode.count <= KEYWORD.count + 1)
-      return ParseResult(errorMessage: "Package declaration doesn't contain anything after the \"#{KEYWORD}\" keyword")
-
-    if (!String.WHITESPACE.contains(request.sourceCode[KEYWORD.count]))
-      return ParseResult(errorMessage: "Package declaration doesn't have whitespace after the \"#{KEYWORD}\" keyword")
-
-    let locationContents = request.sourceCode.substring(KEYWORD.count + 1).trim()
-
-    let strippedLocationContents = if (locationContents.isSurroundedByQuotes()) {
-      locationContents.removeSurroundingQuotes()
-    } else {
-      locationContents
-    }
-
-    let packageNode = PackageNode(
-      location: strippedLocationContents
-    )
-
-    return ParseResult(
-      node: packageNode
+    return PackageNode(
+      location: components.join()
     )
   }
 }

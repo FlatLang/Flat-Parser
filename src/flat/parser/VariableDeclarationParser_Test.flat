@@ -1,80 +1,51 @@
 package flat/parser
 
+import flat/datastruct/HashMap
 import flat/parser/Parser
 import flat/ast/FileNode
 import flat/ast/VariableDeclarationNode
+import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
   async test `can parse declaration`() {
     let parser = VariableDeclarationParser()
 
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "String test"
+    let match = TokenMatch(
+      HashMap()
+        :add("declaration_type", Array<String>():add("String"))
+        :add("declaration_name", Array<String>():add("test"))
     )
 
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true, result.errorMessage)
+    let result = parser.generateNode(null, match)
 
     let expected = VariableDeclarationNode(
-      name: "test",
-      type: "String"
+      type: "String",
+      name: "test"
     )
 
-    expect(result.node).toBe(expected)
+    expect(result).toBe(expected)
   }
 
-  async test `fails parse on too many words`() {
-    let parser = VariableDeclarationParser()
-
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "let String test"
-    )
-
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(false)
-    expect(result.errorMessage).toBe("Variable declaration contains extraneous words: \"let\"")
-  }
-
-  async test `fails parse on too few words`() {
-    let parser = VariableDeclarationParser()
-
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "test"
-    )
-
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(false)
-    expect(result.errorMessage).toBe("Variable declaration missing type or name value")
-  }
   async test `can parse declaration with array type`() {
     let parser = VariableDeclarationParser()
 
-    let request = ParseRequest(
-      parent: FileNode(file: File("test.flat")),
-      sourceCode: "String[] test"
+    let match = TokenMatch(
+      HashMap()
+        :add("declaration_type", Array<String>():add("String"))
+        :add("declaration_name", Array<String>():add("test"))
+        :add("bracket_start", Array<String>():add("["))
+        :add("bracket_end", Array<String>():add("]"))
     )
 
-    let result = parser.parse(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true, result.errorMessage)
+    let result = parser.generateNode(null, match)
 
     let expected = VariableDeclarationNode(
-      name: "test",
       type: "String",
-      arrayBrackets: "[]"
+      name: "test",
+      arrayDimensions: 1
     )
 
-    expect(result.node).toBe(expected)
+    expect(result).toBe(expected)
   }
 }

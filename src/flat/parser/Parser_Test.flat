@@ -2,30 +2,10 @@ package flat/parser
 
 import flat/parser/Parser
 import flat/annotations/LetModifier
+import flat/compiler/models/Token
 import flat/ast/AnnotationNode
 import flat/ast/ClassNode
 import flat/ast/FieldNode
 
 testable class {
-  async test `can parse annotations and children`() {
-    let parser = ClassParser()
-
-    let request = ParseRequest(
-      parent: ClassNode(name: "Test"),
-      sourceCode: "let String test"
-    )
-
-    let result = parser.parseChild(request)
-
-    expect(result).toNotBe(null)
-    expect(result.success).toBe(true)
-
-    let expected = FieldNode(
-      name: "test",
-      type: "String",
-      annotations: [LetModifier(aliasUsed: "let")]
-    )
-
-    expect(result.node).toBe(expected)
-  }
 }

@@ -1,38 +1,25 @@
 package flat/parser
 
 import flat/ast/ImportNode
+import flat/compiler/models/Token
 
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
-  let static String KEYWORD = "import"
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, "import"),
+    TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component"),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "/", label: "import_location_component"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component")
+    ], repeat: true)
+  ])
 
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    if (!request.sourceCode.startsWith(KEYWORD))
-      return ParseResult(errorMessage: "Import declaration doesn't start with \"#{KEYWORD}\"")
+  override public async generateNode(ParseContext context, TokenMatch match) -> ImportNode {
+    let components = match.getValues("import_location_component")
 
-    if (request.sourceCode.count <= KEYWORD.count + 1)
-      return ParseResult(errorMessage: "Import declaration doesn't contain anything after the \"#{KEYWORD}\" keyword")
-
-    if (!String.WHITESPACE.contains(request.sourceCode[KEYWORD.count]))
-      return ParseResult(errorMessage: "Import declaration doesn't have whitespace after the \"#{KEYWORD}\" keyword")
-
-    let locationContents = request.sourceCode.substring(KEYWORD.count + 1).trim()
-
-    let strippedLocationContents = if (locationContents.isSurroundedByQuotes()) {
-      locationContents.removeSurroundingQuotes()
-    } else {
-      locationContents
-    }
-
-    let importNode = ImportNode(
-      location: strippedLocationContents
-    )
-
-    return ParseResult(
-      node: importNode
+    return ImportNode(
+      location: components.join()
     )
   }
 }

@@ -1,0 +1,9 @@
+package flat/parser
+
+import flat/compiler/models/Token
+
+data class {
+  visible Array<TokenMatcher> matchers
+  visible Bool optional = false
+  visible Bool repeat = false
+}

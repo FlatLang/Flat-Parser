@@ -5,119 +5,15 @@ import flat/annotations/PublicModifier
 import flat/annotations/PrivateModifier
 import flat/annotations/LetModifier
 import flat/annotations/VarModifier
+import flat/annotations/Modifier
+import flat/compiler/models/Token
 import flat/ast/AnnotationNode
 import flat/ast/Node
 
 import flat/extensions/SyntaxStringFunctions
 
 class extends Parser {
-  override public async parse(
-    ParseRequest request
-  ) => ParseResult() {
-    var ParseResult result
-
-    result = parseBracketSyntax(
-      request,
-      VisibleModifier.identifier,
-      { VisibleModifier(aliasUsed: null) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseAliasSyntax(
-      request,
-      VisibleModifier.aliases,
-      { VisibleModifier(aliasUsed: _) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseBracketSyntax(
-      request,
-      PublicModifier.identifier,
-      { PublicModifier(aliasUsed: null) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseAliasSyntax(
-      request,
-      PublicModifier.aliases,
-      { PublicModifier(aliasUsed: _) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseBracketSyntax(
-      request,
-      PrivateModifier.identifier,
-      { PrivateModifier(aliasUsed: null) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseAliasSyntax(
-      request,
-      PrivateModifier.aliases,
-      { PrivateModifier(aliasUsed: _) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseAliasSyntax(
-      request,
-      LetModifier.aliases,
-      { LetModifier(aliasUsed: _) }
-    )
-
-    if (result.success) {
-      return result
-    }
-
-    result = parseAliasSyntax(
-      request,
-      VarModifier.aliases,
-      { VarModifier(aliasUsed: _) }
-    )
-
-    if (result.success) {
-      return result
-    }
-  }
-
-  async parseBracketSyntax(
-    ParseRequest request,
-    String identifier,
-    generateNode() -> AnnotationNode
-  ) => ParseResult() {
-    if (request.sourceCode.isSurroundedByBrackets()) {
-      let inner = request.sourceCode.removeSurroundingBrackets().trim()
-
-      if (inner == identifier) {
-        return ParseResult(generateNode())
-      }
-    }
-  }
-
-  async parseAliasSyntax(
-    ParseRequest request,
-    String[] aliases,
-    generateNode(String) -> AnnotationNode
-  ) => ParseResult() {
-    if (let alias = aliases.firstOrNull({ _ == request.sourceCode })) {
-      return ParseResult(generateNode(alias))
-    }
+  override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    return null
   }
 }

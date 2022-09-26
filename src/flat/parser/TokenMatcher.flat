@@ -1,0 +1,11 @@
+package flat/parser
+
+import flat/compiler/models/Token
+
+data class {
+  visible Int tokenType
+  visible String value = null
+  visible String label = null
+  visible Bool optional = false
+  visible Bool repeat = false
+}
