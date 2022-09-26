@@ -1,9 +1,76 @@
 package flat/parser
 
+import flat/datastruct/HashMap
+import flat/datastruct/list/Queue
 import flat/compiler/models/Token
 
-data class {
-  visible Array<TokenMatcher> matchers
-  visible Bool optional = false
-  visible Bool repeat = false
+data class extends TokenMatcher {
+  public construct(
+    visible Array<TokenMatcher> matchers,
+    this Bool optional = false,
+    this Bool repeat = false
+  ) {}
+
+  public matches(Token[] tokens) -> TokenMatch => null {
+    var tokenQueue = Queue<Token>(tokens)
+    let matcherQueue = Queue<TokenMatcher>(matchers)
+    let outputLabels = HashMap<String, Array<String>>()
+    var TokenMatcher matcher
+
+    while (tokenQueue.isNotEmpty) {
+      if (matcherQueue.isEmpty) {
+        if (!matcher || !matcher.repeat) {
+          break
+        }
+      } else {
+        matcher = matcherQueue.dequeue()
+      }
+
+      let currentTokenQueue = Queue<Token>(tokenQueue)
+      let tokensToMatch = Array<Token>()
+      var TokenMatch tokenMatch
+      var Queue<Token> successfulTokenQueue
+
+      while (!currentTokenQueue.isEmpty) {
+        var TokenMatch currentTokenMatch
+        tokensToMatch.add(currentTokenQueue.dequeue())
+
+        while (currentTokenMatch = matcher.matches(tokensToMatch)) {
+          tokenMatch = currentTokenMatch
+          successfulTokenQueue = Queue(currentTokenQueue)
+          tokenMatch.values.forEach((entry) => {
+            outputLabels.getOrDefault(entry.key, { Array() }).addAll(entry.value)
+          })
+
+          if (!matcher.repeat || currentTokenQueue.isEmpty) {
+            break
+          }
+
+          tokensToMatch.add(currentTokenQueue.dequeue())
+        }
+
+        if (currentTokenMatch && !matcher.repeat) {
+          break
+        }
+      }
+
+      if (tokenMatch) {
+        tokenQueue = successfulTokenQueue
+      } else if (!matcher.optional) {
+        return null
+      }
+    }
+
+    while (matcherQueue.isNotEmpty) {
+      if (!matcherQueue.first.optional) {
+        break
+      }
+
+      matcherQueue.dequeue()
+    }
+
+    if (matcherQueue.isEmpty && tokenQueue.isEmpty) {
+      return TokenMatch(outputLabels)
+    }
+  }
 }

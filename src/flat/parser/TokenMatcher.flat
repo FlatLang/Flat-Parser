@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/datastruct/HashMap
 import flat/compiler/models/Token
 
 data class {
@@ -8,4 +9,23 @@ data class {
   visible String label = null
   visible Bool optional = false
   visible Bool repeat = false
+
+  public matches(Token[] tokens) -> TokenMatch => null {
+    let isMatch = tokens.all((token, i) => {
+      if (tokenType != token.type) return false
+      if (value && value != token.value) return false
+
+      return true
+    })
+
+    if (isMatch) {
+      let outputLabels = HashMap<String, Array<String>>()
+
+      if (label) {
+        outputLabels.getOrDefault(label, { Array() }).addAll(tokens.map({ _.value }))
+      }
+
+      return TokenMatch(outputLabels)
+    }
+  }
 }
