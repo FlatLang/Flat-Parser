@@ -55,8 +55,11 @@ data class extends TokenMatcher {
               matcher: #{this}
             |"})
           return TokenMatch(matchedTokens, outputLabels, partial: true)
+        } else if (matcher.optional) {
+          continue
+        } else {
+          break
         }
-        break
       }
 
       log.traceFunc({"|
