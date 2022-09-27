@@ -23,18 +23,18 @@ class {
     let handler = ParseHandler(fileNode, stream)
 
     tokenStream.on<Token>("data", (token) => {
-      Parser.log.trace("Received data from Token Stream: #{token}")
+      Parser.log.traceFunc({"Received data from Token Stream: #{token}"})
 
       handler.consume(token)
     })$
 
     tokenStream.on<String>("error", (error) => {
-      Parser.log.trace("Received error from Token Stream: #{error}")
+      Parser.log.traceFunc({"Received error from Token Stream: #{error}"})
       stream.emit("error", error)$
     })$
 
     tokenStream.on("close", {
-      Parser.log.trace("Token Stream closed")
+      Parser.log.traceFunc({"Token Stream closed"})
       stream.emit("close")$
     })$
 
