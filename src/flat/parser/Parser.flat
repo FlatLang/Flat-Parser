@@ -1,17 +1,26 @@
 package flat/parser
 
+import flat/datastruct/list/Stack
 import flat/ast/Node
+import flat/ast/FileNode
 import flat/compiler/models/Token
+import flat/io/File
 import flat/log/Logger
 import flat/stream/Stream
 
 class {
   let static Logger log = Logger(Parser.class)
 
-  public async parse(Stream tokenStream) -> Stream {
+  public async parse(File file, Stream tokenStream) -> Stream {
+    let fileNode = FileNode(file: file)
+
+    return parse(fileNode, tokenStream)
+  }
+
+  async parse(FileNode fileNode, Stream tokenStream) -> Stream {
     let stream = Stream(true)
 
-    let handler = ParseHandler(stream)
+    let handler = ParseHandler(fileNode, stream)
 
     tokenStream.on<Token>("data", (token) => {
       Parser.log.trace("Received data from Token Stream: #{token}")
@@ -33,11 +42,46 @@ class {
   }
 
   private class ParseHandler {
-    construct(
-      private Stream stream
-    ) {}
+    Stack<Node> parentStack = Stack()
+    Stack<ParserBase> parserStack = Stack()
 
-    consume(Token token) {
+    var Token[] tokens = Token[]
+
+    construct(
+      private FileNode fileNode,
+      private Stream stream
+    ) {
+      parentStack.push(fileNode)
+      parserStack.push(FileParser())
+    }
+
+    async consume(Token token) {
+      if (token.type == Token.Type.WS) return
+
+      let parent = parentStack.peek()
+      let parser = parserStack.peek()
+
+      tokens.add(token)
+
+      let matchedParser = parser.childParsers.firstOrNullAsync((parser) => {
+        if (let tokenMatch = parser.pattern.matches(tokens)) {
+          if (!tokenMatch.partial) {
+            Console.log("TokenMatch: #{tokenMatch}")
+            let matchedTokens = tokenMatch.tokens
+            tokens = tokens.skip(matchedTokens.count)
+
+            let context = ParseContext(
+              parent: fileNode
+            )
+
+            stream.emit("data", parser.generateNode(context, tokenMatch))$
+
+            return true
+          }
+        }
+
+        return false
+      })
     }
   }
 }
