@@ -11,9 +11,12 @@ class extends ParserBase {
   ])
 
   override let lazy TokenMatcher pattern => TokenMatcherGroup([
-    TokenMatcher(Token.Type.SYMBOL, "["),
-    TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
-    TokenMatcher(Token.Type.SYMBOL, "]")
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "["),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
+      TokenMatcher(Token.Type.SYMBOL, "]")
+    ], optional: true),
+    TokenMatcherGroup(annotationParsers.map({ _.pattern }), optional: true)
   ])
 
   override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
