@@ -45,6 +45,7 @@ class {
     Stack<Node> parentStack = Stack()
     Stack<ParserBase> parserStack = Stack()
 
+    var ParserResult[] currentResults = ParserResult[]
     var Token[] tokens = Token[]
 
     construct(
@@ -53,6 +54,12 @@ class {
     ) {
       parentStack.push(fileNode)
       parserStack.push(FileParser())
+
+      resetCurrentResults()
+    }
+
+    resetCurrentResults() {
+      currentResults = parserStack.peek().childParsers.map({ ParserResult(_, null) })
     }
 
     async consume(Token token) {
@@ -63,25 +70,42 @@ class {
 
       tokens.add(token)
 
-      let matchedParser = parser.childParsers.firstOrNullAsync((parser) => {
-        if (let tokenMatch = parser.pattern.matches(tokens)) {
-          if (!tokenMatch.partial) {
-            Console.log("TokenMatch: #{tokenMatch}")
-            let matchedTokens = tokenMatch.tokens
+      let results = currentResults.mapNotNullAsync((result) => {
+        if (let match = result.parser.pattern.matches(tokens)) {
+          return result.copy(match: match)
+        }
+
+        return null
+      }).toArray()
+
+      if (results.isEmpty) {
+        if (currentResults.count == 1) {
+          let result = currentResults.first
+
+          if (!result.match.partial) {
+            let matchedTokens = result.match.tokens
             tokens = tokens.skip(matchedTokens.count)
 
             let context = ParseContext(
               parent: fileNode
             )
 
-            stream.emit("data", parser.generateNode(context, tokenMatch))$
-
-            return true
+            stream.emit("data", result.parser.generateNode(context, result.match))$
           }
+        } else {
+          // throw syntax error
+          tokens = Token[]
         }
 
-        return false
-      })
+        resetCurrentResults()
+      } else {
+        currentResults = results
+      }
+    }
+
+    private data class ParserResult {
+      visible ParserBase parser
+      visible TokenMatch match
     }
   }
 }
