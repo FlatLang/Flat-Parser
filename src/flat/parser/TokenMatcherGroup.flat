@@ -21,6 +21,7 @@ data class extends TokenMatcher {
     var Token[] tokens,
     Bool requireAllTokensConsumed = true
   ) -> TokenMatch => null {
+    log.traceFunc({"No tokens. Skipping match"})
     if (tokens.isEmpty) return null
 
     tokens = tokens.toArray()
@@ -34,6 +35,7 @@ data class extends TokenMatcher {
 
       if (matcher.optional && !matcher.greedy) {
         if (matcherator.hasNext && matcherator.next.matches(tokens, false)) {
+          log.traceFunc({"Matcher is optional and non-greedy, and the next matcher matches, so skipping to that"})
           continue
         }
       }

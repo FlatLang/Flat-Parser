@@ -70,6 +70,8 @@ class {
 
       tokens.add(token)
 
+      Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'")}]"})
+
       let results = currentResults.mapNotNullAsync((result) => {
         if (let match = result.parser.pattern.matches(tokens)) {
           return result.copy(match: match)
