@@ -27,13 +27,13 @@ data class extends TokenMatcher {
 
     let outputLabels = HashMap<String, Array<String>>()
     let matchedTokens = Token[]
-    let iterator = matchers.iterator
+    let matcherator = matchers.iterator
 
-    while (iterator.hasNext) {
-      let matcher = iterator.stepNext
+    while (matcherator.hasNext) {
+      let matcher = matcherator.stepNext
 
       if (matcher.optional && !matcher.greedy) {
-        if (iterator.hasNext && iterator.next.matches(tokens, false)) {
+        if (matcherator.hasNext && matcherator.next.matches(tokens, false)) {
           continue
         }
       }
@@ -41,13 +41,37 @@ data class extends TokenMatcher {
       var match = matcher.matches(tokens, false)
 
       if (!match) {
-        if (matchedTokens.isNotEmpty) {
+        if (matchedTokens.isNotEmpty && tokens.isEmpty) {
+          if (matcherator.allNextInclusive.all({ _.optional })) {
+            break
+          }
+          log.traceFunc({"|
+            Returning partial match
+              tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+              matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+              submatcher: #{matcher}
+              matcher: #{this}
+            |"})
           return TokenMatch(matchedTokens, outputLabels, partial: true)
         }
         break
       }
 
-      while (true) {
+      log.traceFunc({"|
+        Matched
+          tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+          match: #{match}
+          submatcher: #{matcher}
+          matcher: #{this}
+        |"})
+
+      if (matcher.repeat && !matcher.greedy) {
+        if (matcherator.hasNext && matcherator.next.matches(tokens, false)) {
+          continue
+        }
+      }
+
+      while (match && tokens.isNotEmpty && match.tokens.isNotEmpty) {
         match.tokens.forEach({ tokens.shift() })
 
         matchedTokens.addAll(match.tokens)
@@ -64,6 +88,15 @@ data class extends TokenMatcher {
     }
 
     if (!requireAllTokensConsumed || tokens.isEmpty) {
+      if (matcherator.allNext.any({ !_.optional })) {
+        return null
+      }
+      log.traceFunc({"|
+        Returning complete match
+          tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+          matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+          matcher: #{this}
+        |"})
       return TokenMatch(matchedTokens, outputLabels, partial: false)
     }
   }
