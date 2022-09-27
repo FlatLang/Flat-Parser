@@ -76,7 +76,7 @@ class {
 
       tokens.add(token)
 
-      Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'")}]"})
+      Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
       if (let annotationMatch = annotationParser.pattern.matches(tokens)) {
         Parser.log.debugFunc({"Matched annotation: #{annotationMatch}"})

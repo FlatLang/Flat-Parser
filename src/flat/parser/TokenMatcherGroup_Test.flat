@@ -2,6 +2,11 @@ package flat/parser
 
 import flat/datastruct/HashMap
 import flat/parser/Parser
+import flat/annotations/VisibleModifier
+import flat/annotations/PublicModifier
+import flat/annotations/PrivateModifier
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
 import flat/ast/FileNode
 import flat/ast/PackageNode
 import flat/compiler/models/Token
@@ -251,6 +256,70 @@ testable class {
     let expected = TokenMatch(
       tokens: [Token(value: "class", type: Token.Type.IDENTIFIER)],
       partial: false
+    )
+
+    expect(result).toBe(expected)
+  }
+
+  async test `matches completely against multiple entry options`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "["),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
+        TokenMatcher(Token.Type.SYMBOL, "]")
+      ], optional: true),
+      TokenMatcherGroup([
+        TokenMatcherGroup([
+          TokenMatcher(Token.Type.IDENTIFIER, label: "alias", values: Array()
+            :addAll(VisibleModifier.aliases)
+            :addAll(PublicModifier.aliases)
+            :addAll(PrivateModifier.aliases)
+            :addAll(LetModifier.aliases)
+            :addAll(VarModifier.aliases)
+          )
+        ])
+      ], optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "public", type: Token.Type.IDENTIFIER)
+    ])
+
+    let expected = TokenMatch(
+      tokens: [Token(value: "public", type: Token.Type.IDENTIFIER)],
+      partial: false
+    )
+
+    expect(result).toBe(expected)
+  }
+
+  async test `doesnt match complete single array bracket in annotation matcher`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "["),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
+        TokenMatcher(Token.Type.SYMBOL, "]")
+      ], optional: true),
+      TokenMatcherGroup([
+        TokenMatcherGroup([
+          TokenMatcher(Token.Type.IDENTIFIER, label: "alias", values: Array()
+            :addAll(VisibleModifier.aliases)
+            :addAll(PublicModifier.aliases)
+            :addAll(PrivateModifier.aliases)
+            :addAll(LetModifier.aliases)
+            :addAll(VarModifier.aliases)
+          )
+        ])
+      ], optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "[", type: Token.Type.SYMBOL)
+    ])
+
+    let expected = TokenMatch(
+      tokens: [Token(value: "[", type: Token.Type.SYMBOL)],
+      partial: true
     )
 
     expect(result).toBe(expected)

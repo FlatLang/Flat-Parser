@@ -60,6 +60,16 @@ data class extends TokenMatcher {
         } else {
           break
         }
+      } else if (match.partial) {
+        matchedTokens.addAll(match.tokens)
+        log.traceFunc({"|
+          Returning partial match
+            tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+            matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+            submatcher: #{matcher}
+            matcher: #{this}
+          |"})
+        return TokenMatch(matchedTokens, outputLabels, partial: true)
       }
 
       log.traceFunc({"|
