@@ -2,6 +2,7 @@ package flat/parser
 
 import flat/datastruct/list/Stack
 import flat/ast/Node
+import flat/ast/AnnotationNode
 import flat/ast/FileNode
 import flat/compiler/models/Token
 import flat/io/File
@@ -45,8 +46,11 @@ class {
     Stack<Node> parentStack = Stack()
     Stack<ParserBase> parserStack = Stack()
 
+    let AnnotationParser annotationParser = AnnotationParser()
+
     var ParserResult[] currentResults = ParserResult[]
     var Token[] tokens = Token[]
+    var ParseContext context = ParseContext()
 
     construct(
       private FileNode fileNode,
@@ -54,12 +58,14 @@ class {
     ) {
       parentStack.push(fileNode)
       parserStack.push(FileParser())
+      context = context.copy(parent: parentStack.peek())
 
       resetCurrentResults()
     }
 
     resetCurrentResults() {
       currentResults = parserStack.peek().childParsers.map({ ParserResult(_, null) })
+      context = context.copy(annotations: AnnotationNode[])
     }
 
     async consume(Token token) {
@@ -71,6 +77,20 @@ class {
       tokens.add(token)
 
       Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'")}]"})
+
+      if (let annotationMatch = annotationParser.pattern.matches(tokens)) {
+        Parser.log.debugFunc({"Matched annotation: #{annotationMatch}"})
+
+        if (annotationMatch.partial) {
+          return
+        }
+
+        let annotation = annotationParser.generateNode(context, annotationMatch)
+
+        Parser.log.debugFunc({"Parsed annotation: #{annotation}"})
+
+        context.annotations.add(annotation)
+      }
 
       let results = currentResults.mapNotNullAsync((result) => {
         if (let match = result.parser.pattern.matches(tokens)) {
@@ -88,11 +108,9 @@ class {
             let matchedTokens = result.match.tokens
             tokens = tokens.skip(matchedTokens.count)
 
-            let context = ParseContext(
-              parent: fileNode
-            )
+            let node = result.parser.generateNode(context, result.match)
 
-            stream.emit("data", result.parser.generateNode(context, result.match))$
+            stream.emit("data", node)$
           }
         } else {
           // throw syntax error
