@@ -7,6 +7,8 @@ import flat/log/Logger
 data class {
   let static Logger log = Logger(TokenMatcher.class)
 
+  let lazy Int requiredTokenCount => optional ? 0 : 1
+
   visible Int tokenType
   visible String value = null
   visible String[] values = null

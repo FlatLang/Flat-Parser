@@ -8,6 +8,8 @@ import flat/log/Logger
 data class extends TokenMatcher {
   let static Logger log = Logger(TokenMatcherGroup.class)
 
+  override let lazy Int requiredTokenCount => matchers.sum({ _.requiredTokenCount })
+
   public construct(
     visible Array<TokenMatcher> matchers,
     this Bool optional = false,
