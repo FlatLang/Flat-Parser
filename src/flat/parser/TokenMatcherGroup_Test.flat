@@ -134,4 +134,58 @@ testable class {
 
     expect(result?.values).toBe(expected)
   }
+
+  async test `can match partially against matcher when too few tokens given`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "package"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "package_location_component"),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "/", label: "package_location_component"),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "package_location_component")
+      ], repeat: true, optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "package", type: Token.Type.IDENTIFIER)
+    ])
+
+    let expected = TokenMatch(
+      tokens: [Token(value: "package", type: Token.Type.IDENTIFIER)],
+      partial: true
+    )
+
+    expect(result).toBe(expected)
+  }
+
+  async test `doesnt match partially against matcher when too few and incorrect tokens given`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "import"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component"),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "/", label: "import_location_component"),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component")
+      ], repeat: true, optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "package", type: Token.Type.IDENTIFIER)
+    ])
+
+    expect(result).toBe(null)
+  }
+
+  async test `doesnt match partially against matcher when zero tokens given`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcher(Token.Type.IDENTIFIER, "import"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component"),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "/", label: "import_location_component"),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component")
+      ], repeat: true, optional: true)
+    ])
+
+    let result = matcherGroup.matches(Array())
+
+    expect(result).toBe(null)
+  }
 }

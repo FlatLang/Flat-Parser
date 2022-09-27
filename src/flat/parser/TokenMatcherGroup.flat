@@ -15,21 +15,37 @@ data class extends TokenMatcher {
     this Bool greedy = true
   ) {}
 
-  override public matches(var Token[] tokens, Bool requireAllTokensConsumed = true) -> TokenMatch => null {
+  override public matches(
+    var Token[] tokens,
+    Bool requireAllTokensConsumed = true
+  ) -> TokenMatch => null {
+    if (tokens.isEmpty) return null
+
     tokens = tokens.toArray()
 
     let outputLabels = HashMap<String, Array<String>>()
     let matchedTokens = Token[]
+    let iterator = matchers.iterator
 
-    for (i in 0..matchers.count) {
-      let matcher = matchers[i]
+    while (iterator.hasNext) {
+      let matcher = iterator.stepNext
 
       if (matcher.optional && !matcher.greedy) {
-        if (matchers.count > i + 1 && matchers[i + 1].matches(tokens, false)) {
+        if (iterator.hasNext && iterator.next.matches(tokens, false)) {
           continue
         }
       }
-      while (let match = matcher.matches(tokens, false)) {
+
+      var match = matcher.matches(tokens, false)
+
+      if (!match) {
+        if (matchedTokens.isNotEmpty) {
+          return TokenMatch(matchedTokens, outputLabels, partial: true)
+        }
+        break
+      }
+
+      while (true) {
         match.tokens.forEach({ tokens.shift() })
 
         matchedTokens.addAll(match.tokens)
@@ -40,11 +56,13 @@ data class extends TokenMatcher {
         if (!matcher.repeat || tokens.isEmpty) {
           break
         }
+
+        match = matcher.matches(tokens, false)
       }
     }
 
     if (!requireAllTokensConsumed || tokens.isEmpty) {
-      return TokenMatch(matchedTokens, outputLabels)
+      return TokenMatch(matchedTokens, outputLabels, partial: false)
     }
   }
 }
