@@ -49,8 +49,20 @@ class {
     let AnnotationParser annotationParser = AnnotationParser()
 
     var ParserResult[] currentResults = ParserResult[]
+    var ParserResult[] matchedResults = ParserResult[]
+    var ParserResult[] annotationResults = ParserResult[]
     var Token[] tokens = Token[]
     var ParseContext context = ParseContext()
+
+    private data class ParserResult {
+      visible ParserBase parser
+      visible TokenMatch match
+    }
+
+    private data class NodeResult {
+      visible ParserBase parser
+      visible Node node
+    }
 
     construct(
       private FileNode fileNode,
@@ -65,67 +77,186 @@ class {
 
     resetCurrentResults() {
       currentResults = parserStack.peek().childParsers.map({ ParserResult(_, null) })
-      context = context.copy(annotations: AnnotationNode[])
+      matchedResults = ParserResult[]
+      annotationResults = ParserResult[]
     }
 
     async consume(Token token) {
-      if (token.type == Token.Type.WS) return
+      match token.type {
+        Token.Type.WS => return
+        Token.Type.SYMBOL => {
+          match token.value {
+            "{" => {
+              if (let result = generateNode()) {
+                parentStack.push(result.node)
+                parserStack.push(result.parser)
+                resetCurrentResults()
+              }
+              return
+            }
+            "}" => {
+              if (tokens.isNotEmpty) {
+                generateNode()
+              }
+              if (parentStack.count > 1) {
+                parentStack.pop()
+                parserStack.pop()
+              } else {
+                Parser.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+              }
+              resetCurrentResults()
+              return
+            }
+          }
+        }
+      }
 
       let parent = parentStack.peek()
       let parser = parserStack.peek()
 
+      Parser.log.debugFunc({"Adding token value: '#{token.value}' type: #{token.type}"})
+
       tokens.add(token)
 
+      consume()
+    }
+
+    async consume() {
       Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
-      if (let annotationMatch = annotationParser.pattern.matches(tokens)) {
-        Parser.log.debugFunc({"Matched annotation: #{annotationMatch}"})
-
-        if (annotationMatch.partial) {
-          return
-        }
-
-        let annotation = annotationParser.generateNode(context, annotationMatch)
-
-        Parser.log.debugFunc({"Parsed annotation: #{annotation}"})
-
-        context.annotations.add(annotation)
-      }
-
-      let results = currentResults.mapNotNullAsync((result) => {
+      let ParserResult[] results = currentResults.mapNotNull((result) => {
         if (let match = result.parser.pattern.matches(tokens)) {
+          if (!match.partial) {
+             Parser.log.debugFunc({"Matched: #{result.parser.class.name}: #{match.values}"})
+          } else {
+             Parser.log.debugFunc({"Partial match: #{result.parser.class.name}: #{match.values}"})
+          }
           return result.copy(match: match)
         }
 
         return null
       }).toArray()
 
+      Parser.log.debugFunc({"Result count: #{results.count}"})
+
       if (results.isEmpty) {
-        if (currentResults.count == 1) {
-          let result = currentResults.first
-
-          if (!result.match.partial) {
-            let matchedTokens = result.match.tokens
-            tokens = tokens.skip(matchedTokens.count)
-
-            let node = result.parser.generateNode(context, result.match)
-
-            stream.emit("data", node)$
-          }
-        } else {
-          // throw syntax error
-          tokens = Token[]
-        }
-
-        resetCurrentResults()
+        generateNode()
       } else {
         currentResults = results
+
+        annotationResults = currentResults
+          .filter({ _.match != null })
+          .filter({ !_.match.partial })
+          .filter({ _.parser.class.isOfType(AnnotationParser.class) })
+          .sort({ _.match.tokens.count - _.match.tokens.count })
+
+        if (annotationResults.isNotEmpty) {
+          generateAnnotation()
+        } else {
+          Parser.log.debugFunc({"|
+            Carrying over results:
+              #{results.map(x => x.parser.class.name + ": " + x.match.values + " partial: " + x.match.partial).join("\n  ")}
+            |"})
+        }
       }
     }
 
-    private data class ParserResult {
-      visible ParserBase parser
-      visible TokenMatch match
+    async generateNode() -> NodeResult => null {
+      Parser.log.debugFunc({"Generating Node"})
+
+      var NodeResult nodeResult = null
+
+      matchedResults = currentResults
+        .filter({ _.match != null })
+        .filter({ !_.match.partial })
+        .sort({ _.match.tokens.count - _.match.tokens.count })
+
+      if (matchedResults.isNotEmpty) {
+        Parser.log.debugFunc({"|
+          Matched results:
+            #{matchedResults.map(x => x.parser.class.name + ": " + x.match.values).join("\n  ")}
+          |"})
+
+        let result = matchedResults.first
+        let matchedTokens = result.match.tokens
+        tokens = tokens.skip(matchedTokens.count)
+
+        let node = result.parser.generateNode(context, result.match)
+
+        if (node) {
+          let nodeWithContext = node.copy(
+            parent: parentStack.peek(),
+            annotations: context.annotations
+          )
+          Parser.log.debugFunc({"Parsed node: #{node}"})
+          stream.emit("data", nodeWithContext)$
+
+          nodeResult = NodeResult(result.parser, nodeWithContext)
+        } else {
+          Parser.log.debugFunc({"Could not generate node for tokens [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]"})
+        }
+      } else {
+        invalidTokens()
+      }
+
+      resetCurrentResults()
+      context = context.copy(annotations: AnnotationNode[])
+
+      if (tokens.isNotEmpty) {
+        consume()
+      }
+
+      return nodeResult
+    }
+
+    async generateAnnotation() -> NodeResult => null {
+      Parser.log.debugFunc({"Generating Annotation"})
+
+      var NodeResult nodeResult = null
+
+      if (annotationResults.isNotEmpty) {
+        Parser.log.debugFunc({"|
+          Annotation results:
+            #{annotationResults.map(x => x.parser.class.name + ": " + x.match.values).join("\n  ")}
+          |"})
+
+        let result = annotationResults.first
+        let matchedTokens = result.match.tokens
+        tokens = tokens.skip(matchedTokens.count)
+
+        let node = result.parser.generateNode(context, result.match)
+
+        if (node) {
+          let nodeWithContext = node.copy(
+            parent: parentStack.peek()
+          )
+          Parser.log.debugFunc({"Parsed annotation: #{node}"})
+          context.annotations.add((AnnotationNode)nodeWithContext)
+
+          nodeResult = NodeResult(result.parser, nodeWithContext)
+        } else {
+          Parser.log.debugFunc({"Could not generate annotation node for tokens [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]"})
+        }
+      } else {
+       invalidTokens()
+      }
+
+      resetCurrentResults()
+
+      if (tokens.isNotEmpty) {
+        consume()
+      }
+
+      return nodeResult
+    }
+
+    invalidTokens() {
+      Parser.log.debugFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}]. Resetting tokens"})
+      Parser.log.traceFunc({"matchedResults: #{matchedResults}"})
+      if (tokens.isNotEmpty) {
+        Parser.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
+      }
+      tokens = Token[]
     }
   }
 }
