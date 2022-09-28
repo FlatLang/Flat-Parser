@@ -1,0 +1,46 @@
+package flat/parser
+
+import flat/ast/FunctionNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy ParserBase[] childParsers => Array():addAll([
+    AnnotationParser(),
+    CommentParser(),
+    FunctionCallParser(),
+    AssignmentParser(),
+    DotAccessParser(),
+    IdentifierParser()
+  ])
+
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
+    CaptureTokenMatcher(
+      start: Token(value: "("),
+      end: Token(value: ")")
+    ),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "->"),
+      TokenMatcher(Token.Type.IDENTIFIER, label: "type"),
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
+        TokenMatcher(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+      ], repeat: true, optional: true)
+    ], optional: true),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "=>")
+    ], optional: true)
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
+    let type = match.getValue("type")
+    let name = match.getValue("name")
+    let bracketCount = match.getValues("bracket_start").count
+
+    return FunctionNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount
+    )
+  }
+}
