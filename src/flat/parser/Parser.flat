@@ -125,7 +125,7 @@ class {
       Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
       let ParserResult[] results = currentResults.mapNotNull((result) => {
-        if (let match = result.parser.pattern.matches(tokens)) {
+        if (let match = result.parser.matcher.matches(tokens)) {
           if (!match.partial) {
              Parser.log.debugFunc({"Matched: #{result.parser.class.name}: #{match.values}"})
           } else {

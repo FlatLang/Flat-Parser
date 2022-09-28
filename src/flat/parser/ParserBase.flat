@@ -6,7 +6,7 @@ import flat/compiler/models/Token
 abstract class {
   let lazy ParserBase[] childParsers => Array()
   let lazy AnnotationParser annotationParser => AnnotationParser()
-  let lazy TokenMatcher pattern => null
+  let lazy TokenMatcher matcher => null
 
   public abstract async generateNode(ParseContext context, TokenMatch match) -> Node
 }

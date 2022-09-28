@@ -4,7 +4,7 @@ import flat/ast/ParameterNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
-  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+  override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "type"),
     TokenMatcherGroup([
       TokenMatcher(Token.Type.SYMBOL, "[", label: "bracket_start"),

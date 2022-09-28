@@ -11,7 +11,7 @@ class extends ParserBase {
     FunctionParser()
   ])
 
-  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+  override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, "class"),
     TokenMatcher(Token.Type.IDENTIFIER, label: "class_name", optional: true),
     TokenMatcherGroup([

@@ -9,7 +9,7 @@ import flat/io/File
 
 testable class {
   async test `can parse function without parameters or type`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
@@ -28,7 +28,7 @@ testable class {
   }
 
   async test `can parse function with single parameter, but no type`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -51,7 +51,7 @@ testable class {
   }
 
   async test `can parse function with multiple parameters, but no type`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -80,7 +80,7 @@ testable class {
   }
 
   async test `can parse function with multiple parameters and a basic type`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -113,7 +113,7 @@ testable class {
   }
 
   async test `can parse function with multiple parameters and a type with array single brackets`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -150,7 +150,7 @@ testable class {
   }
 
   async test `can parse function with multiple parameters and a type with array multiple brackets`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -191,7 +191,7 @@ testable class {
   }
 
   async test `can parse function with no parameters and a type with array multiple brackets`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),
@@ -222,7 +222,7 @@ testable class {
   }
 
   async test `can parse function with expression return`() {
-    let result = FunctionParser().pattern.matches([
+    let result = FunctionParser().matcher.matches([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),

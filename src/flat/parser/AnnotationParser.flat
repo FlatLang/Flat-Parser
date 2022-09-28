@@ -10,13 +10,13 @@ class extends ParserBase {
     ModifierParser()
   ])
 
-  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+  override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcherGroup([
       TokenMatcher(Token.Type.SYMBOL, "["),
       TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
       TokenMatcher(Token.Type.SYMBOL, "]")
     ], optional: true),
-    TokenMatcherGroup(annotationParsers.map({ _.pattern }), optional: true)
+    TokenMatcherGroup(annotationParsers.map({ _.matcher }), optional: true)
   ])
 
   override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {

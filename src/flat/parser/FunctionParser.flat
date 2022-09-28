@@ -14,7 +14,7 @@ class extends ParserBase {
     LiteralParser()
   ])
 
-  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+  override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenMatcher(
       start: Token(value: "("),
