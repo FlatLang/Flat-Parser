@@ -1,0 +1,18 @@
+package flat/parser
+
+import flat/ast/IdentifierNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
+    let name = match.getValue("name")
+
+    return IdentifierNode(
+      name: name
+    )
+  }
+}
