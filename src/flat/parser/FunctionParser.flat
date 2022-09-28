@@ -10,7 +10,8 @@ class extends ParserBase {
     FunctionCallParser(),
     AssignmentParser(),
     DotAccessParser(),
-    IdentifierParser()
+    IdentifierParser(),
+    LiteralParser()
   ])
 
   override let lazy TokenMatcher pattern => TokenMatcherGroup([
