@@ -1,0 +1,27 @@
+package flat/parser
+
+import flat/ast/ParameterNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "type"),
+    TokenMatcherGroup([
+      TokenMatcher(Token.Type.SYMBOL, "[", label: "bracket_start"),
+      TokenMatcher(Token.Type.SYMBOL, "]", label: "bracket_end")
+    ], repeat: true, optional: true),
+    TokenMatcher(Token.Type.IDENTIFIER, label: "name")
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> ParameterNode {
+    let type = match.getValue("type")
+    let name = match.getValue("name")
+    let bracketCount = match.getValues("bracket_start").count
+
+    return ParameterNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount
+    )
+  }
+}
