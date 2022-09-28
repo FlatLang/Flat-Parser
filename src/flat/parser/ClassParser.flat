@@ -5,7 +5,10 @@ import flat/compiler/models/Token
 
 class extends ParserBase {
   override let lazy ParserBase[] childParsers => Array():addAll([
-    FieldParser()
+    AnnotationParser(),
+    CommentParser(),
+    FieldParser(),
+    FunctionParser()
   ])
 
   override let lazy TokenMatcher pattern => TokenMatcherGroup([
