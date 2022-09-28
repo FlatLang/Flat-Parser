@@ -5,6 +5,8 @@ import flat/annotations/PublicModifier
 import flat/annotations/PrivateModifier
 import flat/annotations/LetModifier
 import flat/annotations/VarModifier
+import flat/annotations/StaticModifier
+import flat/annotations/AsyncModifier
 import flat/annotations/Modifier
 import flat/compiler/models/Token
 import flat/ast/AnnotationNode
@@ -20,6 +22,8 @@ class extends ParserBase {
       :addAll(PrivateModifier.aliases)
       :addAll(LetModifier.aliases)
       :addAll(VarModifier.aliases)
+      :addAll(StaticModifier.aliases)
+      :addAll(AsyncModifier.aliases)
     )
   ])
 
@@ -40,6 +44,12 @@ class extends ParserBase {
     }
     if (VarModifier.aliases.any({ _ == alias})) {
       return VarModifier(aliasUsed: alias)
+    }
+    if (StaticModifier.aliases.any({ _ == alias})) {
+      return StaticModifier(aliasUsed: alias)
+    }
+    if (AsyncModifier.aliases.any({ _ == alias})) {
+      return AsyncModifier(aliasUsed: alias)
     }
 
     return null
