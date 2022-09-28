@@ -1,0 +1,14 @@
+package flat/parser
+
+import flat/ast/AssignmentNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.SYMBOL, "=")
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
+    return AssignmentNode()
+  }
+}
