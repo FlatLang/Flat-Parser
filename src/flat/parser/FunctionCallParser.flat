@@ -1,0 +1,22 @@
+package flat/parser
+
+import flat/ast/FunctionCallNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
+    CaptureTokenMatcher(
+      start: Token(value: "("),
+      end: Token(value: ")")
+    )
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
+    let name = match.getValue("name")
+
+    return FunctionCallNode(
+      name: name
+    )
+  }
+}
