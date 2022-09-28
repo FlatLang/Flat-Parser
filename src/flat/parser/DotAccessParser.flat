@@ -1,0 +1,14 @@
+package flat/parser
+
+import flat/ast/DotAccessNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy TokenMatcher pattern => TokenMatcherGroup([
+    TokenMatcher(Token.Type.SYMBOL, value: "."),
+  ])
+
+  override public async generateNode(ParseContext context, TokenMatch match) -> DotAccessNode {
+    return DotAccessNode()
+  }
+}
