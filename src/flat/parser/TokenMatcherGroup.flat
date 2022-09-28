@@ -2,6 +2,7 @@ package flat/parser
 
 import flat/datastruct/HashMap
 import flat/datastruct/list/Queue
+import flat/datastruct/list/ArrayIterator
 import flat/compiler/models/Token
 import flat/log/Logger
 
@@ -21,8 +22,10 @@ data class extends TokenMatcher {
     var Token[] tokens,
     Bool requireAllTokensConsumed = true
   ) -> TokenMatch => null {
-    log.traceFunc({"No tokens. Skipping match"})
-    if (tokens.isEmpty) return null
+    if (tokens.isEmpty) {
+      log.traceFunc({"No tokens. Skipping match"})
+      return null
+    }
 
     tokens = tokens.toArray()
 
@@ -42,51 +45,31 @@ data class extends TokenMatcher {
 
       var match = matcher.matches(tokens, false)
 
-      if (!match) {
-        if (matchedTokens.isNotEmpty && tokens.isEmpty) {
-          if (matcherator.allNextInclusive.all({ _.optional })) {
-            break
-          }
-          log.traceFunc({"|
-            Returning partial match
-              tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
-              matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
-              submatcher: #{matcher}
-              matcher: #{this}
-            |"})
-          return TokenMatch(matchedTokens, outputLabels, partial: true)
-        } else if (matcher.optional) {
-          continue
-        } else {
+      var ProcessMatchResponse processed = null
+
+      while (true) {
+        processed = processMatch(
+          match,
+          tokens,
+          matchedTokens,
+          matcherator,
+          matcher,
+          outputLabels
+        )
+
+        log.traceFunc({"processed.action: #{processed.action}"})
+
+        match processed.action {
+          BREAK => break
+          CONTINUE => break
+          RETURN => return processed.match
+        }
+
+        if (!match) {
+          log.traceFunc({"Did not match the first required matcher. Breaking out of loop"})
           break
         }
-      } else if (match.partial) {
-        matchedTokens.addAll(match.tokens)
-        log.traceFunc({"|
-          Returning partial match
-            tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
-            matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
-            submatcher: #{matcher}
-            matcher: #{this}
-          |"})
-        return TokenMatch(matchedTokens, outputLabels, partial: true)
-      }
 
-      log.traceFunc({"|
-        Matched
-          tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
-          match: #{match}
-          submatcher: #{matcher}
-          matcher: #{this}
-        |"})
-
-      if (matcher.repeat && !matcher.greedy) {
-        if (matcherator.hasNext && matcherator.next.matches(tokens, false)) {
-          continue
-        }
-      }
-
-      while (match && tokens.isNotEmpty && match.tokens.isNotEmpty) {
         match.tokens.forEach({ tokens.shift() })
 
         matchedTokens.addAll(match.tokens)
@@ -94,16 +77,36 @@ data class extends TokenMatcher {
           outputLabels.getOrDefault(entry.key, { Array() }).addAll(entry.value)
         })
 
+        log.traceFunc({"|
+          Tokens after match:
+            tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+            matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+          |"})
+
         if (!matcher.repeat || tokens.isEmpty) {
           break
         }
 
         match = matcher.matches(tokens, false)
       }
+
+      log.traceFunc({"processed.action: #{processed.action}"})
+
+      match processed.action {
+        BREAK => break
+        CONTINUE => continue
+        RETURN => return processed.match
+      }
     }
 
     if (!requireAllTokensConsumed || tokens.isEmpty) {
       if (matcherator.allNext.any({ !_.optional })) {
+        log.traceFunc({"|
+          Matcher group has remaining required matchers. Returning null
+            tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+            matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+            matcher: #{this}
+          |"})
         return null
       }
       log.traceFunc({"|
@@ -113,6 +116,75 @@ data class extends TokenMatcher {
           matcher: #{this}
         |"})
       return TokenMatch(matchedTokens, outputLabels, partial: false)
+    }
+  }
+
+  private data class ProcessMatchResponse {
+    visible Int action = 0
+    visible TokenMatch match = null
+  }
+
+  static Int BREAK = 1
+  static Int CONTINUE = 2
+  static Int RETURN = 3
+
+  processMatch(
+    TokenMatch match,
+    Token[] tokens,
+    Token[] matchedTokens,
+    ArrayIterator<TokenMatcher> matcherator,
+    TokenMatcher matcher,
+    HashMap<String, Array<String>> outputLabels
+  ) => ProcessMatchResponse() {
+    if (!match) {
+      if (matchedTokens.isNotEmpty && tokens.isEmpty) {
+        if (matcherator.allNextInclusive.all({ _.optional })) {
+          log.traceFunc({"Did not match the optional matcher, and the rest of the matchers are optional. Breaking out of loop"})
+          return ProcessMatchResponse(BREAK)
+        }
+        log.traceFunc({"|
+          Returning partial match
+            tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+            matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+            submatcher: #{matcher}
+            matcher: #{this}
+          |"})
+        return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.toArray(), outputLabels, partial: true))
+      } else if (matcher.optional) {
+        log.traceFunc({"Did not match the optional matcher. Skipping to next matcher"})
+        return ProcessMatchResponse(CONTINUE)
+      } else {
+        log.traceFunc({"Did not match the required matcher. Breaking out of loop"})
+        return ProcessMatchResponse(BREAK)
+      }
+    } else if (match.partial) {
+      matchedTokens.addAll(match.tokens)
+      log.traceFunc({"|
+        Returning partial match
+          tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+          matchedTokens: [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]
+          submatcher: #{matcher}
+          matcher: #{this}
+        |"})
+      return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.toArray(), outputLabels, partial: true))
+    } else if (match.tokens.isEmpty) {
+      log.traceFunc({"Match contains no tokens. Skipping match"})
+      return ProcessMatchResponse(CONTINUE)
+    }
+
+    log.traceFunc({"|
+      Matched
+        tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]
+        match: #{match}
+        submatcher: #{matcher}
+        matcher: #{this}
+      |"})
+
+    if (matcher.repeat && !matcher.greedy) {
+      if (matcherator.hasNext && matcherator.next.matches(tokens, false)) {
+        log.traceFunc({"Matcher is optional and non-greedy, and the next matcher matches, so skipping to that"})
+        return ProcessMatchResponse(CONTINUE)
+      }
     }
   }
 }

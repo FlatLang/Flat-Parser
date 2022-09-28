@@ -324,4 +324,32 @@ testable class {
 
     expect(result).toBe(expected)
   }
+
+  async test `doesnt match ending part of annotation`() {
+    let matcherGroup = TokenMatcherGroup([
+      TokenMatcherGroup([
+        TokenMatcher(Token.Type.SYMBOL, "["),
+        TokenMatcher(Token.Type.IDENTIFIER, label: "identifier"),
+        TokenMatcher(Token.Type.SYMBOL, "]")
+      ], optional: true),
+      TokenMatcherGroup([
+        TokenMatcherGroup([
+          TokenMatcher(Token.Type.IDENTIFIER, label: "alias", values: Array()
+            :addAll(VisibleModifier.aliases)
+            :addAll(PublicModifier.aliases)
+            :addAll(PrivateModifier.aliases)
+            :addAll(LetModifier.aliases)
+            :addAll(VarModifier.aliases)
+          )
+        ])
+      ], optional: true)
+    ])
+
+    let result = matcherGroup.matches([
+      Token(value: "1", type: Token.Type.INTEGER),
+      Token(value: "]", type: Token.Type.SYMBOL)
+    ])
+
+    expect(result).toBe(null)
+  }
 }
