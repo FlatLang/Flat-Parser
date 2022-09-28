@@ -20,6 +20,10 @@ class extends ParserBase {
   ])
 
   override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    if (let annotation = annotationParsers.firstNonNullAsync({ _.generateNode(context, match) })) {
+      return annotation
+    }
+
     let identifier = match.getValue("identifier")
 
     return null
