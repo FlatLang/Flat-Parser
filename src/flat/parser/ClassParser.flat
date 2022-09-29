@@ -28,7 +28,7 @@ class extends ParserBase {
     ], optional: true)
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> ClassNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> ClassNode {
     let className = match.getValue("class_name")
     let extendedClassName = match.getValue("extends_class_name")
     let implementsClassNames = match.getValues("implements_class_name")

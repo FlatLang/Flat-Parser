@@ -12,7 +12,7 @@ class extends ParserBase {
     )
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
     let name = match.getValue("name")
 
     return FunctionCallNode(

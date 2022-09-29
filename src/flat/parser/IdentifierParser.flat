@@ -8,7 +8,7 @@ class extends ParserBase {
     TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
     let name = match.getValue("name")
 
     return IdentifierNode(

@@ -8,7 +8,7 @@ class extends ParserBase {
     TokenMatcher(Token.Type.SYMBOL, "=")
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
     return AssignmentNode()
   }
 }

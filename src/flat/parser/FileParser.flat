@@ -11,7 +11,7 @@ class extends ParserBase {
     ClassParser()
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> FileNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
     return null
   }
 }

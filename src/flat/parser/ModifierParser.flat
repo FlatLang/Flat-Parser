@@ -27,7 +27,7 @@ class extends ParserBase {
     )
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
     let alias = match.getValue("alias")
 
     if (VisibleModifier.aliases.any({ _ == alias})) {

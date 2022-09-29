@@ -8,7 +8,7 @@ class extends ParserBase {
     TokenMatcher(Token.Type.COMMENT, label: "comment")
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> CommentNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> CommentNode {
     let value = match.getValue("comment")
 
     return CommentNode(

@@ -19,8 +19,8 @@ class extends ParserBase {
     TokenMatcherGroup(annotationParsers.map({ _.matcher }), optional: true)
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
-    if (let annotation = annotationParsers.firstNonNullAsync({ _.generateNode(context, match) })) {
+  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    if (let annotation = annotationParsers.firstNonNull({ _.generateNode(context, match) })) {
       return annotation
     }
 

@@ -33,7 +33,7 @@ class extends ParserBase {
     ], optional: true)
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count

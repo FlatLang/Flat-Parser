@@ -15,7 +15,7 @@ class extends ParserBase {
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_name")
   ])
 
-  override public async generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
     let type = match.getValue("declaration_type")
     let name = match.getValue("declaration_name")
     let bracketCount = match.getValues("bracket_start").count
