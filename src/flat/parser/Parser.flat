@@ -21,6 +21,8 @@ class {
   async parse(FileNode fileNode, Stream tokenStream) -> Stream {
     let stream = Stream(true)
 
+    stream.emit("data", fileNode)$
+
     let handler = ParseHandler(fileNode, stream)
 
     tokenStream.on<Token>("data", (token) => {
