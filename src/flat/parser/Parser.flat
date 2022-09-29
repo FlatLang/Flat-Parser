@@ -79,6 +79,7 @@ class {
       currentResults = parserStack.peek().childParsers.map({ ParserResult(_, null) })
       matchedResults = ParserResult[]
       annotationResults = ParserResult[]
+      Parser.log.debugFunc({"Set parent to #{parentStack.peek().class.name}"})
     }
 
     async consume(Token token) {
@@ -88,9 +89,12 @@ class {
           match token.value {
             "{" => {
               if (let result = generateNode()) {
+                Parser.log.debugFunc({"Pushing node to parent stack: #{result.node}"})
                 parentStack.push(result.node)
                 parserStack.push(result.parser)
                 resetCurrentResults()
+              } else {
+                Parser.log.traceFunc({"No node to add to parent stack"})
               }
               return
             }
@@ -99,8 +103,9 @@ class {
                 generateNode()
               }
               if (parentStack.count > 1) {
-                parentStack.pop()
+                let node = parentStack.pop()
                 parserStack.pop()
+                Parser.log.traceFunc({"Popped node from parent stack: #{node}"})
               } else {
                 Parser.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
               }
