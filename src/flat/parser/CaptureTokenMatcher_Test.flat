@@ -13,7 +13,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can match paretheses capture`() {
+  async test `can match parentheses capture`() {
     let matcherGroup = CaptureTokenMatcher(
       start: Token(value: "("),
       end: Token(value: ")")
@@ -38,7 +38,7 @@ testable class {
     expect(result).toBe(expected)
   }
 
-  async test `can match partial paretheses capture no with contents`() {
+  async test `can match partial parentheses capture no with contents`() {
     let matcherGroup = CaptureTokenMatcher(
       start: Token(value: "("),
       end: Token(value: ")")
@@ -57,7 +57,7 @@ testable class {
     expect(result).toBe(expected)
   }
 
-  async test `can match partial paretheses capture with contents`() {
+  async test `can match partial parentheses capture with contents`() {
     let matcherGroup = CaptureTokenMatcher(
       start: Token(value: "("),
       end: Token(value: ")")
