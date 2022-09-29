@@ -8,6 +8,10 @@ import flat/extensions/SyntaxStringFunctions
 import flat/ast/Node
 
 class extends ParserBase {
+  override let lazy ParserBase[] childParsers => Array():addAll([
+    AssignmentParser()
+  ])
+
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_type"),
     TokenMatcherGroup([
@@ -16,6 +20,8 @@ class extends ParserBase {
     ], repeat: true, optional: true),
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_name")
   ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
   override public generateNode(ParseContext context, TokenMatch match) -> FieldNode {
     let type = match.getValue("declaration_type")

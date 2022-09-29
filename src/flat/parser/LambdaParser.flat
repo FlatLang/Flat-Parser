@@ -1,0 +1,34 @@
+package flat/parser
+
+import flat/ast/LambdaNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override let lazy ParserBase[] childParsers => FunctionParser().childParsers.copy()
+
+  override let lazy TokenMatcher matcher => TokenMatcherGroup([
+    TokenMatcherGroup([
+      CaptureTokenMatcher(
+        label: "parameters",
+        start: Token(value: "("),
+        end: Token(value: ")")
+      ),
+      TokenMatcher(Token.Type.SYMBOL, value: "=>")
+    ], optional: true),
+    TokenMatcherGroup([ // make this optional (make it an or condition)
+      TokenMatcher(Token.Type.IDENTIFIER, label: "param_name"),
+      TokenMatcher(Token.Type.SYMBOL, value: "=>")
+    ], optional: true),
+    CaptureTokenMatcher(
+      label: "body",
+      start: Token(value: "{"),
+      end: Token(value: "}")
+    )
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> LambdaNode {
+    return LambdaNode()
+  }
+}

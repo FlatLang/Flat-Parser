@@ -4,6 +4,7 @@ import flat/datastruct/list/Stack
 import flat/ast/Node
 import flat/ast/AnnotationNode
 import flat/ast/FileNode
+import flat/ast/ScopeNode
 import flat/compiler/models/Token
 import flat/io/File
 import flat/log/Logger
@@ -55,6 +56,8 @@ class {
     var ParserResult[] annotationResults = ParserResult[]
     var Token[] tokens = Token[]
     var ParseContext context = ParseContext()
+    var Node currentNode
+    var ParserBase currentParser
 
     private data class ParserResult {
       visible ParserBase parser
@@ -72,54 +75,28 @@ class {
     ) {
       parentStack.push(fileNode)
       parserStack.push(FileParser())
-      context = context.copy(parent: parentStack.peek())
 
-      resetCurrentResults()
+      resetCurrentResults(true)
     }
 
-    resetCurrentResults() {
-      currentResults = parserStack.peek().childParsers.map({ ParserResult(_, null) })
+    resetCurrentResults(Bool resetCurrentNode = false) {
       matchedResults = ParserResult[]
       annotationResults = ParserResult[]
-      Parser.log.debugFunc({"Set parent to #{parentStack.peek().class.name}"})
+      if (resetCurrentNode) {
+        currentNode = parentStack.peek()
+        currentParser = parserStack.peek()
+      }
+      context = context.copy(parentStack: parentStack.copy():push(currentNode))
+      currentResults = currentParser.childParsers.map({ ParserResult(_, null) })
+      Parser.log.debugFunc({"Set parent to #{currentNode.class.name}"})
     }
 
-    async consume(Token token) {
+    consume(Token token) {
       match token.type {
         Token.Type.WS => return
-        Token.Type.SYMBOL => {
-          match token.value {
-            "{" => {
-              if (let result = generateNode()) {
-                Parser.log.debugFunc({"Pushing node to parent stack: #{result.node}"})
-                parentStack.push(result.node)
-                parserStack.push(result.parser)
-                resetCurrentResults()
-              } else {
-                Parser.log.traceFunc({"No node to add to parent stack"})
-              }
-              return
-            }
-            "}" => {
-              if (tokens.isNotEmpty) {
-                generateNode()
-              }
-              if (parentStack.count > 1) {
-                let node = parentStack.pop()
-                parserStack.pop()
-                Parser.log.traceFunc({"Popped node from parent stack: #{node}"})
-              } else {
-                Parser.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
-              }
-              resetCurrentResults()
-              return
-            }
-          }
-        }
       }
 
-      let parent = parentStack.peek()
-      let parser = parserStack.peek()
+      checkStatementEnd(token)
 
       Parser.log.debugFunc({"Adding token value: '#{token.value}' type: #{token.type}"})
 
@@ -128,7 +105,35 @@ class {
       consume()
     }
 
-    async consume() {
+    checkStatementEnd(Token token) {
+      if (isStatementEnd(token)) {
+        Parser.log.debugFunc({"Reached end of statement (token: #{token.value}). Generating node"})
+        generateNode()
+      } else {
+        Parser.log.debugFunc({"Not end of statement"})
+      }
+    }
+
+    isStatementEnd(Token token) => false {
+      if (tokens.isEmpty) return false
+
+      return !currentParser.checkStatementContinuation(context, token)
+    }
+
+    popScope() {
+      Parser.log.debugFunc({"Encountered closing brace"})
+      if (parentStack.count > 1) {
+        let node = parentStack.pop()
+        parserStack.pop()
+        Parser.log.debugFunc({"Popped node from parent stack: #{node}"})
+      } else {
+        let token = tokens.first
+        Parser.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+      }
+      resetCurrentResults(true)
+    }
+
+    match() -> ParserResult[] {
       Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
       let ParserResult[] results = currentResults.mapNotNull((result) => {
@@ -146,8 +151,14 @@ class {
 
       Parser.log.debugFunc({"Result count: #{results.count}"})
 
+      return results
+    }
+
+    consume() {
+      let results = match()
+
       if (results.isEmpty) {
-        generateNode()
+        generateNode(true)
       } else {
         currentResults = results
 
@@ -168,7 +179,7 @@ class {
       }
     }
 
-    async generateNode() -> NodeResult => null {
+    generateNode(Bool postConsume = false) -> NodeResult => null {
       Parser.log.debugFunc({"Generating Node"})
 
       var NodeResult nodeResult = null
@@ -194,21 +205,34 @@ class {
           Parser.log.debugFunc({"Parsed node: #{node}"})
 
           let nodeWithContext = node.copy(
-            parent: parentStack.peek(),
             annotations: context.annotations
           )
 
           let nodeContext = context.copy(
-            parent: nodeWithContext
+            parentStack: parentStack.copy():push(nodeWithContext)
           )
 
           result.parser
             .getChildParseRequests(nodeContext, result.match)
             .requests
             .mapNotNull<Node>((request) => {
-              if (let match = request.parser.matcher.matches(request.tokens)) {
-                return request.parser.generateNode(nodeContext, match)
+              let results = request.parsers
+                .mapNotNull((parser) => {
+                  return ParserResult(
+                    parser: parser,
+                    match: parser.matcher.matches(request.tokens)
+                  )
+                })
+                .toArray()
+                .filter({ _.match != null })
+                .filter({ !_.match.partial })
+                .sort({ _.match.tokens.count - _.match.tokens.count })
+
+              if (results.isNotEmpty) {
+                let result = results.first
+                return result.parser.generateNode(nodeContext, result.match)
               } else {
+                Parser.log.debugFunc({"Failed to parse child node for tokens: [#{request.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
                 invalidTokensError(request.tokens)
                 return null
               }
@@ -218,6 +242,18 @@ class {
               nodeWithContext.children.add(child)
             })
 
+          currentNode.children.add(nodeWithContext)
+
+          if (result.parser.childParsers != null) {
+            currentNode = nodeWithContext
+            currentParser = result.parser
+
+            if (currentNode.class.isOfType(ScopeNode.class)) {
+              parentStack.push(currentNode)
+              parserStack.push(currentParser)
+            }
+          }
+
           stream.emit("data", nodeWithContext)$
 
           nodeResult = NodeResult(result.parser, nodeWithContext)
@@ -225,20 +261,31 @@ class {
           Parser.log.debugFunc({"Could not generate node for tokens [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]"})
         }
       } else {
-        invalidTokens()
+        if (tokens.count == 1 && tokens.first.value == "}") {
+          popScope()
+          tokens.shift()
+          return null
+        } else {
+          invalidTokens()
+        }
       }
 
       resetCurrentResults()
       context = context.copy(annotations: AnnotationNode[])
 
-      if (tokens.isNotEmpty) {
+      if (postConsume && tokens.isNotEmpty) {
+        if (isStatementEnd(tokens.first)) {
+          Parser.log.debugFunc({"Reached statement end after generating node. Resetting current results"})
+          resetCurrentResults(true)
+        }
+
         consume()
       }
 
       return nodeResult
     }
 
-    async generateAnnotation() -> NodeResult => null {
+    generateAnnotation() -> NodeResult => null {
       Parser.log.debugFunc({"Generating Annotation"})
 
       var NodeResult nodeResult = null
@@ -256,13 +303,10 @@ class {
         let node = result.parser.generateNode(context, result.match)
 
         if (node) {
-          let nodeWithContext = node.copy(
-            parent: parentStack.peek()
-          )
           Parser.log.debugFunc({"Parsed annotation: #{node}"})
-          context.annotations.add((AnnotationNode)nodeWithContext)
+          context.annotations.add((AnnotationNode)node)
 
-          nodeResult = NodeResult(result.parser, nodeWithContext)
+          nodeResult = NodeResult(result.parser, node)
         } else {
           Parser.log.debugFunc({"Could not generate annotation node for tokens [#{matchedTokens.map(t => "'" + t.value + "'").join(", ")}]"})
         }

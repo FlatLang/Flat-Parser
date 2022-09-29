@@ -4,11 +4,13 @@ import flat/ast/Node
 import flat/compiler/models/Token
 
 abstract class {
-  let lazy ParserBase[] childParsers => Array()
+  let lazy ParserBase[] childParsers => null
   let lazy AnnotationParser annotationParser => AnnotationParser()
   let lazy TokenMatcher matcher => null
 
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
 
   public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest()
+
+  public checkStatementContinuation(ParseContext context, Token token) => false
 }

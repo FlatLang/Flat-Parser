@@ -1,22 +1,24 @@
 package flat/parser
 
-import flat/ast/AssignmentNode
+import flat/ast/ClassScopeNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
   override let lazy ParserBase[] childParsers => Array():addAll([
-    IdentifierParser(),
-    LiteralParser(),
-    FunctionCallParser()
+    AnnotationParser(),
+    CommentParser(),
+    FieldParser(),
+    FunctionParser(),
+    AssignmentParser()
   ])
 
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.SYMBOL, "=")
+    TokenMatcher(Token.Type.SYMBOL, value: "{"),
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
-    return AssignmentNode()
+  override public generateNode(ParseContext context, TokenMatch match) -> ClassScopeNode {
+    return ClassScopeNode()
   }
 }

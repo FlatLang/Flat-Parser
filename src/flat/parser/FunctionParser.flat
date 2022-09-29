@@ -8,14 +8,10 @@ class extends ParserBase {
   let static Logger log = Logger(FunctionParser.class)
 
   override let lazy ParserBase[] childParsers => Array():addAll([
-    AnnotationParser(),
-    CommentParser(),
-    FunctionCallParser(),
-    AssignmentParser(),
-    DotAccessParser(),
-    IdentifierParser(),
-    LiteralParser()
+    FunctionScopeParser()
   ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
 
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
@@ -37,7 +33,7 @@ class extends ParserBase {
     ], optional: true)
   ])
 
-  lazy ParameterParser parameterParser => ParameterParser()
+  lazy ParserBase[] parameterParsers => [ParameterParser()]
 
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")
@@ -58,10 +54,10 @@ class extends ParserBase {
         .split({ _.value == "," })
 
     return ParseRequest(
-      requests: tokens.map( {
+      requests: tokens.map({
         return ParseRequestData(
           tokens: _,
-          parser: parameterParser
+          parsers: parameterParsers
         )
       })
     )

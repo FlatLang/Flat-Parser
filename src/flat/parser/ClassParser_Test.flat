@@ -1,6 +1,7 @@
 package flat/parser
 
 import flat/datastruct/HashMap
+import flat/datastruct/list/Stack
 import flat/parser/Parser
 import flat/ast/FileNode
 import flat/ast/ClassNode
@@ -30,7 +31,7 @@ testable class {
     let parser = ClassParser()
 
     let context = ParseContext(
-      parent: FileNode(file: File("test.flat"))
+      parentStack: Stack<Node>([FileNode(file: File("test.flat"))])
     )
 
     let match = TokenMatch(null, HashMap())

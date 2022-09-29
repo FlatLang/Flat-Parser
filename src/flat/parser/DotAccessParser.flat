@@ -4,9 +4,16 @@ import flat/ast/DotAccessNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
+  override let lazy ParserBase[] childParsers => Array():addAll([
+    IdentifierParser(),
+    FunctionCallParser()
+  ])
+
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.SYMBOL, value: "."),
   ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> DotAccessNode {
     return DotAccessNode()

@@ -5,10 +5,7 @@ import flat/compiler/models/Token
 
 class extends ParserBase {
   override let lazy ParserBase[] childParsers => Array():addAll([
-    AnnotationParser(),
-    CommentParser(),
-    FieldParser(),
-    FunctionParser()
+    ClassScopeParser()
   ])
 
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
@@ -28,13 +25,15 @@ class extends ParserBase {
     ], optional: true)
   ])
 
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
   override public generateNode(ParseContext context, TokenMatch match) -> ClassNode {
     let className = match.getValue("class_name")
     let extendedClassName = match.getValue("extends_class_name")
     let implementsClassNames = match.getValues("implements_class_name")
 
     return ClassNode(
-      name: className ?: context.parent.fileNode.file.rootName,
+      name: className ?: context.fileNode.file.rootName,
       implicitName: className == null
     )
   }

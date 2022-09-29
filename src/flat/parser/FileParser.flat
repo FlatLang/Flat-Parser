@@ -11,6 +11,8 @@ class extends ParserBase {
     ClassParser()
   ])
 
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
   override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
     return null
   }

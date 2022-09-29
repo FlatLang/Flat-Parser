@@ -4,6 +4,11 @@ import flat/ast/LiteralNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
+  override let lazy ParserBase[] childParsers => Array():addAll([
+    DotAccessParser(),
+    ColonAccessParser()
+  ])
+
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.STRING, label: "value")
   ])

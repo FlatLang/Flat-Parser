@@ -4,19 +4,57 @@ import flat/ast/FunctionCallNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
+  override let lazy ParserBase[] childParsers => Array():addAll([
+    DotAccessParser(),
+    ColonAccessParser()
+  ])
+
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenMatcher(
+      label: "generic_arguments",
+      start: Token(value: "<"),
+      end: Token(value: ">"),
+      optional: true
+    ),
+    CaptureTokenMatcher(
+      label: "arguments",
       start: Token(value: "("),
       end: Token(value: ")")
     )
   ])
+
+  lazy ParserBase[] argumentParsers => [
+    AnnotationParser(),
+    CommentParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser()
+  ]
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
     let name = match.getValue("name")
 
     return FunctionCallNode(
       name: name
+    )
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+        .getMatch<CaptureTokenMatch>("arguments")
+        .capture
+        .split({ _.value == "," })
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: argumentParsers
+        )
+      })
     )
   }
 }

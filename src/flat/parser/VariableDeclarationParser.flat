@@ -15,6 +15,8 @@ class extends ParserBase {
     TokenMatcher(Token.Type.IDENTIFIER, label: "declaration_name")
   ])
 
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+
   override public generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
     let type = match.getValue("declaration_type")
     let name = match.getValue("declaration_name")
