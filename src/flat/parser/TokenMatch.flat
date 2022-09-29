@@ -6,6 +6,7 @@ import flat/compiler/models/Token
 data class {
   visible Token[] tokens
   visible HashMap<String, Array<Object>> values = HashMap()
+  visible HashMap<String, Array<TokenMatch>> matches = HashMap()
   visible Bool partial = false
 
   public getValue(String label) -> String {
@@ -27,6 +28,28 @@ data class {
       return (Array)obj
     } else {
       return String[]
+    }
+  }
+
+  public getMatch<Type extends TokenMatch>(String label) -> Type {
+    let obj = matches[label]
+
+    if (obj) {
+      let Type[] array = (Array)obj
+
+      return array.first
+    } else {
+      return null
+    }
+  }
+
+  public getMatches<Type extends TokenMatch>(String label) -> Type[] {
+    let obj = matches[label]
+
+    if (obj) {
+      return (Array)obj
+    } else {
+      return Type[]
     }
   }
 }
