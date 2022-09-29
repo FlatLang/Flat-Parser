@@ -44,32 +44,26 @@ class extends ParserBase {
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count
 
-    let parametersMatch = match.getMatch<CaptureTokenMatch>("parameters")
-
-    let functionNode = FunctionNode(
+    return FunctionNode(
       type: type,
       name: name,
-      arrayDimensions: bracketCount,
-      parent: context.parent
+      arrayDimensions: bracketCount
     )
+  }
 
-    let thisContext = context.copy(
-      parent: functionNode
-    )
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+        .getMatch<CaptureTokenMatch>("parameters")
+        .capture
+        .split({ _.value == "," })
 
-    parametersMatch.capture
-      .split({ _.value == "," })
-      .mapNotNull<TokenMatch>((tokens) => {
-        if (let match = parameterParser.matcher.matches(tokens.toArray())) {
-          return match
-        } else {
-          Parser.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
-          return null
-        }
+    return ParseRequest(
+      requests: tokens.map( {
+        return ParseRequestData(
+          tokens: _,
+          parser: parameterParser
+        )
       })
-      .map({ parameterParser.generateNode(thisContext, _) })
-      .forEach({ functionNode.children.add(_) })
-
-    return functionNode
+    )
   }
 }
