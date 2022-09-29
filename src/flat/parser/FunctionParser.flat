@@ -17,6 +17,7 @@ class extends ParserBase {
   override let lazy TokenMatcher matcher => TokenMatcherGroup([
     TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenMatcher(
+      label: "parameters",
       start: Token(value: "("),
       end: Token(value: ")")
     ),
@@ -33,15 +34,32 @@ class extends ParserBase {
     ], optional: true)
   ])
 
+  lazy ParameterParser parameterParser => ParameterParser()
+
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count
 
-    return FunctionNode(
+    let parametersMatch = match.getMatch<CaptureTokenMatch>("parameters")
+
+    let functionNode = FunctionNode(
       type: type,
       name: name,
-      arrayDimensions: bracketCount
+      arrayDimensions: bracketCount,
+      parent: context.parent
     )
+
+    let thisContext = context.copy(
+      parent: functionNode
+    )
+
+    parametersMatch.capture
+      .split({ _.value == "," })
+      .map({ parameterParser.matcher.matches(_.toArray()) })
+      .map({ parameterParser.generateNode(thisContext, _) })
+      .forEach({ functionNode.children.add(_) })
+
+    return functionNode
   }
 }
