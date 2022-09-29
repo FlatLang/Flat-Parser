@@ -9,4 +9,6 @@ abstract class {
   let lazy TokenMatcher matcher => null
 
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
+
+  public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest()
 }

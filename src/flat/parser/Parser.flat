@@ -189,11 +189,33 @@ class {
         let node = result.parser.generateNode(context, result.match)
 
         if (node) {
+          Parser.log.debugFunc({"Parsed node: #{node}"})
+
           let nodeWithContext = node.copy(
             parent: parentStack.peek(),
             annotations: context.annotations
           )
-          Parser.log.debugFunc({"Parsed node: #{node}"})
+
+          let nodeContext = context.copy(
+            parent: nodeWithContext
+          )
+
+          result.parser
+            .getChildParseRequests(nodeContext, result.match)
+            .requests
+            .mapNotNull<Node>((request) => {
+              if (let match = request.parser.matcher.matches(request.tokens)) {
+                return request.parser.generateNode(nodeContext, match)
+              } else {
+                invalidTokensError(request.tokens)
+                return null
+              }
+            })
+            .forEach((child) => {
+              Parser.log.debugFunc({"Parsed child node: #{child}"})
+              nodeWithContext.children.add(child)
+            })
+
           stream.emit("data", nodeWithContext)$
 
           nodeResult = NodeResult(result.parser, nodeWithContext)
@@ -256,12 +278,16 @@ class {
     }
 
     invalidTokens() {
+      invalidTokensError(tokens)
+      tokens = Token[]
+    }
+
+    invalidTokensError(Token[] tokens) {
       Parser.log.debugFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}]. Resetting tokens"})
       Parser.log.traceFunc({"matchedResults: #{matchedResults}"})
       if (tokens.isNotEmpty) {
         Parser.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
       }
-      tokens = Token[]
     }
   }
 }
