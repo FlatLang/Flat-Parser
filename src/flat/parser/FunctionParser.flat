@@ -2,8 +2,11 @@ package flat/parser
 
 import flat/ast/FunctionNode
 import flat/compiler/models/Token
+import flat/log/Logger
 
 class extends ParserBase {
+  let static Logger log = Logger(FunctionParser.class)
+
   override let lazy ParserBase[] childParsers => Array():addAll([
     AnnotationParser(),
     CommentParser(),
@@ -56,7 +59,14 @@ class extends ParserBase {
 
     parametersMatch.capture
       .split({ _.value == "," })
-      .map({ parameterParser.matcher.matches(_.toArray()) })
+      .mapNotNull<TokenMatch>((tokens) => {
+        if (let match = parameterParser.matcher.matches(tokens.toArray())) {
+          return match
+        } else {
+          Parser.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
+          return null
+        }
+      })
       .map({ parameterParser.generateNode(thisContext, _) })
       .forEach({ functionNode.children.add(_) })
 
