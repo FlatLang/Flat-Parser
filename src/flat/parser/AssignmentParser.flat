@@ -10,8 +10,10 @@ class extends ParserBase {
     FunctionCallParser()
   ])
 
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.SYMBOL, "=")
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.SYMBOL, "=")
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => true

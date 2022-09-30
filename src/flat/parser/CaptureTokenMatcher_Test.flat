@@ -13,104 +13,94 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can match parentheses capture`() {
-    let matcherGroup = CaptureTokenMatcher(
+  test `can match parentheses capture`() {
+    let capturePattern = CaptureTokenPattern(
       start: Token(value: "("),
       end: Token(value: ")")
     )
 
-    let result = matcherGroup.matches([
+    let matcher = capturePattern.getMatcher()
+    let result = matcher.matchAll([
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "hey", type: Token.Type.IDENTIFIER),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ])
+    ]).last
 
     let expected = CaptureTokenMatch(
-      tokens:[
+      tokens: [
         Token(value: "(", type: Token.Type.SYMBOL),
         Token(value: "hey", type: Token.Type.IDENTIFIER),
         Token(value: ")", type: Token.Type.SYMBOL)
       ],
-      capture: [Token(value: "hey", type: Token.Type.IDENTIFIER)],
-      partial: false
+      capture: [Token(value: "hey", type: Token.Type.IDENTIFIER)]
     )
 
     expect(result).toBe(expected)
+    expect(matcher.partial).toBe(false)
   }
 
-  async test `can match partial parentheses capture no with contents`() {
-    let matcherGroup = CaptureTokenMatcher(
+  test `can match partial parentheses capture no with contents`() {
+    let capturePattern = CaptureTokenPattern(
       start: Token(value: "("),
       end: Token(value: ")")
     )
 
-    let result = matcherGroup.matches([
+    let matcher = capturePattern.getMatcher()
+    let result = matcher.matchAll([
       Token(value: "(", type: Token.Type.SYMBOL)
-    ])
+    ]).last
 
-    let expected = CaptureTokenMatch(
-      tokens: [Token(value: "(", type: Token.Type.SYMBOL)],
-      capture: Array(),
-      partial: true
-    )
+    let expected = [Token(value: "(", type: Token.Type.SYMBOL)]
 
-    expect(result).toBe(expected)
+    expect(matcher.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
   }
 
-  async test `can match partial parentheses capture with contents`() {
-    let matcherGroup = CaptureTokenMatcher(
+  test `can match partial parentheses capture with contents`() {
+    let capturePattern = CaptureTokenPattern(
       start: Token(value: "("),
       end: Token(value: ")")
     )
 
-    let result = matcherGroup.matches([
+    let matcher = capturePattern.getMatcher()
+    let result = matcher.matchAll([
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "hey", type: Token.Type.IDENTIFIER)
-    ])
+    ]).last
 
-    let expected = CaptureTokenMatch(
-      tokens: [
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "hey", type: Token.Type.IDENTIFIER)
-      ],
-      capture: [Token(value: "hey", type: Token.Type.IDENTIFIER)],
-      partial: true
-    )
+    let expected = [
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "hey", type: Token.Type.IDENTIFIER)
+    ]
 
-    expect(result).toBe(expected)
+    expect(matcher.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
   }
 
-  async test `can match partial parentheses capture with nested parentheses contents`() {
-    let matcherGroup = CaptureTokenMatcher(
+  test `can match partial parentheses capture with nested parentheses contents`() {
+    let capturePattern = CaptureTokenPattern(
       start: Token(value: "("),
       end: Token(value: ")")
     )
 
-    let result = matcherGroup.matches([
+    let matcher = capturePattern.getMatcher()
+    let result = matcher.matchAll([
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "hey", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "(", type: Token.Type.SYMBOL)
-    ])
+    ]).last
 
-    let expected = CaptureTokenMatch(
-      tokens: [
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "hey", type: Token.Type.IDENTIFIER),
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "(", type: Token.Type.SYMBOL)
-      ],
-      capture: [
-        Token(value: "hey", type: Token.Type.IDENTIFIER),
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "(", type: Token.Type.SYMBOL)
-      ],
-      partial: true
-    )
+    let expected = [
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "hey", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL)
+    ]
 
-    expect(result).toBe(expected)
+    expect(matcher.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
   }
 }

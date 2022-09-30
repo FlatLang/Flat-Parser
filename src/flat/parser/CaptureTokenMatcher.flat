@@ -7,44 +7,38 @@ import flat/log/Logger
 data class extends TokenMatcher {
   let static Logger log = Logger(CaptureTokenMatcher.class)
 
-  visible Token start
-  visible Token end
+  CaptureTokenPattern pattern
 
-  public matches(Token[] tokens, Bool requireAllTokensConsumed = true) -> CaptureTokenMatch => null {
-    if (tokens.isEmpty) return null
-    if (tokens.first.value != start.value) return null
+  override public match(Token token) -> CaptureTokenMatch => null {
+    if (disqualified) return null
+    if (tokens.isEmpty && pattern.start.value != token.value) {
+      disqualified = true
+      return null
+    }
+
+    tokens.add(token)
 
     var Int depth = 1
     var Int i = 0
-    var Bool expectingEnd = false
-    var Bool partial = true
-    var Token[] capture = tokens.skip(1)
+    let capture = tokens.skip(1)
 
-    for (token in capture) {
-      match token.value {
-        start.value => depth++
-        end.value => depth--
+    for (t in capture) {
+      match t.value {
+        pattern.start.value => depth++
+        pattern.end.value => depth--
       }
 
-      if (depth == 0) {
-        partial = false
-
-        if (requireAllTokensConsumed && i != capture.count - 1) {
-          return null
-        }
-
-        break
+      if (depth == 0 && i == capture.count - 1) {
+        disqualified = true
+        valid = true
+        complete = true
+        return CaptureTokenMatch(
+          tokens: tokens.copy(),
+          capture: capture.skipLast(1)
+        )
       }
 
       i++
     }
-
-    if (!partial) {
-      capture = capture.skipLast(capture.count - i)
-    }
-
-    let matchedTokens = tokens.skipLast(tokens.count - capture.count - 2)
-
-    return CaptureTokenMatch(tokens: matchedTokens, capture: capture, partial: partial)
   }
 }

@@ -4,13 +4,15 @@ import flat/ast/ParameterNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.IDENTIFIER, label: "type"),
-    TokenMatcherGroup([
-      TokenMatcher(Token.Type.SYMBOL, "[", label: "bracket_start"),
-      TokenMatcher(Token.Type.SYMBOL, "]", label: "bracket_end")
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.IDENTIFIER, label: "type"),
+    GroupTokenPattern([
+      TokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
+      TokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
     ], repeat: true, optional: true),
-    TokenMatcher(Token.Type.IDENTIFIER, label: "name")
+    TokenPattern(Token.Type.IDENTIFIER, label: "name")
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL

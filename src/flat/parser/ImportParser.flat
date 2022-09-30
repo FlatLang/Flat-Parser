@@ -6,12 +6,14 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 class extends ParserBase {
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.IDENTIFIER, "import"),
-    TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component"),
-    TokenMatcherGroup([
-      TokenMatcher(Token.Type.SYMBOL, "/", label: "import_location_component"),
-      TokenMatcher(Token.Type.IDENTIFIER, label: "import_location_component")
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.IDENTIFIER, "import"),
+    TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
+    GroupTokenPattern([
+      TokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
+      TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
     ], repeat: true, optional: true)
   ])
 

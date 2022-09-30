@@ -5,40 +5,58 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class {
-  let static Logger log = Logger(TokenMatcher.class)
+  static Logger log = Logger(TokenMatcher.class)
 
-  let lazy Int requiredTokenCount => optional ? 0 : 1
+  visible TokenPattern pattern
 
-  visible Int tokenType
-  visible String value = null
-  visible String[] values = null
-  visible String label = null
-  visible Bool optional = false
-  visible Bool repeat = false
-  visible Bool greedy = true
+  visible Bool partial => tokens.isNotEmpty && !disqualified
 
-  public matches(Token[] tokens, Bool requireAllTokensConsumed = true) -> TokenMatch => null {
-    let matches = tokens.takeWhile((t, i) => {
-      if (!repeat && i > 0) return false
-      if (tokenType != t.type) return false
-      if (value && value != t.value) return false
-      if (values && values.none({ _ == t.value})) return false
+  Token[] _tokens = Token[]
+  visible Token[] tokens <=> _tokens
 
-      return true
-    })
+  var Bool _disqualified = false
+  visible var Bool disqualified <=> _disqualified
 
-    if (matches.isNotEmpty) {
-      let outputLabels = HashMap<String, Array<String>>()
+  var Bool _valid = false
+  visible var Bool valid <=> _valid
 
-      if (label) {
-        let labelValues = matches.map({ _.value })
+  var Bool _complete = false
+  visible var Bool complete <=> _complete
 
-        if (labelValues.isNotEmpty) {
-          outputLabels.getOrDefault(label, { Array() }).addAll(labelValues)
-        }
-      }
+  public matchAll(Token[] tokens) -> TokenMatch[] => tokens.map({ this.match(_) })
 
-      return TokenMatch(matches, outputLabels, partial: false)
+  public match(Token token) -> TokenMatch {
+    if (disqualified) return null
+    if (!pattern.repeat && tokens.isNotEmpty) {
+      disqualified = true
+      return null
     }
+    if (pattern.tokenType != token.type) {
+      disqualified = true
+      return null
+    }
+    if (pattern.value && pattern.value != token.value) {
+      disqualified = true
+      return null
+    }
+    if (pattern.values && pattern.values.none({ _ == token.value})) {
+      disqualified = true
+      return null
+    }
+
+    tokens.add(token)
+
+    let outputLabels = HashMap<String, Array<String>>()
+
+    if (pattern.label) {
+      outputLabels.getOrDefault(pattern.label, { Array() }).addAll(tokens.map({ _.value }))
+    }
+    if (!pattern.repeat) {
+      disqualified = true
+    }
+    valid = true
+    complete = true
+
+    return TokenMatch(tokens.copy(), outputLabels.copy())
   }
 }

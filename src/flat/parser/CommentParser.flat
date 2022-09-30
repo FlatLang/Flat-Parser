@@ -4,8 +4,10 @@ import flat/ast/CommentNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.COMMENT, label: "comment")
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.COMMENT, label: "comment")
   ])
 
   override public generateNode(ParseContext context, TokenMatch match) -> CommentNode {

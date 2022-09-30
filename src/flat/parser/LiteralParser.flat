@@ -9,8 +9,10 @@ class extends ParserBase {
     ColonAccessParser()
   ])
 
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.STRING, label: "value")
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.STRING, label: "value")
   ])
 
   override public generateNode(ParseContext context, TokenMatch match) -> LiteralNode {

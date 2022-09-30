@@ -1,0 +1,22 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/datastruct/list/Queue
+import flat/datastruct/list/ArrayIterator
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends TokenPattern {
+  let static Logger log = Logger(GroupTokenPattern.class)
+
+  override let lazy Int requiredTokenCount => patterns.sum({ _.requiredTokenCount })
+
+  public construct(
+    visible Array<TokenPattern> patterns,
+    this Bool optional = false,
+    this Bool repeat = false,
+    this Bool greedy = true
+  ) {}
+
+  public getMatcher() => GroupTokenMatcher(this)
+}

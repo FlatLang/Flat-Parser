@@ -13,23 +13,25 @@ class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcher(Token.Type.IDENTIFIER, label: "name"),
-    CaptureTokenMatcher(
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    TokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    CaptureTokenPattern(
       label: "parameters",
       start: Token(value: "("),
       end: Token(value: ")")
     ),
-    TokenMatcherGroup([
-      TokenMatcher(Token.Type.SYMBOL, "->"),
-      TokenMatcher(Token.Type.IDENTIFIER, label: "type"),
-      TokenMatcherGroup([
-        TokenMatcher(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
-        TokenMatcher(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+    GroupTokenPattern([
+      TokenPattern(Token.Type.SYMBOL, "->"),
+      TokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      GroupTokenPattern([
+        TokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
+        TokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true),
-    TokenMatcherGroup([
-      TokenMatcher(Token.Type.SYMBOL, "=>")
+    GroupTokenPattern([
+      TokenPattern(Token.Type.SYMBOL, "=>")
     ], optional: true)
   ])
 

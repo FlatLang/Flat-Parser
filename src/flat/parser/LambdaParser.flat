@@ -6,20 +6,22 @@ import flat/compiler/models/Token
 class extends ParserBase {
   override let lazy ParserBase[] childParsers => FunctionParser().childParsers.copy()
 
-  override let lazy TokenMatcher matcher => TokenMatcherGroup([
-    TokenMatcherGroup([
-      CaptureTokenMatcher(
+  override let lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override let lazy TokenPattern pattern => GroupTokenPattern([
+    GroupTokenPattern([
+      CaptureTokenPattern(
         label: "parameters",
         start: Token(value: "("),
         end: Token(value: ")")
       ),
-      TokenMatcher(Token.Type.SYMBOL, value: "=>")
+      TokenPattern(Token.Type.SYMBOL, value: "=>")
     ], optional: true),
-    TokenMatcherGroup([ // make this optional (make it an or condition)
-      TokenMatcher(Token.Type.IDENTIFIER, label: "param_name"),
-      TokenMatcher(Token.Type.SYMBOL, value: "=>")
+    GroupTokenPattern([ // make this optional (make it an or condition)
+      TokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
+      TokenPattern(Token.Type.SYMBOL, value: "=>")
     ], optional: true),
-    CaptureTokenMatcher(
+    CaptureTokenPattern(
       label: "body",
       start: Token(value: "{"),
       end: Token(value: "}")

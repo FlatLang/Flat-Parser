@@ -1,0 +1,134 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/datastruct/list/Queue
+import flat/datastruct/list/Stack
+import flat/datastruct/list/ArrayIterator
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends TokenMatcher {
+  let static Logger log = Logger(GroupTokenPattern.class)
+
+  GroupTokenPattern pattern
+
+  lazy ArrayIterator<TokenMatcher> iterator => pattern.patterns.map({ _.getMatcher() }).iterator
+  lazy Stack<TokenMatcher> nonGreedyMatchers => Stack()
+
+  lazy TokenMatch[] successfulMatches => TokenMatch[]
+
+  var TokenMatcher lastMatcher
+  var TokenMatcher matcher
+  var Bool nonGreedyChecked = false
+
+  nextMatcher() {
+    while (nonGreedyMatchers.isNotEmpty) {
+      log.traceFunc({"Popping nonGreedyMatcher"})
+      nonGreedyMatchers.pop()
+      iterator.stepNext
+    }
+
+    nonGreedyChecked = false
+    matcher = iterator.stepNext
+  }
+
+  addSuccessfulMatch(TokenMatch tokenMatch) {
+    if (!Object.referenceEquals(matcher, lastMatcher)) {
+      successfulMatches.add(tokenMatch)
+    } else {
+      successfulMatches[successfulMatches.count - 1] = tokenMatch
+    }
+    lastMatcher = matcher
+  }
+
+  override public match(Token token) -> TokenMatch => null {
+    if (disqualified) return null
+    if (tokens.isEmpty) {
+      if (iterator.hasNext) {
+        nextMatcher()
+      } else {
+        disqualified = true
+        return null
+      }
+    }
+    if (!matcher) {
+      disqualified = true
+      return null
+    }
+
+    tokens.add(token)
+
+    return match()
+  }
+
+  match() -> TokenMatch => null {
+    let token = tokens.last
+
+    log.traceFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]\n#{matcher.pattern}"})
+
+    if (matcher.pattern.optional && !matcher.pattern.greedy && !nonGreedyChecked) {
+      if (iterator.hasNext) {
+        log.traceFunc({"Checking next matcher because current matcher is non-greedy optional"})
+        nonGreedyMatchers.push(matcher)
+        matcher = iterator.next.copy()
+      } else {
+        log.traceFunc({"No other matchers to match. Skipping greedy check"})
+      }
+    }
+
+    if (let tokenMatch = matcher.match(token)) {
+      log.traceFunc({"Matched tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
+      addSuccessfulMatch(tokenMatch)
+
+      if (matcher.pattern.repeat) {
+        matcher = matcher.pattern.getMatcher()
+      } else if (iterator.hasNext) {
+        if (!matcher.complete) { // FIXME: handle non-greedy
+          log.traceFunc({"The match may not be complete, but is valid. Returning match"})
+        } else {
+          nextMatcher()
+          if (iterator.allNextInclusive.all({ _.pattern.optional })) {
+            log.traceFunc({"The rest of the matchers are optional. Returning match"})
+            valid = true
+          } else {
+            log.traceFunc({"There are still some required matchers. Skipping to next matcher"})
+            return null
+          }
+        }
+      } else {
+        log.traceFunc({"No more matchers. Returning match. Disqualified: #{matcher.disqualified}"})
+        disqualified = matcher.disqualified
+        valid = true
+        complete = true
+      }
+
+      return generateMatch()
+    } else if (matcher.partial) {
+      log.traceFunc({"Returning null for partial match"})
+      return null
+    } else if (nonGreedyMatchers.isNotEmpty) {
+      log.traceFunc({"Did not match the non-greedy matcher check. Reverting back to before non-greedy check"})
+      let tokensToMatch = matcher.tokens
+      tokensToMatch.forEach({ tokens.removeLast() })
+      matcher = nonGreedyMatchers.pop()
+      nonGreedyChecked = true
+      return tokensToMatch.map({
+        tokens.add(_)
+        return match()
+      }).last
+    } else if (matcher.pattern.optional && iterator.hasNext) {
+      log.traceFunc({"Did not match the optional matcher. Skipping to next matcher"})
+      nextMatcher()
+      return match()
+    } else {
+      log.traceFunc({"Did not match the required matcher. Disqualified"})
+      disqualified = true
+      return null
+    }
+  }
+
+  generateMatch() => GroupTokenMatch(
+    tokens: tokens.copy(),
+    tokenMatches: successfulMatches.copy()
+  )
+}

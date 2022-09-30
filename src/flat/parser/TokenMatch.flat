@@ -7,7 +7,6 @@ data class {
   visible Token[] tokens
   visible HashMap<String, Array<Object>> values = HashMap()
   visible HashMap<String, Array<TokenMatch>> matches = HashMap()
-  visible Bool partial = false
 
   public getValue(String label) -> String {
     let obj = values[label]
