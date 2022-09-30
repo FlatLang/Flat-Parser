@@ -147,7 +147,7 @@ class {
         }
 
         return null
-      }).toArray()
+      })
 
       Parser.log.debugFunc({"Result count: #{results.count}"})
 
@@ -162,11 +162,7 @@ class {
       } else {
         currentResults = results
 
-        annotationResults = currentResults
-          .filter({ _.match != null })
-          .filter({ !_.match.partial })
-          .filter({ _.parser.class.isOfType(AnnotationParser.class) })
-          .sort({ _.match.tokens.count - _.match.tokens.count })
+        annotationResults = getSortedResults(currentResults.filter({ _.parser.class.isOfType(AnnotationParser.class) }))
 
         if (annotationResults.isNotEmpty) {
           generateAnnotation()
@@ -179,15 +175,17 @@ class {
       }
     }
 
+    getSortedResults(ParserResult[] results) => results
+      .filter({ _.match != null })
+      .filter({ !_.match.partial })
+      .sort({ _.match.tokens.count - _.match.tokens.count })
+
     generateNode(Bool postConsume = false) -> NodeResult => null {
       Parser.log.debugFunc({"Generating Node"})
 
       var NodeResult nodeResult = null
 
-      matchedResults = currentResults
-        .filter({ _.match != null })
-        .filter({ !_.match.partial })
-        .sort({ _.match.tokens.count - _.match.tokens.count })
+      matchedResults = getSortedResults(currentResults)
 
       if (matchedResults.isNotEmpty) {
         Parser.log.debugFunc({"|
@@ -216,17 +214,15 @@ class {
             .getChildParseRequests(nodeContext, result.match)
             .requests
             .mapNotNull<Node>((request) => {
-              let results = request.parsers
-                .mapNotNull((parser) => {
-                  return ParserResult(
-                    parser: parser,
-                    match: parser.matcher.matches(request.tokens)
-                  )
-                })
-                .toArray()
-                .filter({ _.match != null })
-                .filter({ !_.match.partial })
-                .sort({ _.match.tokens.count - _.match.tokens.count })
+              let results = getSortedResults(
+                request.parsers
+                  .mapNotNull((parser) => {
+                    return ParserResult(
+                      parser: parser,
+                      match: parser.matcher.matches(request.tokens)
+                    )
+                  })
+              )
 
               if (results.isNotEmpty) {
                 let result = results.first

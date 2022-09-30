@@ -40,10 +40,10 @@ data class extends TokenMatcher {
     }
 
     if (!partial) {
-      capture = capture.skipLast(capture.count - i).toArray()
+      capture = capture.skipLast(capture.count - i)
     }
 
-    let matchedTokens = tokens.skipLast(tokens.count - capture.count - 2).toArray()
+    let matchedTokens = tokens.skipLast(tokens.count - capture.count - 2)
 
     return CaptureTokenMatch(tokens: matchedTokens, capture: capture, partial: partial)
   }

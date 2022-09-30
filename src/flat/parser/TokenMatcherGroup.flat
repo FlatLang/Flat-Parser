@@ -27,7 +27,7 @@ data class extends TokenMatcher {
       return null
     }
 
-    tokens = tokens.toArray()
+    tokens = tokens.copy()
 
     let outputLabels = HashMap<String, Array<String>>()
     let outputMatches = HashMap<String, Array<TokenMatch>>()
@@ -158,7 +158,7 @@ data class extends TokenMatcher {
             submatcher: #{matcher}
             matcher: #{this}
           |"})
-        return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.toArray(), outputLabels, outputMatches, partial: true))
+        return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.copy(), outputLabels, outputMatches, partial: true))
       } else if (matcher.optional) {
         log.traceFunc({"Did not match the optional matcher. Skipping to next matcher"})
         return ProcessMatchResponse(CONTINUE)
@@ -175,7 +175,7 @@ data class extends TokenMatcher {
           submatcher: #{matcher}
           matcher: #{this}
         |"})
-      return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.toArray(), outputLabels, outputMatches, partial: true))
+      return ProcessMatchResponse(RETURN, TokenMatch(matchedTokens.copy(), outputLabels, outputMatches, partial: true))
     } else if (match.tokens.isEmpty) {
       log.traceFunc({"Match contains no tokens. Skipping match"})
       return ProcessMatchResponse(CONTINUE)

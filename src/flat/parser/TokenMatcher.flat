@@ -25,7 +25,7 @@ data class {
       if (values && values.none({ _ == t.value})) return false
 
       return true
-    }).toArray()
+    })
 
     if (matches.isNotEmpty) {
       let outputLabels = HashMap<String, Array<String>>()
