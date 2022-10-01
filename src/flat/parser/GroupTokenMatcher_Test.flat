@@ -368,73 +368,73 @@ testable class {
     expect(result).toBe(null)
   }
 
-  // async test `can match complete multiple captures with nested contents`() {
-  //   let groupPattern = GroupTokenPattern([
-  //     CaptureTokenPattern(
-  //       start: Token(value: "<"),
-  //       end: Token(value: ">")
-  //     ),
-  //     CaptureTokenPattern(
-  //       start: Token(value: "("),
-  //       end: Token(value: ")")
-  //     )
-  //   ])
+  async test `can match complete multiple captures with nested contents`() {
+    let groupPattern = GroupTokenPattern([
+      CaptureTokenPattern(
+        start: Token(value: "<"),
+        end: Token(value: ">")
+      ),
+      CaptureTokenPattern(
+        start: Token(value: "("),
+        end: Token(value: ")")
+      )
+    ])
 
-  //   let matcher = groupPattern.getMatcher()
-  //   let result = matcher.matchAll([
-  //     Token(value: "<", type: Token.Type.SYMBOL),
-  //     Token(value: "bob", type: Token.Type.IDENTIFIER),
-  //     Token(value: ">", type: Token.Type.SYMBOL),
-  //     Token(value: "(", type: Token.Type.SYMBOL),
-  //     Token(value: "saget", type: Token.Type.IDENTIFIER),
-  //     Token(value: ")", type: Token.Type.SYMBOL)
-  //   ]).last
+    let matcher = groupPattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "<", type: Token.Type.SYMBOL),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "saget", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]).last
 
-  //   let expected = [
-  //     Token(value: "<", type: Token.Type.SYMBOL),
-  //     Token(value: "bob", type: Token.Type.IDENTIFIER),
-  //     Token(value: ">", type: Token.Type.SYMBOL),
-  //     Token(value: "(", type: Token.Type.SYMBOL),
-  //     Token(value: "saget", type: Token.Type.IDENTIFIER),
-  //     Token(value: ")", type: Token.Type.SYMBOL)
-  //   ]
+    let expected = [
+      Token(value: "<", type: Token.Type.SYMBOL),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "saget", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]
 
-  //   expect(result?.tokens).toBe(expected)
-  //   expect(matcher.partial).toBe(false)
-  // }
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(false)
+  }
 
-  // async test `can match partial multiple captures with nested contents`() {
-  //   let groupPattern = GroupTokenPattern([
-  //     CaptureTokenPattern(
-  //       start: Token(value: "<"),
-  //       end: Token(value: ">")
-  //     ),
-  //     CaptureTokenPattern(
-  //       start: Token(value: "("),
-  //       end: Token(value: ")")
-  //     )
-  //   ])
+  async test `can match partial multiple captures with nested contents`() {
+    let groupPattern = GroupTokenPattern([
+      CaptureTokenPattern(
+        start: Token(value: "<"),
+        end: Token(value: ">")
+      ),
+      CaptureTokenPattern(
+        start: Token(value: "("),
+        end: Token(value: ")")
+      )
+    ])
 
-  //   let matcher = groupPattern.getMatcher()
-  //   let result = matcher.matchAll([
-  //     Token(value: "<", type: Token.Type.SYMBOL),
-  //     Token(value: "bob", type: Token.Type.IDENTIFIER),
-  //     Token(value: ">", type: Token.Type.SYMBOL),
-  //     Token(value: "(", type: Token.Type.SYMBOL),
-  //     Token(value: "saget", type: Token.Type.IDENTIFIER),
-  //     Token(value: "(", type: Token.Type.SYMBOL)
-  //   ])
+    let matcher = groupPattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "<", type: Token.Type.SYMBOL),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "saget", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL)
+    ])
 
-  //   let expected = [
-  //     Token(value: "<", type: Token.Type.SYMBOL),
-  //     Token(value: "bob", type: Token.Type.IDENTIFIER),
-  //     Token(value: ">", type: Token.Type.SYMBOL),
-  //     Token(value: "(", type: Token.Type.SYMBOL),
-  //     Token(value: "saget", type: Token.Type.IDENTIFIER),
-  //     Token(value: "(", type: Token.Type.SYMBOL)
-  //   ]
+    let expected = [
+      Token(value: "<", type: Token.Type.SYMBOL),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "saget", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL)
+    ]
 
-  //   expect(matcher.tokens).toBe(expected)
-  //   expect(matcher.partial).toBe(true)
-  // }
+    expect(matcher.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
+  }
 }
