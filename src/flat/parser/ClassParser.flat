@@ -11,18 +11,18 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, "class"),
-    TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true),
     GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "extends"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+      SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
     ], optional: true),
     GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "implements"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, ","),
-        TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
       ], repeat: true, optional: true)
     ], optional: true)
   ])

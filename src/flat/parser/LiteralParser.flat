@@ -12,7 +12,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.STRING, label: "value")
+    SingleTokenPattern(Token.Type.STRING, label: "value")
   ])
 
   override public generateNode(ParseContext context, TokenMatch match) -> LiteralNode {

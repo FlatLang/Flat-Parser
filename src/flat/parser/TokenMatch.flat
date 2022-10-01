@@ -3,56 +3,37 @@ package flat/parser
 import flat/datastruct/HashMap
 import flat/compiler/models/Token
 
-data class {
+abstract data class {
   visible Token[] tokens
-  visible HashMap<String, Array<Object>> values = HashMap()
-  visible HashMap<String, Array<TokenMatch>> matches = HashMap()
   visible String label
 
   public getValue(String label) -> String {
-    let obj = values[label]
+    let values = this.getValues(label)
 
-    if (obj) {
-      let String[] array = (Array)obj
-
-      return array.first
-    } else {
-      return null
-    }
+    return values.first
   }
 
   public getValues(String label) -> String[] {
-    let obj = values[label]
-
-    if (obj) {
-      return (Array)obj
-    } else {
-      return String[]
+    if (this.label == label) {
+      return tokens.map({ _.value })
     }
+
+    return String[]
   }
 
   public getMatch<Type extends TokenMatch>(String label) -> Type {
-    let obj = matches[label]
+    let matches = this.getMatches(label)
 
-    if (obj) {
-      let Type[] array = (Array)obj
-
-      return array.first
-    } else {
-      return null
-    }
+    return matches.first
   }
 
   public getMatches<Type extends TokenMatch>(String label) -> Type[] {
-    let array = matches[label]
+    let array = Type[]
 
-    if (array) {
-      if (this.label == label) {
-        return Array():add(this):addAll(array)
-      }
-      return array
-    } else {
-      return Type[]
+    if (this.label == label) {
+      array.add(this)
     }
+
+    return array
   }
 }

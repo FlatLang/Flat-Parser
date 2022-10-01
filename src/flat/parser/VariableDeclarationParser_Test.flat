@@ -11,12 +11,16 @@ testable class {
   async test `can parse declaration`() {
     let parser = VariableDeclarationParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap()
-        :add("declaration_type", Array<String>():add("String"))
-        :add("declaration_name", Array<String>():add("test"))
-    )
+    let match = GroupTokenMatch(tokenMatches: [
+      SingleTokenMatch(
+        tokens: [Token(value: "String", type: Token.Type.IDENTIFIER)],
+        label: "declaration_type"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
+        label: "declaration_name"
+      )
+    ])
 
     let result = parser.generateNode(null, match)
 
@@ -31,14 +35,24 @@ testable class {
   async test `can parse declaration with array type`() {
     let parser = VariableDeclarationParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap()
-        :add("declaration_type", Array<String>():add("String"))
-        :add("declaration_name", Array<String>():add("test"))
-        :add("bracket_start", Array<String>():add("["))
-        :add("bracket_end", Array<String>():add("]"))
-    )
+    let match = GroupTokenMatch(tokenMatches: [
+      SingleTokenMatch(
+        tokens: [Token(value: "String", type: Token.Type.IDENTIFIER)],
+        label: "declaration_type"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
+        label: "declaration_name"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "[", type: Token.Type.SYMBOL)],
+        label: "bracket_start"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "]", type: Token.Type.SYMBOL)],
+        label: "bracket_end"
+      )
+    ])
 
     let result = parser.generateNode(null, match)
 

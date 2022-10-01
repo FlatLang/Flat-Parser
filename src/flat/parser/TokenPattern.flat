@@ -4,7 +4,7 @@ import flat/datastruct/HashMap
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class {
+abstract data class {
   let static Logger log = Logger(TokenPattern.class)
 
   lazy Int requiredTokenCount => optional ? 0 : 1
@@ -17,5 +17,5 @@ data class {
   visible Bool repeat = false
   visible Bool greedy = true
 
-  public getMatcher() => TokenMatcher(this)
+  public abstract getMatcher() -> TokenMatcher
 }

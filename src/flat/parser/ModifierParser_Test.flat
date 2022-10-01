@@ -18,11 +18,12 @@ testable class {
   async test `can parse visible modifier`() {
     let parser = ModifierParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap()
-        :add("alias", Array<String>():add("visible"))
-    )
+    let match = GroupTokenMatch(tokenMatches: [
+      SingleTokenMatch(
+        tokens: [Token(value: "visible", type: Token.Type.IDENTIFIER)],
+        label: "alias"
+      )
+    ])
 
     let result = parser.generateNode(null, match)
 

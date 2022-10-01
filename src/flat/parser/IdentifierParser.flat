@@ -13,7 +13,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, label: "name")
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL

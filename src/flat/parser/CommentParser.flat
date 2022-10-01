@@ -7,7 +7,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.COMMENT, label: "comment")
+    SingleTokenPattern(Token.Type.COMMENT, label: "comment")
   ])
 
   override public generateNode(ParseContext context, TokenMatch match) -> CommentNode {

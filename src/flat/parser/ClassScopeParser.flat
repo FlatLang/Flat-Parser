@@ -15,7 +15,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.SYMBOL, value: "{"),
+    SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => true

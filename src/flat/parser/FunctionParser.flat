@@ -16,22 +16,22 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "parameters",
       start: Token(value: "("),
       end: Token(value: ")")
     ),
     GroupTokenPattern([
-      TokenPattern(Token.Type.SYMBOL, "->"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      SingleTokenPattern(Token.Type.SYMBOL, "->"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
-        TokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+        SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
+        SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true),
     GroupTokenPattern([
-      TokenPattern(Token.Type.SYMBOL, "=>")
+      SingleTokenPattern(Token.Type.SYMBOL, "=>")
     ], optional: true)
   ])
 

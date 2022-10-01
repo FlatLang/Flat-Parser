@@ -7,12 +7,12 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, label: "type"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
     GroupTokenPattern([
-      TokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
-      TokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
+      SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
+      SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
     ], repeat: true, optional: true),
-    TokenPattern(Token.Type.IDENTIFIER, label: "name")
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL

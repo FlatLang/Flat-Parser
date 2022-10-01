@@ -6,20 +6,8 @@ import flat/compiler/models/Token
 data class extends TokenMatch {
   visible TokenMatch[] tokenMatches
 
-  override public getValue(String label) -> String {
-    let values = this.getValues(label)
-
-    return values.first
-  }
-
   override public getValues(String label) -> String[] {
     return tokenMatches.flatMap({ _.getValues(label) })
-  }
-
-  override public getMatch<Type extends TokenMatch>(String label) -> Type {
-    let matches = this.getMatches(label)
-
-    return matches.first
   }
 
   override public getMatches<Type extends TokenMatch>(String label) -> Type[] {

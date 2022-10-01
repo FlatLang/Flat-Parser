@@ -1,0 +1,11 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends TokenPattern {
+  let static Logger log = Logger(SingleTokenPattern.class)
+
+  public getMatcher() => SingleTokenMatcher(this)
+}

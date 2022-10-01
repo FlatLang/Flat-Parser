@@ -12,7 +12,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "generic_arguments",
       start: Token(value: "<"),

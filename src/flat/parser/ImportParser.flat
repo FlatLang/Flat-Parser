@@ -9,11 +9,11 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, "import"),
-    TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "import"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
     GroupTokenPattern([
-      TokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
+      SingleTokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
     ], repeat: true, optional: true)
   ])
 

@@ -18,7 +18,7 @@ class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
       :addAll(VisibleModifier.aliases)
       :addAll(PublicModifier.aliases)
       :addAll(PrivateModifier.aliases)

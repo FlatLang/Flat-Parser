@@ -15,11 +15,11 @@ class extends ParserBase {
         start: Token(value: "("),
         end: Token(value: ")")
       ),
-      TokenPattern(Token.Type.SYMBOL, value: "=>")
+      SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
     ], optional: true),
     GroupTokenPattern([ // make this optional (make it an or condition)
-      TokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
-      TokenPattern(Token.Type.SYMBOL, value: "=>")
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
     ], optional: true),
     CaptureTokenPattern(
       label: "body",

@@ -11,13 +11,28 @@ testable class {
   async test `can parse import declaration`() {
     let parser = ImportParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap():add(
-        "import_location_component",
-        Array<String>():addAll(["flat", "/", "thing", "/", "test"])
+    let match = GroupTokenMatch(tokenMatches: [
+      SingleTokenMatch(
+        tokens: [Token(value: "flat", type: Token.Type.IDENTIFIER)],
+        label: "import_location_component"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "/", type: Token.Type.SYMBOL)],
+        label: "import_location_component"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "thing", type: Token.Type.IDENTIFIER)],
+        label: "import_location_component"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "/", type: Token.Type.SYMBOL)],
+        label: "import_location_component"
+      ),
+      SingleTokenMatch(
+        tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
+        label: "import_location_component"
       )
-    )
+    ])
 
     let result = parser.generateNode(null, match)
 
@@ -29,13 +44,12 @@ testable class {
   async test `can parse single letter import declaration`() {
     let parser = ImportParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap():add(
-        "import_location_component",
-        Array<String>():addAll(["a"])
+    let match = GroupTokenMatch(tokenMatches: [
+      SingleTokenMatch(
+        tokens: [Token(value: "a", type: Token.Type.IDENTIFIER)],
+        label: "import_location_component"
       )
-    )
+    ])
 
     let result = parser.generateNode(null, match)
 

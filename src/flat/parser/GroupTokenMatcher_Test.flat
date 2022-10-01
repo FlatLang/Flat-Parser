@@ -15,8 +15,8 @@ import flat/io/File
 testable class {
   async test `can match package matcher group`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "package"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
     ])
 
     let result = groupPattern
@@ -32,11 +32,11 @@ testable class {
 
   async test `can match package matcher group with unmatched optional repeating package_location_component`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "package"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+        SingleTokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
       ], repeat: true, optional: true)
     ])
 
@@ -53,11 +53,11 @@ testable class {
 
   async test `can match package matcher group with matched optional repeating package_location_component`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "package"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+        SingleTokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
       ], repeat: true, optional: true)
     ])
 
@@ -78,18 +78,18 @@ testable class {
 
   async test `can match multiple nested matcher groups with matched optional repeating values`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "class"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "extends"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+        SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
       ], optional: true),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "implements"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
         GroupTokenPattern([
-          TokenPattern(Token.Type.SYMBOL, ","),
-          TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
         ], repeat: true, optional: true)
       ], optional: true)
     ])
@@ -116,18 +116,18 @@ testable class {
 
   async test `can match multiple nested matcher groups with matched optional repeating values where the non-greedy value is matched`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "class"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "extends"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+        SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
       ], optional: true),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "implements"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
         GroupTokenPattern([
-          TokenPattern(Token.Type.SYMBOL, ","),
-          TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
         ], repeat: true, optional: true)
       ], optional: true)
     ])
@@ -155,7 +155,7 @@ testable class {
 
   async test `can match against matcher with multiple values`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array():addAll([
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array():addAll([
           "test1", "test2", "test3", "test4"
         ])
       )
@@ -173,11 +173,11 @@ testable class {
 
   async test `can match partially against matcher when too few tokens given`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "package"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+        SingleTokenPattern(Token.Type.SYMBOL, "/", label: "package_location_component"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
       ], repeat: true, optional: true)
     ])
 
@@ -195,11 +195,11 @@ testable class {
 
   async test `doesnt match partially against matcher when too few and incorrect tokens given`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "import"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "import"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
+        SingleTokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
       ], repeat: true, optional: true)
     ])
 
@@ -217,18 +217,18 @@ testable class {
 
   async test `doesnt match partially against matcher when too many tokens that dont match are given`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "class"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "extends"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+        SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
       ], optional: true),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "implements"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
         GroupTokenPattern([
-          TokenPattern(Token.Type.SYMBOL, ","),
-          TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
         ], repeat: true, optional: true)
       ], optional: true)
     ])
@@ -256,18 +256,18 @@ testable class {
 
   async test `matches against just first identifier if all others are optional`() {
     let groupPattern = GroupTokenPattern([
-      TokenPattern(Token.Type.IDENTIFIER, "class"),
-      TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "extends"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+        SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
       ], optional: true),
       GroupTokenPattern([
-        TokenPattern(Token.Type.IDENTIFIER, "implements"),
-        TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
         GroupTokenPattern([
-          TokenPattern(Token.Type.SYMBOL, ","),
-          TokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
         ], repeat: true, optional: true)
       ], optional: true)
     ])
@@ -284,13 +284,13 @@ testable class {
   async test `matches completely against multiple entry options`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "["),
-        TokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
-        TokenPattern(Token.Type.SYMBOL, "]")
+        SingleTokenPattern(Token.Type.SYMBOL, "["),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
+        SingleTokenPattern(Token.Type.SYMBOL, "]")
       ], optional: true),
       GroupTokenPattern([
         GroupTokenPattern([
-          TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
             :addAll(VisibleModifier.aliases)
             :addAll(PublicModifier.aliases)
             :addAll(PrivateModifier.aliases)
@@ -313,13 +313,13 @@ testable class {
   async test `doesnt match complete single array bracket in annotation matcher`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "["),
-        TokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
-        TokenPattern(Token.Type.SYMBOL, "]")
+        SingleTokenPattern(Token.Type.SYMBOL, "["),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
+        SingleTokenPattern(Token.Type.SYMBOL, "]")
       ], optional: true),
       GroupTokenPattern([
         GroupTokenPattern([
-          TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
             :addAll(VisibleModifier.aliases)
             :addAll(PublicModifier.aliases)
             :addAll(PrivateModifier.aliases)
@@ -342,13 +342,13 @@ testable class {
   async test `doesnt match ending part of annotation`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
-        TokenPattern(Token.Type.SYMBOL, "["),
-        TokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
-        TokenPattern(Token.Type.SYMBOL, "]")
+        SingleTokenPattern(Token.Type.SYMBOL, "["),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
+        SingleTokenPattern(Token.Type.SYMBOL, "]")
       ], optional: true),
       GroupTokenPattern([
         GroupTokenPattern([
-          TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
             :addAll(VisibleModifier.aliases)
             :addAll(PublicModifier.aliases)
             :addAll(PrivateModifier.aliases)

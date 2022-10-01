@@ -14,9 +14,9 @@ class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     GroupTokenPattern([
-      TokenPattern(Token.Type.SYMBOL, "["),
-      TokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
-      TokenPattern(Token.Type.SYMBOL, "]")
+      SingleTokenPattern(Token.Type.SYMBOL, "["),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
+      SingleTokenPattern(Token.Type.SYMBOL, "]")
     ], optional: true),
     GroupTokenPattern(annotationParsers.map({ _.pattern }), optional: true)
   ])

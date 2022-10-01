@@ -12,9 +12,9 @@ testable class {
   async test `can parse declaration`() {
     let parser = ClassParser()
 
-    let match = TokenMatch(
-      null,
-      HashMap():add("class_name", Array():add("Bob"))
+    let match = SingleTokenMatch(
+      tokens: [Token(value: "Bob", type: Token.Type.IDENTIFIER)],
+      label: "class_name"
     )
 
     let result = parser.generateNode(null, match)
@@ -34,7 +34,7 @@ testable class {
       parentStack: Stack<Node>([FileNode(file: File("test.flat"))])
     )
 
-    let match = TokenMatch(null, HashMap())
+    let match = SingleTokenMatch(tokens: Array())
 
     let result = parser.generateNode(context, match)
 
