@@ -7,6 +7,7 @@ data class {
   visible Token[] tokens
   visible HashMap<String, Array<Object>> values = HashMap()
   visible HashMap<String, Array<TokenMatch>> matches = HashMap()
+  visible String label
 
   public getValue(String label) -> String {
     let obj = values[label]
@@ -43,10 +44,13 @@ data class {
   }
 
   public getMatches<Type extends TokenMatch>(String label) -> Type[] {
-    let obj = matches[label]
+    let array = matches[label]
 
-    if (obj) {
-      return (Array)obj
+    if (array) {
+      if (this.label == label) {
+        return Array():add(this):addAll(array)
+      }
+      return array
     } else {
       return Type[]
     }

@@ -34,7 +34,8 @@ data class extends TokenMatcher {
         complete = true
         return CaptureTokenMatch(
           tokens: tokens.copy(),
-          capture: capture.skipLast(1)
+          capture: capture.skipLast(1),
+          label: pattern.label
         )
       }
 

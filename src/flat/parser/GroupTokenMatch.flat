@@ -23,6 +23,17 @@ data class extends TokenMatch {
   }
 
   override public getMatches<Type extends TokenMatch>(String label) -> Type[] {
-    return tokenMatches.flatMap({ _.getMatches(label) })
+    let array = Type[]
+
+    if (this.label == label) {
+      array.add(this)
+    }
+
+    tokenMatches
+      :forEach({ array.addAll(_.getMatches(label)) })
+      .filter({ _.label == label })
+      :forEach({ array.add(_) })
+
+    return array
   }
 }

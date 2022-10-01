@@ -57,6 +57,10 @@ data class {
     valid = true
     complete = true
 
-    return TokenMatch(tokens.copy(), outputLabels.copy())
+    return TokenMatch(
+      tokens: tokens.copy(),
+      values: outputLabels.copy(),
+      label: pattern.label
+    )
   }
 }

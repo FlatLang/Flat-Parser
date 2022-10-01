@@ -129,6 +129,7 @@ data class extends TokenMatcher {
 
   generateMatch() => GroupTokenMatch(
     tokens: tokens.copy(),
-    tokenMatches: successfulMatches.copy()
+    tokenMatches: successfulMatches.copy(),
+    label: pattern.label
   )
 }
