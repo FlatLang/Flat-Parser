@@ -9,9 +9,9 @@ class extends ParserBase {
     ColonAccessParser()
   ])
 
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     TokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "generic_arguments",

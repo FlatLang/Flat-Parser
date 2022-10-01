@@ -15,9 +15,9 @@ import flat/ast/Node
 import flat/extensions/SyntaxStringFunctions
 
 class extends ParserBase {
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     TokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
       :addAll(VisibleModifier.aliases)
       :addAll(PublicModifier.aliases)

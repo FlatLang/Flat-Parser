@@ -8,9 +8,9 @@ class extends ParserBase {
     ClassScopeParser()
   ])
 
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     TokenPattern(Token.Type.IDENTIFIER, "class"),
     TokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true),
     GroupTokenPattern([

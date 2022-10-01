@@ -7,7 +7,7 @@ import flat/log/Logger
 data class {
   let static Logger log = Logger(TokenPattern.class)
 
-  let lazy Int requiredTokenCount => optional ? 0 : 1
+  lazy Int requiredTokenCount => optional ? 0 : 1
 
   visible Int tokenType
   visible String value = null

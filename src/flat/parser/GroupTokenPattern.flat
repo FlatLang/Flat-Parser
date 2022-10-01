@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends TokenPattern {
   let static Logger log = Logger(GroupTokenPattern.class)
 
-  override let lazy Int requiredTokenCount => patterns.sum({ _.requiredTokenCount })
+  override lazy Int requiredTokenCount => patterns.sum({ _.requiredTokenCount })
 
   public construct(
     visible Array<TokenPattern> patterns,

@@ -4,10 +4,10 @@ import flat/ast/Node
 import flat/compiler/models/Token
 
 abstract class {
-  let lazy AnnotationParser annotationParser => AnnotationParser()
-  let lazy TokenPattern pattern => null
-  let lazy TokenMatcher matcher => null
   ParserBase[] childParsers => null
+  lazy AnnotationParser annotationParser => AnnotationParser()
+  lazy TokenPattern pattern => null
+  lazy TokenMatcher matcher => null
 
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
 

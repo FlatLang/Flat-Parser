@@ -9,9 +9,9 @@ class extends ParserBase {
     FunctionCallParser()
   ])
 
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     TokenPattern(Token.Type.SYMBOL, value: ":"),
   ])
 

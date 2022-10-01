@@ -6,13 +6,13 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 class extends ParserBase {
-  let lazy ParserBase[] annotationParsers = Array().addAll([
+  lazy ParserBase[] annotationParsers = Array().addAll([
     ModifierParser()
   ])
 
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     GroupTokenPattern([
       TokenPattern(Token.Type.SYMBOL, "["),
       TokenPattern(Token.Type.IDENTIFIER, label: "identifier"),

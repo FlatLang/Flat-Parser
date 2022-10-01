@@ -13,9 +13,9 @@ class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override let lazy TokenMatcher matcher => pattern.getMatcher()
+  override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override let lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern([
     TokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "parameters",
