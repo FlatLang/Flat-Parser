@@ -35,7 +35,7 @@ class extends ParserBase {
     ], optional: true)
   ])
 
-  lazy ParserBase[] parameterParsers => [ParameterParser()]
+  ParserBase[] parameterParsers => [ParameterParser()]
 
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")

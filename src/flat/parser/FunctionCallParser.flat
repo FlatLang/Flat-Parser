@@ -26,7 +26,7 @@ class extends ParserBase {
     )
   ])
 
-  lazy ParserBase[] argumentParsers => [
+  ParserBase[] argumentParsers => [
     AnnotationParser(),
     CommentParser(),
     FunctionCallParser(),
