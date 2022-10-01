@@ -233,4 +233,30 @@ testable class {
     expect(result?.tokens).toBe(expected)
     expect(matcher.partial).toBe(false)
   }
+
+  async test `can access parameters from capture`() {
+    let matcher = FunctionParser().matcher
+    let match = matcher.matchAll([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "value", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]).last
+
+    expect(match).toNotBe(null, "Match is null")
+
+    let captureMatch = match.getMatch<CaptureTokenMatch>("parameters")
+
+    expect(captureMatch).toNotBe(null, "Capture match is null")
+
+    let result = captureMatch.capture
+
+    let expected = [
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "value", type: Token.Type.IDENTIFIER)
+    ]
+
+    expect(result).toBe(expected)
+  }
 }
