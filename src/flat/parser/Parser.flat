@@ -46,6 +46,16 @@ class {
   }
 
   private class ParseHandler {
+    private data class ParserResult {
+      visible ParserBase parser
+      visible TokenMatch match
+    }
+
+    private data class NodeResult {
+      visible ParserBase parser
+      visible Node node
+    }
+
     Stack<Node> parentStack = Stack()
     Stack<ParserBase> parserStack = Stack()
 
@@ -58,16 +68,6 @@ class {
     var ParseContext context = ParseContext()
     var Node currentNode
     var ParserBase currentParser
-
-    private data class ParserResult {
-      visible ParserBase parser
-      visible TokenMatch match
-    }
-
-    private data class NodeResult {
-      visible ParserBase parser
-      visible Node node
-    }
 
     construct(
       private FileNode fileNode,
@@ -105,6 +105,27 @@ class {
       consume()
     }
 
+    consume() {
+      let results = matchParsers(tokens.last)
+
+      if (results.isEmpty) {
+        generateNode(true)
+      } else {
+        currentResults = results
+
+        annotationResults = getSortedResults(currentResults.filter({ _.parser.class.isOfType(AnnotationParser.class) }))
+
+        if (annotationResults.isNotEmpty) {
+          generateAnnotation()
+        } else {
+          Parser.log.debugFunc({"|
+            Carrying over results:
+              #{results.map(x => x.parser.class.name).join("\n  ")}
+            |"})
+        }
+      }
+    }
+
     checkStatementEnd(Token token) {
       if (isStatementEnd(token)) {
         Parser.log.debugFunc({"Reached end of statement (token: #{token.value}). Generating node"})
@@ -133,17 +154,21 @@ class {
       resetCurrentResults(true)
     }
 
-    match() -> ParserResult[] {
-      Parser.log.debugFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
+    matchParsers(Token token) -> ParserResult[] {
+      Parser.log.debugFunc({"Matching tokens (token: '#{token.value}'): [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
       let ParserResult[] results = currentResults.mapNotNull((result) => {
-        if (let match = result.parser.matcher.matches(tokens)) {
-          if (!match.partial) {
-             Parser.log.debugFunc({"Matched: #{result.parser.class.name}: #{match.values}"})
+        Parser.log.debugFunc({"Matching with parser: #{result.parser.class.name}"})
+        let match = result.parser.matcher.match(token)
+        if (match || !result.parser.matcher.disqualified) {
+          if (!result.parser.matcher.partial) {
+            Parser.log.debugFunc({"Matched: #{result.parser.class.name}"})
           } else {
-             Parser.log.debugFunc({"Partial match: #{result.parser.class.name}: #{match.values}"})
+            Parser.log.debugFunc({"Partial match: #{result.parser.class.name}"})
           }
           return result.copy(match: match)
+        } else {
+          Parser.log.debugFunc({"Did not match: #{result.parser.class.name}. Dropping parser"})
         }
 
         return null
@@ -154,30 +179,8 @@ class {
       return results
     }
 
-    consume() {
-      let results = match()
-
-      if (results.isEmpty) {
-        generateNode(true)
-      } else {
-        currentResults = results
-
-        annotationResults = getSortedResults(currentResults.filter({ _.parser.class.isOfType(AnnotationParser.class) }))
-
-        if (annotationResults.isNotEmpty) {
-          generateAnnotation()
-        } else {
-          Parser.log.debugFunc({"|
-            Carrying over results:
-              #{results.map(x => x.parser.class.name + ": " + x.match.values + " partial: " + x.match.partial).join("\n  ")}
-            |"})
-        }
-      }
-    }
-
     getSortedResults(ParserResult[] results) => results
       .filter({ _.match != null })
-      .filter({ !_.match.partial })
       .sort({ _.match.tokens.count - _.match.tokens.count })
 
     generateNode(Bool postConsume = false) -> NodeResult => null {
@@ -190,7 +193,7 @@ class {
       if (matchedResults.isNotEmpty) {
         Parser.log.debugFunc({"|
           Matched results:
-            #{matchedResults.map(x => x.parser.class.name + ": " + x.match.values).join("\n  ")}
+            #{matchedResults.map(x => x.parser.class.name).join("\n  ")}
           |"})
 
         let result = matchedResults.first
@@ -219,7 +222,7 @@ class {
                   .mapNotNull((parser) => {
                     return ParserResult(
                       parser: parser,
-                      match: parser.matcher.matches(request.tokens)
+                      match: parser.matcher.copy().matchAll(request.tokens).last
                     )
                   })
               )
@@ -289,7 +292,7 @@ class {
       if (annotationResults.isNotEmpty) {
         Parser.log.debugFunc({"|
           Annotation results:
-            #{annotationResults.map(x => x.parser.class.name + ": " + x.match.values).join("\n  ")}
+            #{annotationResults.map(x => x.parser.class.name).join("\n  ")}
           |"})
 
         let result = annotationResults.first
