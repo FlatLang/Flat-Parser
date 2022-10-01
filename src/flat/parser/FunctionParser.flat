@@ -7,7 +7,7 @@ import flat/log/Logger
 class extends ParserBase {
   let static Logger log = Logger(FunctionParser.class)
 
-  override let lazy ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => Array():addAll([
     FunctionScopeParser()
   ])
 

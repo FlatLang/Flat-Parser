@@ -8,7 +8,7 @@ import flat/extensions/SyntaxStringFunctions
 import flat/ast/Node
 
 class extends ParserBase {
-  override let lazy ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => Array():addAll([
     AssignmentParser()
   ])
 

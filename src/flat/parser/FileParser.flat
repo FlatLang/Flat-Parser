@@ -3,7 +3,7 @@ package flat/parser
 import flat/ast/FileNode
 
 class extends ParserBase {
-  override let lazy ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => Array():addAll([
     AnnotationParser(),
     CommentParser(),
     ImportParser(),

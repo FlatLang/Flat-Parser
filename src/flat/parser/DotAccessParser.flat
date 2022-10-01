@@ -4,7 +4,7 @@ import flat/ast/DotAccessNode
 import flat/compiler/models/Token
 
 class extends ParserBase {
-  override let lazy ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => Array():addAll([
     IdentifierParser(),
     FunctionCallParser()
   ])
