@@ -7,7 +7,7 @@ data class extends TokenMatch {
   visible TokenMatch[] tokenMatches
 
   override public getValue(String label) -> String {
-    let values = getValues(label)
+    let values = this.getValues(label)
 
     return values.first
   }
@@ -17,7 +17,7 @@ data class extends TokenMatch {
   }
 
   override public getMatch<Type extends TokenMatch>(String label) -> Type {
-    let matches = getMatches(label)
+    let matches = this.getMatches(label)
 
     return matches.first
   }
