@@ -30,17 +30,17 @@ class {
       Parser.log.traceFunc({"Received data from Token Stream: #{token}"})
 
       handler.consume(token)
-    })$
+    })
 
     tokenStream.on<String>("error", (error) => {
       Parser.log.traceFunc({"Received error from Token Stream: #{error}"})
       stream.emit("error", error)$
-    })$
+    })
 
     tokenStream.on("close", {
       Parser.log.traceFunc({"Token Stream closed"})
       stream.emit("close")$
-    })$
+    })
 
     return stream
   }
