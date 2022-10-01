@@ -30,6 +30,51 @@ testable class {
     expect(result?.getValues("package_location_component")).toBe(["test"])
   }
 
+  async test `does not return value after second time matching`() {
+    let groupPattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+    ])
+
+    let matcher = groupPattern.getMatcher()
+    var result = matcher.matchAll([
+      Token(value: "package", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(result?.getValues("package_location_component")).toBe(["test"])
+
+    result = matcher.matchAll([
+      Token(value: "package", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(result).toBe(null)
+  }
+
+  async test `does return value after second time matching if the matcher is reset`() {
+    let groupPattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
+    ])
+
+    let matcher = groupPattern.getMatcher()
+    var result = matcher.matchAll([
+      Token(value: "package", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(result?.getValues("package_location_component")).toBe(["test"])
+
+    matcher.reset()
+    result = matcher.matchAll([
+      Token(value: "package", type: Token.Type.IDENTIFIER),
+      Token(value: "test2", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(result?.getValues("package_location_component")).toBe(["test2"])
+  }
+
   async test `can match package matcher group with unmatched optional repeating package_location_component`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),

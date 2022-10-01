@@ -132,4 +132,16 @@ data class extends TokenMatcher {
     tokenMatches: successfulMatches.copy(),
     label: pattern.label
   )
+
+  override public reset() {
+    super.reset()
+
+    iterator.reset()
+    iterator.allNextInclusive.forEach({ _.reset() })
+    nonGreedyMatchers.clear()
+    successfulMatches.clear()
+    lastMatcher = null
+    matcher = null
+    nonGreedyChecked = false
+  }
 }
