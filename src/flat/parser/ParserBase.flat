@@ -9,9 +9,20 @@ abstract class {
   lazy TokenPattern pattern => null
   lazy TokenMatcher matcher => null
 
+  public var TokenMatch lastMatch
+
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
 
   public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest()
 
   public checkStatementContinuation(ParseContext context, Token token) => false
+
+  public match(Token token) -> TokenMatch => null {
+    if (!matcher) return null
+
+    if (let match = matcher.match(token))  {
+      lastMatch = match
+      return match
+    }
+  }
 }
