@@ -19,7 +19,8 @@ import flat/parser/Parser
   ModifierParser_Test,
   AnnotationParser_Test,
   FunctionParser_Test,
-  CommentParser_Test
+  CommentParser_Test,
+  ClassScopeParser_Test
 ]]
 class {
   public static async main(String args[]) {
