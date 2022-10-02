@@ -5,6 +5,7 @@ import flat/annotations/LetModifier
 import flat/compiler/models/Token
 import flat/ast/Node
 import flat/ast/AnnotationNode
+import flat/ast/ClassScopeNode
 import flat/ast/FileNode
 import flat/ast/FieldNode
 import flat/ast/PackageNode
@@ -171,5 +172,20 @@ testable class {
       type: "String",
       name: "thing"
     ))
+  }
+
+  async test `resets currentNode after latest parsed node statement is ended`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "aling", type: Token.Type.IDENTIFIER))
+
+    expect(engine.currentNode).toBe(ClassScopeNode())
   }
 }
