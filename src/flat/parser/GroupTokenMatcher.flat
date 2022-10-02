@@ -41,7 +41,9 @@ data class extends TokenMatcher {
     lastMatcher = matcher
   }
 
-  override public match(Token token) -> TokenMatch => null {
+  override public match(Token token) => tokenMatches.add(doMatch(token))
+
+  doMatch(Token token) -> TokenMatch => null {
     if (disqualified) return null
     if (tokens.isEmpty) {
       if (iterator.hasNext) {

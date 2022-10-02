@@ -10,6 +10,10 @@ data class extends TokenMatcher {
   SingleTokenPattern pattern
 
   override public match(Token token) -> SingleTokenMatch {
+    return tokenMatches.add(doMatch(token))
+  }
+
+  doMatch(Token token) -> SingleTokenMatch {
     if (disqualified) return null
     if (!pattern.repeat && tokens.isNotEmpty) {
       disqualified = true

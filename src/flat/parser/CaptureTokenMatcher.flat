@@ -9,7 +9,11 @@ data class extends TokenMatcher {
 
   CaptureTokenPattern pattern
 
-  override public match(Token token) -> CaptureTokenMatch => null {
+  override public match(Token token) -> CaptureTokenMatch {
+    return tokenMatches.add(doMatch(token))
+  }
+
+  doMatch(Token token) -> CaptureTokenMatch => null {
     if (disqualified) return null
     if (tokens.isEmpty && pattern.start.value != token.value) {
       disqualified = true

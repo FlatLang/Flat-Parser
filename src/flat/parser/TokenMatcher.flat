@@ -11,6 +11,9 @@ abstract data class {
 
   visible Bool partial => tokens.isNotEmpty && !disqualified
 
+  var TokenMatch[] _tokenMatches = TokenMatch[]
+  visible TokenMatch[] tokenMatches <=> _tokenMatches
+
   var Token[] _tokens = Token[]
   visible Token[] tokens <=> _tokens
 
@@ -29,6 +32,7 @@ abstract data class {
 
   public reset() {
     _tokens = Array()
+    _tokenMatches = Array()
     _disqualified = false
     _valid = false
     _complete = false
