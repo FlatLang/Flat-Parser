@@ -1,0 +1,258 @@
+package flat/parser
+
+import flat/datastruct/list/Stack
+import flat/ast/Node
+import flat/ast/AnnotationNode
+import flat/ast/FileNode
+import flat/ast/ScopeNode
+import flat/compiler/models/Token
+import flat/io/File
+import flat/log/Logger
+import flat/stream/Stream
+
+class {
+  let static Logger log = Logger(ParseEngine.class)
+
+  visible Stack<Node> parentStack = Stack()
+  Stack<ParserBase> parserStack = Stack()
+  Stack<Array<ParserBase>> parsersStack = Stack()
+
+  let AnnotationParser annotationParser = AnnotationParser()
+
+  var Token[] tokens = Token[]
+  var ParseContext context = ParseContext()
+
+  var Node currentNode
+  var ParserBase currentParser
+  var ParserBase[] currentParsers = ParserBase[]
+
+  public construct(
+    private FileNode fileNode,
+    private Stream stream
+  ) {
+    pushScope(FileParser(), fileNode)
+  }
+
+  public containsCurrentMatches() =>
+    currentParsers.any(p => p.matcher.partial || p.matcher.tokenMatches.last != null)
+
+  public getCurrentMatches() =>
+    currentParsers.filter(p => p.matcher.partial || p.matcher.tokenMatches.last != null)
+
+  public containsValidMatches() =>
+    currentParsers.any({ _.lastMatch != null })
+
+  public getValidMatches() =>
+    currentParsers.filter({ _.lastMatch != null })
+
+  public getBestMatch(ParserBase[] parsers) -> ParserBase {
+    let maxTokenCount = parsers.max({ _.lastMatch.tokens.count })
+
+    if (parsers.howMany({ _.lastMatch.tokens.count == maxTokenCount }) > 1) {
+      log.debugFunc({"Multiple parsers available, choosing first: [#{parsers.filter(p => p.lastMatch.tokens.count == maxTokenCount).map(p => p.class.name).join(", ")}]"})
+    }
+
+    return parsers.firstWhere({ _.lastMatch.tokens.count == maxTokenCount })
+  }
+
+  public consume(Token token) {
+    match token.type {
+      Token.Type.WS => return
+      Token.Type.SYMBOL => {
+        match token.value {
+          "}" => {
+            ParseEngine.log.debugFunc({"Encountered closing brace"})
+            tryGenerateNodeForRemainingTokens()
+            popScope(token)
+            return
+          }
+        }
+      }
+    }
+
+    checkStatementEnd(token)
+
+    tokens.add(token)
+
+    matchToken(token)
+  }
+
+  public matchToken(Token token) {
+    ParseEngine.log.debugFunc({"Matching token: '#{token.value}' (tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}])"})
+    ParseEngine.log.debugFunc({"Parsers: [#{currentParsers.map(p => p.class.name).join(", ")}]"})
+
+    currentParsers.forEach((parser) => {
+      if (let match = parser.match(token)) {
+        ParseEngine.log.debugFunc({"Matched: #{parser.class.name}"})
+      } else if (parser.matcher.partial) {
+        ParseEngine.log.debugFunc({"Partial match: #{parser.class.name}"})
+      }
+    })
+
+    let containsCurrentMatches = containsCurrentMatches()
+
+    if (!containsCurrentMatches()) {
+      ParseEngine.log.debugFunc({"No current matches"})
+      if (containsValidMatches()) {
+        ParseEngine.log.debugFunc({"Has valid matches"})
+        let parser = getBestMatch(getValidMatches())
+        let node = generateNode(parser)
+        updateScopeForNode(parser, node)
+        clearTokensAfterParse(parser)
+      } else {
+        ParseEngine.log.debugFunc({"No valid matches"})
+      }
+    } else {
+      ParseEngine.log.debugFunc({"Has current matches"})
+      ParseEngine.log.traceFunc({"Current matches: #{getCurrentMatches()}"})
+
+      if (containsValidMatches()) {
+        ParseEngine.log.debugFunc({"Has valid matches"})
+        let parser = getBestMatch(getValidMatches())
+        ParseEngine.log.debugFunc({"Matched parser: #{parser.class.name}"})
+
+        if (parser.class.isOfType(AnnotationParser.class)) {
+          ParseEngine.log.debugFunc({"Generating annotation"})
+          if (let annotation = generateAnnotation(parser)) {
+            context.annotations.add(annotation)
+            clearTokensAfterParse(parser)
+          }
+        } else {
+          ParseEngine.log.debugFunc({"Not an annotation. Skipping"})
+        }
+      } else {
+        ParseEngine.log.debugFunc({"No valid matches"})
+      }
+    }
+  }
+
+  reset() {
+    ParseEngine.log.debugFunc({"Resetting parsers"})
+    currentParsers.forEach({ _.reset() })
+  }
+
+  clearTokensAfterParse(ParserBase parser) {
+    parser.lastMatch.tokens.forEach({
+      if (tokens.isNotEmpty) {
+        tokens.shift()
+      }
+    })
+
+    if (tokens.isNotEmpty && isStatementEnd(tokens.first)) {
+      resetCurrentScope()
+    }
+
+    reset()
+
+    tokens.forEach({ matchToken(_) })
+  }
+
+  generateNode(ParserBase parser) -> Node {
+    ParseEngine.log.debugFunc({"Generating node for parser: #{parser.class.name}"})
+    let node = parser.generateNode(context, parser.lastMatch)
+
+    if (!node) {
+      throw Exception("Failed to parse node for parser: #{parser}")
+    }
+
+    stream.emit("data", node)$
+
+    return node
+  }
+
+  generateAnnotation(AnnotationParser parser) -> AnnotationNode {
+    ParseEngine.log.debugFunc({"Generating annotation for parser: #{parser.class.name}"})
+    let node = parser.generateNode(context, parser.lastMatch)
+
+    if (!node) {
+      throw Exception("Failed to parse annotation for parser: #{parser}")
+    }
+
+    return node
+  }
+
+  updateScopeForNode(ParserBase parser, Node node) {
+    if (node.class.isOfType(ScopeNode.class)) {
+      pushScope(parser, node)
+    } else if (let childParsers = parser.childParsers) {
+      currentNode = node
+      currentParser = parser
+      currentParsers = childParsers
+      context = context.copy(parentStack: parentStack.copy():push(currentNode))
+    }
+  }
+
+  tryGenerateNodeForRemainingTokens() {
+    if (tokens.isEmpty) return
+
+    if (!containsValidMatches()) {
+      ParseEngine.log.debugFunc({"No valid matches. Not generating node"})
+      invalidTokens()
+      resetCurrentScope()
+      return
+    }
+
+    let parser = getBestMatch(getValidMatches())
+    let node = generateNode(parser)
+    updateScopeForNode(parser, node)
+    clearTokensAfterParse(parser)
+  }
+
+  checkStatementEnd(Token token) {
+    if (isStatementEnd(token)) {
+      ParseEngine.log.debugFunc({"Reached end of statement (token: #{token.value}). Generating node"})
+      tryGenerateNodeForRemainingTokens()
+    } else {
+      ParseEngine.log.debugFunc({"Not end of statement"})
+    }
+  }
+
+  public isStatementEnd(Token token) => false {
+    if (tokens.isEmpty) return false
+
+    return !currentParser.checkStatementContinuation(context, token)
+  }
+
+  resetCurrentScope() {
+    ParseEngine.log.debugFunc({"Resetting current scope"})
+    currentNode = parentStack.peek()
+    currentParser = parserStack.peek()
+    currentParsers = parsersStack.peek()
+    context = context.copy(
+      parentStack: parentStack.copy(),
+      annotations: Array()
+    )
+  }
+
+  pushScope(ParserBase parser, Node node) { // FIXME: make this only accept ScopeNode (make a FileScopeNode)
+    ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node}"})
+    currentNode = parentStack.push(node)
+    currentParser = parserStack.push(parser)
+    currentParsers = parsersStack.push(parser.childParsers)
+    context = context.copy(parentStack: parentStack.copy())
+  }
+
+  popScope(Token token) {
+    if (parentStack.count > 1) {
+      ParseEngine.log.debugFunc({"Popping node from parent stack: #{parentStack.peek()}"})
+      currentNode = parentStack:pop().peek()
+      currentParser = parserStack:pop().peek()
+      currentParsers = parsersStack:pop().peek()
+      context = context.copy(parentStack: parentStack.copy())
+    } else {
+      ParseEngine.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+    }
+  }
+
+  invalidTokens() {
+    invalidTokensError(tokens)
+    tokens = Token[]
+  }
+
+  invalidTokensError(Token[] tokens) {
+    ParseEngine.log.debugFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}]. Resetting tokens. Parser #{currentParser.class.name}"})
+    if (tokens.isNotEmpty && tokens.first.location) {
+      ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
+    }
+  }
+}

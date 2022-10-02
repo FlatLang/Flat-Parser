@@ -1,0 +1,175 @@
+package flat/parser
+
+import flat/parser/Parser
+import flat/annotations/LetModifier
+import flat/compiler/models/Token
+import flat/ast/Node
+import flat/ast/AnnotationNode
+import flat/ast/FileNode
+import flat/ast/FieldNode
+import flat/ast/PackageNode
+import flat/stream/Stream
+import flat/io/File
+
+testable class {
+  async test `can consume a token`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+
+    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+  }
+
+  async test `can find a package match`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+
+    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe([
+      GroupTokenMatch(
+        tokens: [
+          Token(value: "package", type: Token.Type.IDENTIFIER),
+          Token(value: "test", type: Token.Type.IDENTIFIER)
+        ],
+        tokenMatches: [
+          SingleTokenMatch(
+            tokens: [Token(value: "package", type: Token.Type.IDENTIFIER)]
+          ),
+          SingleTokenMatch(
+            tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
+            label: "package_location_component"
+          )
+        ]
+      )
+    ])
+  }
+
+  async test `does not return package match once the next token breaks the parser matcher`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
+
+    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+  }
+
+  async test `returns valid package match once the next token breaks the parser matcher`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+
+    expect(engine.getValidMatches().mapNotNull({ _.lastMatch })).toBe([
+      GroupTokenMatch(
+        tokens: [
+          Token(value: "package", type: Token.Type.IDENTIFIER),
+          Token(value: "test", type: Token.Type.IDENTIFIER)
+        ],
+        tokenMatches: [
+          SingleTokenMatch(
+            tokens: [Token(value: "package", type: Token.Type.IDENTIFIER)]
+          ),
+          SingleTokenMatch(
+            tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
+            label: "package_location_component"
+          )
+        ]
+      )
+    ])
+
+    engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
+
+    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+  }
+
+  async test `emits node after valid package match once the next token breaks the parser matcher`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(null)
+
+    engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(PackageNode(location: "test"))
+  }
+
+  async test `can parse full package before creating node`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(null)
+
+    engine.consume(Token(value: "/", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "test2", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(null)
+
+    engine.consume(Token(value: "/", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "test3", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(null)
+
+    engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(PackageNode(location: "test/test2/test3"))
+  }
+
+  async test `pushes scope to parentStack`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
+
+    expect(engine.parentStack.count).toBe(1)
+
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+
+    expect(engine.parentStack.count).toBe(2)
+  }
+
+  async test `sets currentNode to latest parsed node`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "=", type: Token.Type.SYMBOL))
+
+    expect(engine.currentNode).toBe(FieldNode(
+      type: "String",
+      name: "thing"
+    ))
+  }
+}
