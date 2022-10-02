@@ -4,7 +4,11 @@ import flat/datastruct/list/Stack
 import flat/ast/Node
 import flat/ast/AnnotationNode
 import flat/ast/FileNode
+import flat/ast/ClassNode
+import flat/ast/FunctionNode
 import flat/ast/ScopeNode
+import flat/ast/ClassScopeNode
+import flat/ast/FunctionScopeNode
 import flat/ast/FileScopeNode
 import flat/compiler/models/Token
 import flat/io/File
@@ -31,7 +35,7 @@ class {
     private FileNode fileNode,
     private Stream stream
   ) {
-    context = context.copy(fileNode: fileNode)
+    pushScope(FileParser(), fileNode)
     pushScope(FileScopeParser(), FileScopeNode())
   }
 
@@ -140,8 +144,15 @@ class {
       }
     })
 
-    if (tokens.isNotEmpty && isStatementEnd(tokens.first)) {
-      resetCurrentScope()
+    if (tokens.isNotEmpty) {
+      ParseEngine.log.debugFunc({"Checking statement end for token '#{tokens.first.value}'"})
+      if (isStatementEnd(tokens.first)) {
+        resetCurrentScope()
+      } else {
+        ParseEngine.log.debugFunc({"Not statement end"})
+      }
+    } else {
+      ParseEngine.log.debugFunc({"No tokens left after clearing tokens"})
     }
 
     reset()
@@ -174,13 +185,22 @@ class {
   }
 
   public updateScopeForNode(ParserBase parser, Node node) {
-    if (node.class.isOfType(ScopeNode.class)) {
-      pushScope(parser, (ScopeNode)node)
-    } else if (let childParsers = parser.childParsers) {
-      currentNode = node
-      currentParser = parser
-      currentParsers = childParsers
-      context = context.copy(parentStack: parentStack.copy():push(currentNode))
+    match node.class {
+      FileNode.class => fallthrough
+      ClassNode.class => fallthrough
+      FunctionNode.class => fallthrough
+      FileScopeNode.class => fallthrough
+      ClassScopeNode.class => fallthrough
+      FunctionScopeNode.class => fallthrough
+      ScopeNode.class => pushScope(parser, node)
+      default => {
+        if (let childParsers = parser.childParsers) {
+          currentNode = node
+          currentParser = parser
+          currentParsers = childParsers
+          context = context.copy(parentStack: parentStack.copy():push(currentNode))
+        }
+      }
     }
   }
 
@@ -226,8 +246,8 @@ class {
     )
   }
 
-  public pushScope(ParserBase parser, ScopeNode node) {
-    ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node}"})
+  public pushScope(ParserBase parser, Node node) {
+    ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node} (parser: #{parser.class.name})"})
     currentNode = parentStack.push(node)
     currentParser = parserStack.push(parser)
     currentParsers = parsersStack.push(parser.childParsers)

@@ -6,6 +6,7 @@ import flat/parser/Parser
 import flat/ast/FileNode
 import flat/ast/FileScopeNode
 import flat/ast/ClassNode
+import flat/ast/Node
 import flat/compiler/models/Token
 import flat/io/File
 
@@ -32,8 +33,7 @@ testable class {
     let parser = ClassParser()
 
     let context = ParseContext(
-      parentStack: Stack([FileScopeNode()]),
-      fileNode: FileNode(file: File("test.flat"))
+      parentStack: Stack<Node>([FileNode(file: File("test.flat")), FileScopeNode()])
     )
 
     let match = SingleTokenMatch(tokens: Array())

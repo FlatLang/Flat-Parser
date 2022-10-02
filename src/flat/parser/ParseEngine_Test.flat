@@ -147,14 +147,16 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
+    expect(engine.parentStack.count).toBe(2)
+
     engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
 
-    expect(engine.parentStack.count).toBe(1)
+    expect(engine.parentStack.count).toBe(3)
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
 
-    expect(engine.parentStack.count).toBe(2)
+    expect(engine.parentStack.count).toBe(4)
   }
 
   async test `sets currentNode to latest parsed node`() {
