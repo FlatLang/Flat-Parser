@@ -33,4 +33,10 @@ abstract class {
       matcher.reset()
     }
   }
+
+  override public toString() => "|
+    #{this.class.name} {
+      \"pattern\": #{pattern},
+      \"lastMatch\": #{lastMatch}
+    |"
 }
