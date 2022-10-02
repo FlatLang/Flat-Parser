@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/compiler/models/Token
 import flat/ast/FileNode
 
 class extends ParserBase {
@@ -11,7 +12,15 @@ class extends ParserBase {
     ClassParser()
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
+  override public checkStatementContinuation(ParseContext context, Token token) => true {
+    match token.type {
+      Token.Type.SYMBOL => {
+        match token.value {
+          "{" => return false
+        }
+      }
+    }
+  }
 
   override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
     return null
