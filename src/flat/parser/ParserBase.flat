@@ -25,4 +25,12 @@ abstract class {
       return match
     }
   }
+
+  public reset() {
+    lastMatch = null
+
+    if (matcher) {
+      matcher.reset()
+    }
+  }
 }
