@@ -1,6 +1,7 @@
 package flat/parser
 
 import flat/parser/Parser
+import flat/parser/ClassScopeParser
 import flat/annotations/LetModifier
 import flat/compiler/models/Token
 import flat/ast/Node
@@ -161,8 +162,8 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
-    engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
@@ -179,8 +180,8 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
-    engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
