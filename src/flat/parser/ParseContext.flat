@@ -7,8 +7,7 @@ import flat/ast/AnnotationNode
 import flat/compiler/models/Token
 
 data class {
-  visible Stack<Node> parentStack = Stack()
+  visible Stack<ScopeNode> parentStack = Stack()
   visible AnnotationNode[] annotations = AnnotationNode[]
-
-  visible FileNode fileNode => parentStack.toArray().firstWhere({ _.class.isOfType(FileNode.class) })
+  visible FileNode fileNode
 }

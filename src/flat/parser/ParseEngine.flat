@@ -5,6 +5,7 @@ import flat/ast/Node
 import flat/ast/AnnotationNode
 import flat/ast/FileNode
 import flat/ast/ScopeNode
+import flat/ast/FileScopeNode
 import flat/compiler/models/Token
 import flat/io/File
 import flat/log/Logger
@@ -30,7 +31,8 @@ class {
     private FileNode fileNode,
     private Stream stream
   ) {
-    pushScope(FileParser(), fileNode)
+    context = context.copy(fileNode: fileNode)
+    pushScope(FileScopeParser(), FileScopeNode())
   }
 
   public containsCurrentMatches() =>
@@ -173,7 +175,7 @@ class {
 
   updateScopeForNode(ParserBase parser, Node node) {
     if (node.class.isOfType(ScopeNode.class)) {
-      pushScope(parser, node)
+      pushScope(parser, (ScopeNode)node)
     } else if (let childParsers = parser.childParsers) {
       currentNode = node
       currentParser = parser
@@ -224,7 +226,7 @@ class {
     )
   }
 
-  pushScope(ParserBase parser, Node node) { // FIXME: make this only accept ScopeNode (make a FileScopeNode)
+  pushScope(ParserBase parser, ScopeNode node) {
     ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node}"})
     currentNode = parentStack.push(node)
     currentParser = parserStack.push(parser)

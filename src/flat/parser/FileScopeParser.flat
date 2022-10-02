@@ -1,0 +1,28 @@
+package flat/parser
+
+import flat/compiler/models/Token
+import flat/ast/FileScopeNode
+
+class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    AnnotationParser(),
+    CommentParser(),
+    ImportParser(),
+    PackageParser(),
+    ClassParser()
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true {
+    match token.type {
+      Token.Type.SYMBOL => {
+        match token.value {
+          "{" => return false
+        }
+      }
+    }
+  }
+
+  override public generateNode(ParseContext context, TokenMatch match) -> FileScopeNode {
+    return null
+  }
+}
