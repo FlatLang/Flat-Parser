@@ -1,0 +1,48 @@
+package flat/parser
+
+import flat/ast/ArrayAccessNode
+import flat/compiler/models/Token
+
+class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    AnnotationParser(),
+    CommentParser(),
+    DotAccessParser(),
+    ColonAccessParser(),
+    ArrayAccessParser()
+  ])
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, value: "["),
+    NodeTokenPattern(indexParsers, label: "index"),
+    SingleTokenPattern(Token.Type.SYMBOL, value: "]"),
+  ])
+
+  ParserBase[] indexParsers => [
+    AnnotationParser(),
+    CommentParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser()
+  ]
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ArrayAccessNode {
+    let arrayAccessNode = ArrayAccessNode()
+
+    let arrayAccessContext = context.copy(
+      parentStack: context.parentStack.copy():push(arrayAccessNode)
+    )
+
+    if (let nodeMatch = match.getMatch<NodeTokenMatch>("index")) {
+      if (let indexNode = nodeMatch.parser.generateNode(arrayAccessContext, nodeMatch)) {
+        arrayAccessNode.children.add(indexNode)
+      }
+    }
+
+    return arrayAccessNode
+  }
+}

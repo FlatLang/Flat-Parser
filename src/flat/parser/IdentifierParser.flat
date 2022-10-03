@@ -5,9 +5,11 @@ import flat/compiler/models/Token
 
 class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
+    CommentParser(),
     DotAccessParser(),
     ColonAccessParser(),
-    AssignmentParser()
+    AssignmentParser(),
+    ArrayAccessParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
