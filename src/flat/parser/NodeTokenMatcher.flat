@@ -11,6 +11,8 @@ data class extends TokenMatcher {
 
   NodeTokenPattern pattern
 
+  var ParserBase lastMatch
+
   override public match(Token token) -> NodeTokenMatch {
     return tokenMatches.add(doMatch(token))
   }
@@ -32,7 +34,7 @@ data class extends TokenMatcher {
     }
 
     if (pattern.parsers.all(p => !p.matcher.complete && p.matcher.disqualified)) {
-      log.trace("All matchers are disqualified. Disqualified")
+      log.traceFunc({"All matchers are disqualified. Disqualified"})
       disqualified = true
       return null
     }
@@ -42,10 +44,34 @@ data class extends TokenMatcher {
     valid = true
 
     if (matches.isNotEmpty) {
-      log.trace("Matches: #{matches.map(m => green(m.class.name))} parser: #{matchParser.class.name}")
+      log.traceFunc({"Matches: #{matches.map(m => green(m.class.name))} parser: #{matchParser.class.name}"})
       complete = matchParser.matcher.complete && pattern.parsers.none({ _.matcher.partial })
+      lastMatch = matchParser
     } else {
-      log.trace("Matches are empty")
+      log.traceFunc({"Matches are empty"})
+      let partialMatch = pattern.parsers.any({ _.matcher.partial })
+      if (lastMatch) {
+        log.traceFunc({"Has last match"})
+        if (partialMatch) {
+          log.traceFunc({"Contains partial matches. Continuing"})
+          return null
+        } else {
+          log.traceFunc({"No more partial matches. Disqualified"})
+          complete = lastMatch.matcher.complete
+          disqualified = true
+          return null
+        }
+      } else {
+        log.traceFunc({"Does not have last match"})
+        if (partialMatch) {
+          log.traceFunc({"Contains partial matches. Continuing"})
+          return null
+        } else {
+          log.traceFunc({"Never matched. Disqualified"})
+          disqualified = true
+          return null
+        }
+      }
     }
 
     return NodeTokenMatch(
