@@ -141,6 +141,7 @@ class {
   }
 
   public clearTokensAfterParse(ParserBase parser) {
+    ParseEngine.log.debugFunc({"Removing tokens from last parse: [#{parser.lastMatch.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
     parser.lastMatch.tokens.forEach({
       if (tokens.isNotEmpty) {
         tokens.shift()
