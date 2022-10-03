@@ -93,7 +93,7 @@ data class extends TokenMatcher {
             log.traceFunc({"The rest of the matchers are optional. Returning match"})
             valid = true
           } else {
-            log.traceFunc({"There are still some required matchers. Skipping to next matcher"})
+            log.traceFunc({"There are still some required matchers. Skipped to next matcher"})
             return null
           }
         }
