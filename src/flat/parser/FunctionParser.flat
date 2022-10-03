@@ -17,11 +17,17 @@ class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
-    CaptureTokenPattern(
-      label: "parameters",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    ),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      GroupTokenPattern([
+        NodeTokenPattern([ParameterParser()], label: "parameters"),
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          NodeTokenPattern([ParameterParser()], label: "parameters")
+        ], optional: true, repeat: true),
+      ], optional: true),
+      SingleTokenPattern(Token.Type.SYMBOL, ")")
+    ]),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "->"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
@@ -42,11 +48,22 @@ class extends ParserBase {
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count
 
-    return FunctionNode(
+    let functionNode = FunctionNode(
       type: type,
       name: name,
       arrayDimensions: bracketCount
     )
+
+    let functionContext = context.copy(
+      parentStack: context.parentStack.copy():push(functionNode)
+    )
+
+    let parameters = match.getMatches<NodeTokenMatch>("parameters")
+      .map(m => m.parser.generateNode(context, m))
+
+    functionNode.children.addAll(parameters)
+
+    return functionNode
   }
 
   override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
