@@ -39,16 +39,16 @@ class {
     pushScope(FileScopeParser(), FileScopeNode())
   }
 
-  public containsCurrentMatches() =>
+  public containsPartialMatches() =>
     currentParsers.any(p => p.matcher.partial || p.matcher.tokenMatches.last != null)
 
-  public getCurrentMatches() =>
+  public getPartialMatches() =>
     currentParsers.filter(p => p.matcher.partial || p.matcher.tokenMatches.last != null)
 
-  public containsValidMatches() =>
+  public containsCompletedMatches() =>
     currentParsers.any({ _.lastMatch != null })
 
-  public getValidMatches() =>
+  public getCompletedMatches() =>
     currentParsers.filter({ _.lastMatch != null })
 
   public getBestMatch(ParserBase[] parsers) -> ParserBase {
@@ -95,27 +95,29 @@ class {
       }
     })
 
-    let containsCurrentMatches = containsCurrentMatches()
+    let containsPartialMatches = containsPartialMatches()
 
-    if (!containsCurrentMatches()) {
-      ParseEngine.log.debugFunc({"No current matches"})
-      if (containsValidMatches()) {
-        ParseEngine.log.debugFunc({"Has valid matches"})
-        let parser = getBestMatch(getValidMatches())
+    if (!containsPartialMatches()) {
+      ParseEngine.log.debugFunc({"No partial matches"})
+      if (containsCompletedMatches()) {
+        ParseEngine.log.debugFunc({"Has completed matches"})
+        ParseEngine.log.traceFunc({"Completed matches:\n  #{getCompletedMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
+        let parser = getBestMatch(getCompletedMatches())
         let node = generateNode(parser)
         updateScopeForNode(parser, node)
         clearTokensAfterParse(parser)
       } else {
-        ParseEngine.log.debugFunc({"No valid matches"})
+        ParseEngine.log.debugFunc({"No completed matches"})
         invalidTokens()
       }
     } else {
-      ParseEngine.log.debugFunc({"Has current matches"})
-      ParseEngine.log.traceFunc({"Current matches:\n  #{getCurrentMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
+      ParseEngine.log.debugFunc({"Has partial matches"})
+      ParseEngine.log.traceFunc({"Partial matches:\n  #{getPartialMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
 
-      if (containsValidMatches()) {
-        ParseEngine.log.debugFunc({"Has valid matches"})
-        let parser = getBestMatch(getValidMatches())
+      if (containsCompletedMatches()) {
+        ParseEngine.log.debugFunc({"Has completed matches"})
+        ParseEngine.log.traceFunc({"Completed matches:\n  #{getCompletedMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
+        let parser = getBestMatch(getCompletedMatches())
         ParseEngine.log.debugFunc({"Matched parser: #{parser.class.name}"})
 
         if (parser.class.isOfType(AnnotationParser.class)) {
@@ -128,7 +130,7 @@ class {
           ParseEngine.log.debugFunc({"Not an annotation. Skipping"})
         }
       } else {
-        ParseEngine.log.debugFunc({"No valid matches"})
+        ParseEngine.log.debugFunc({"No completed matches"})
       }
     }
   }
@@ -208,13 +210,13 @@ class {
   public tryGenerateNodeForRemainingTokens() {
     if (tokens.isEmpty) return
 
-    if (!containsValidMatches()) {
-      ParseEngine.log.debugFunc({"No valid matches. Not generating node"})
+    if (!containsCompletedMatches()) {
+      ParseEngine.log.debugFunc({"No completed matches. Not generating node"})
       invalidTokens()
       return
     }
 
-    let parser = getBestMatch(getValidMatches())
+    let parser = getBestMatch(getCompletedMatches())
     let node = generateNode(parser)
     updateScopeForNode(parser, node)
     clearTokensAfterParse(parser)

@@ -24,7 +24,7 @@ testable class {
 
     engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
 
-    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+    expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
   async test `can find a package match`() {
@@ -35,7 +35,7 @@ testable class {
     engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
 
-    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe([
+    expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe([
       GroupTokenMatch(
         tokens: [
           Token(value: "package", type: Token.Type.IDENTIFIER),
@@ -63,7 +63,7 @@ testable class {
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
 
-    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+    expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
   async test `returns valid package match once the next token breaks the parser matcher`() {
@@ -74,7 +74,7 @@ testable class {
     engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
 
-    expect(engine.getValidMatches().mapNotNull({ _.lastMatch })).toBe([
+    expect(engine.getCompletedMatches().mapNotNull({ _.lastMatch })).toBe([
       GroupTokenMatch(
         tokens: [
           Token(value: "package", type: Token.Type.IDENTIFIER),
@@ -94,7 +94,7 @@ testable class {
 
     engine.consume(Token(value: "import", type: Token.Type.IDENTIFIER))
 
-    expect(engine.getCurrentMatches().mapNotNull({ _.lastMatch })).toBe(Array())
+    expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
   async test `emits node after valid package match once the next token breaks the parser matcher`() {
