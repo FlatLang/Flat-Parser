@@ -4,6 +4,8 @@ import flat/datastruct/HashMap
 import flat/compiler/models/Token
 import flat/log/Logger
 
+import static flat/colorizer/Colorizer
+
 data class extends TokenMatcher {
   static Logger log = Logger(NodeTokenMatcher.class)
 
@@ -15,7 +17,7 @@ data class extends TokenMatcher {
 
   doMatch(Token token) -> NodeTokenMatch {
     if (disqualified) return null
-    log.traceFunc({"Matching token '#{token.value}'"})
+    log.traceFunc({"Matching token '#{green(token.value)}'"})
 
     var ParserBase matchParser
     let TokenMatch[] matches = Array()
@@ -40,8 +42,8 @@ data class extends TokenMatcher {
     valid = true
 
     if (matches.isNotEmpty) {
-      log.trace("Matches: #{matches.map(m => m.class.name)}")
       complete = matchParser.matcher.complete
+      log.trace("Matches: #{matches.map(m => green(m.class.name))} parser: #{matchParser.class.name}")
     } else {
       log.trace("Matches are empty")
     }

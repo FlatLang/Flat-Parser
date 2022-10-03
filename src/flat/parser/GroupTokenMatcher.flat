@@ -7,6 +7,8 @@ import flat/datastruct/list/ArrayIterator
 import flat/compiler/models/Token
 import flat/log/Logger
 
+import static flat/colorizer/Colorizer
+
 data class extends TokenMatcher {
   let static Logger log = Logger(GroupTokenMatcher.class)
 
@@ -66,7 +68,10 @@ data class extends TokenMatcher {
   match() -> TokenMatch => null {
     let token = tokens.last
 
-    log.traceFunc({"Matching tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
+    log.traceFunc({"|
+      Matching tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        pattern: #{magenta(matcher.pattern.toPatternString())}
+      |"})
 
     if (matcher.pattern.optional && !matcher.pattern.greedy && !nonGreedyChecked) {
       if (iterator.hasNext) {
@@ -79,7 +84,10 @@ data class extends TokenMatcher {
     }
 
     if (let tokenMatch = matcher.match(token)) {
-      log.traceFunc({"Matched tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
+      log.traceFunc({"|
+        Matched tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          pattern: #{magenta(matcher.pattern.toPatternString())}
+        |"})
       addSuccessfulMatch(tokenMatch)
 
       if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
@@ -93,7 +101,7 @@ data class extends TokenMatcher {
             log.traceFunc({"The rest of the matchers are optional. Returning match"})
             valid = true
           } else {
-            log.traceFunc({"There are still some required matchers. Skipped to next matcher"})
+            log.traceFunc({"There are still some required matchers. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
             return null
           }
         }
@@ -123,7 +131,10 @@ data class extends TokenMatcher {
       nextMatcher()
       return match()
     } else {
-      log.traceFunc({"Did not match the required matcher. Disqualified"})
+      log.traceFunc({"|
+        Did not match the required matcher. Disqualified
+          pattern: #{magenta(matcher.pattern.toPatternString())}
+        |"})
       disqualified = true
       return null
     }
