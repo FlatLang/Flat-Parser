@@ -6,9 +6,13 @@ import flat/ast/Node
 import flat/ast/AnnotationNode
 import flat/ast/ClassNode
 import flat/ast/ClassScopeNode
+import flat/ast/FunctionNode
+import flat/ast/FunctionScopeNode
 import flat/ast/FileNode
 import flat/ast/FieldNode
+import flat/ast/FunctionCallNode
 import flat/ast/PackageNode
+import flat/ast/IdentifierNode
 import flat/stream/Stream
 import flat/io/File
 
@@ -191,5 +195,62 @@ testable class {
     engine.consume(Token(value: "aling", type: Token.Type.IDENTIFIER))
 
     expect(engine.currentNode).toBe(ClassScopeNode())
+  }
+
+  async test `can parse successful function call with argument`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.pushScope(ClassParser(), ClassNode())
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.pushScope(FunctionParser(), FunctionNode())
+    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "aoeu", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "str", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(
+      FunctionCallNode(
+        name: "test",
+        children: [
+          IdentifierNode(
+            name: "aoeu"
+          )
+        ]
+      )
+    )
+  }
+
+  async test `resets parsers after successful function call parse`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.pushScope(ClassParser(), ClassNode())
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.pushScope(FunctionParser(), FunctionNode())
+    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "aoeu", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "str", type: Token.Type.IDENTIFIER))
+
+    expect(engine.currentNode).toBe(FunctionScopeNode())
   }
 }
