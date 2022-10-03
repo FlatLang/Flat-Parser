@@ -22,6 +22,7 @@ data class extends TokenMatcher {
   var TokenMatcher lastMatcher
   var TokenMatcher matcher
   var Bool nonGreedyChecked = false
+  var Token[] successfulMatchedTokens = Token[]
 
   nextMatcher() {
     while (nonGreedyMatchers.isNotEmpty) {
@@ -46,6 +47,7 @@ data class extends TokenMatcher {
       successfulMatches[successfulMatches.count - 1] = tokenMatch
     }
     lastMatcher = matcher
+    successfulMatchedTokens.addAll(tokenMatch.tokens)
   }
 
   override public match(Token token) => tokenMatches.add(doMatch(token))
@@ -90,10 +92,44 @@ data class extends TokenMatcher {
 
     if (let tokenMatch = matcher.match(token)) {
       log.traceFunc({"|
-        Matched tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        Matched tokens (token: '#{green(token.value)}'): [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          matched tokens: [#{tokenMatch.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
           pattern: #{magenta(matcher.pattern.toPatternString())}
         |"})
       addSuccessfulMatch(tokenMatch)
+
+      let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
+
+      if (containsRemainingTokens) {
+        let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
+        log.traceFunc({"|
+          Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
+            successfulMatchedTokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+            tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          |"})
+        tokensToMatch.forEach({ tokens.removeLast() })
+
+        if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
+          repeatMatcher()
+        } else if (iterator.hasNext && matcher.complete) { // FIXME: handle non-greedy
+          nextMatcher()
+          log.traceFunc({"Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+        }
+
+        log.traceFunc({"Iterating through tokens: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]"})
+        tokensToMatch.forEach({
+          tokens.add(_)
+          return match()
+        })
+        log.traceFunc({"Returning composite group token match"})
+        return GroupTokenMatch(
+          tokens: successfulMatchedTokens.copy(),
+          tokenMatches: successfulMatches.copy(),
+          label: pattern.label
+        )
+      } else {
+        log.traceFunc({"No partial match remaining tokens"})
+      }
 
       if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
         repeatMatcher()
@@ -117,7 +153,7 @@ data class extends TokenMatcher {
             log.traceFunc({"The rest of the matchers are optional. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
             valid = true
           } else {
-            log.traceFunc({"There are still some required matchers. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+            log.traceFunc({"There are still some required matchers. Returning null and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
             return null
           }
         }
@@ -128,7 +164,11 @@ data class extends TokenMatcher {
         complete = matcher.complete
       }
 
-      return generateMatch()
+      return GroupTokenMatch(
+        tokens: tokens.copy(),
+        tokenMatches: successfulMatches.copy(),
+        label: pattern.label
+      )
     } else if (matcher.partial) {
       log.traceFunc({"Returning null for partial match. matcher: " + magenta(matcher.pattern.toPatternString())})
       return null
@@ -156,20 +196,16 @@ data class extends TokenMatcher {
     }
   }
 
-  generateMatch() => GroupTokenMatch(
-    tokens: tokens.copy(),
-    tokenMatches: successfulMatches.copy(),
-    label: pattern.label
-  )
-
   override public reset() {
     if (matcher == null) return
+    log.traceFunc({"Resetting matcher"})
     super.reset()
 
     iterator.reset()
     iterator.allNextInclusive.forEach({ _.reset() })
     nonGreedyMatchers.clear()
     successfulMatches.clear()
+    successfulMatchedTokens = Token[]
     lastMatcher = null
     matcher = null
     nonGreedyChecked = false
