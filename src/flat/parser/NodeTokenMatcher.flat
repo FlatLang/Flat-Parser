@@ -42,8 +42,8 @@ data class extends TokenMatcher {
     valid = true
 
     if (matches.isNotEmpty) {
-      complete = matchParser.matcher.complete
       log.trace("Matches: #{matches.map(m => green(m.class.name))} parser: #{matchParser.class.name}")
+      complete = matchParser.matcher.complete && pattern.parsers.none({ _.matcher.partial })
     } else {
       log.trace("Matches are empty")
     }
