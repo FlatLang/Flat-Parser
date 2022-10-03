@@ -52,4 +52,10 @@ data class extends TokenMatcher {
       parser: matchParser
     )
   }
+
+  override public reset() {
+    super.reset()
+
+    pattern.parsers.forEach({ _.matcher.reset() })
+  }
 }
