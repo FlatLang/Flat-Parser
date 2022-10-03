@@ -1,7 +1,5 @@
 package flat/parser
 
-import flat/parser/Parser
-import flat/parser/ClassScopeParser
 import flat/annotations/LetModifier
 import flat/compiler/models/Token
 import flat/ast/Node
