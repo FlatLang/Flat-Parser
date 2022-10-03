@@ -98,7 +98,7 @@ data class extends TokenMatcher {
           }
         }
       } else {
-        log.traceFunc({"No more matchers. Returning match. Disqualified: #{matcher.disqualified}"})
+        log.traceFunc({"No more matchers. Returning match. Disqualified: #{matcher.disqualified}. Complete: #{matcher.complete}"})
         disqualified = matcher.disqualified
         valid = true
         complete = true
