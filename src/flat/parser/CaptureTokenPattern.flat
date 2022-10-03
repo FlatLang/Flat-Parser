@@ -12,5 +12,5 @@ data class extends TokenPattern {
 
   override public getMatcher() => CaptureTokenMatcher(this)
 
-  public toPatternString() => "cap(#{start.value} #{end.value})#{getModifiersString()}"
+  public toPatternString() => "capture(#{start.value} #{end.value})#{getModifiersString()}"
 }
