@@ -276,8 +276,13 @@ testable class {
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
     expect(node).toBe(
-      IdentifierNode(
-        name: "value"
+      FunctionCallNode(
+        name: "test",
+        children: [
+          IdentifierNode(
+            name: "value"
+          )
+        ]
       )
     )
 
@@ -313,13 +318,27 @@ testable class {
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
+    engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
+
     expect(node).toBe(
-      IdentifierNode(
-        name: "File"
+      FunctionCallNode(
+        name: "test",
+        children: [
+          IdentifierNode(
+            name: "args"
+          ),
+          FunctionCallNode(
+            name: "File",
+            children: [
+              IdentifierNode(
+                name: "args"
+              )
+            ]
+          )
+        ]
       )
     )
 
-    engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
