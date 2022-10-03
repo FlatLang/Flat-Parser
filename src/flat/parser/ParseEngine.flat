@@ -274,7 +274,13 @@ class {
   public invalidTokensError(Token[] tokens) {
     ParseEngine.log.debugFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}]. Resetting tokens. Parser #{currentParser.class.name}"})
     if (tokens.isNotEmpty && tokens.first.location) {
-      ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
+      let location = if (tokens.count == 1 && tokens.first.value.count == 1) {
+        "#{tokens.first.location.lineNumber}:#{tokens.first.location.column}"
+      } else {
+        "#{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"
+      }
+
+      ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{location}"})
     }
   }
 }
