@@ -253,4 +253,78 @@ testable class {
 
     expect(engine.currentNode).toBe(FunctionScopeNode())
   }
+
+  async test `resets parsers after partial function call parse`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.pushScope(ClassParser(), ClassNode())
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.pushScope(FunctionParser(), FunctionNode())
+    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "value", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "$", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "$", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+
+    expect(node).toBe(
+      IdentifierNode(
+        name: "value"
+      )
+    )
+
+    engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+
+    engine.consume(Token(value: "}", type: Token.Type.SYMBOL))
+
+    expect(node).toBe(FunctionCallNode(name: "log"))
+  }
+
+  async test `resets parsers after failed function call parse`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.pushScope(ClassParser(), ClassNode())
+    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.pushScope(FunctionParser(), FunctionNode())
+    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "File", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "args", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "\#", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+
+    expect(node).toBe(
+      IdentifierNode(
+        name: "File"
+      )
+    )
+
+    engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+
+    engine.consume(Token(value: "}", type: Token.Type.SYMBOL))
+
+    expect(node).toBe(FunctionCallNode(name: "log"))
+  }
 }

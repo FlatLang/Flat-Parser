@@ -107,6 +107,7 @@ class {
         clearTokensAfterParse(parser)
       } else {
         ParseEngine.log.debugFunc({"No valid matches"})
+        invalidTokens()
       }
     } else {
       ParseEngine.log.debugFunc({"Has current matches"})
@@ -268,6 +269,7 @@ class {
   public invalidTokens() {
     invalidTokensError(tokens)
     resetCurrentScope()
+    reset()
     tokens = Token[]
   }
 
