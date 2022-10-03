@@ -16,4 +16,6 @@ data class extends TokenPattern {
   ) {}
 
   public getMatcher() => NodeTokenMatcher(this)
+
+  public toPatternString() => "node(#{parsers.map(p => p.class.name.trimEnd("Parser".count)).join(" ")})#{getModifiersString()}"
 }

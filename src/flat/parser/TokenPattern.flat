@@ -18,4 +18,30 @@ abstract data class {
   visible Bool greedy = true
 
   public abstract getMatcher() -> TokenMatcher
+
+  public abstract toPatternString() -> String
+
+  public getModifiersString() -> String {
+    if (optional && repeat) {
+      if (greedy) {
+        return "*"
+      } else {
+        return "*?"
+      }
+    } else if (optional) {
+      if (greedy) {
+        return "?"
+      } else {
+        return "??"
+      }
+    } else if (repeat) {
+      if (greedy) {
+        return "+"
+      } else {
+        return "+?"
+      }
+    } else {
+      return ""
+    }
+  }
 }

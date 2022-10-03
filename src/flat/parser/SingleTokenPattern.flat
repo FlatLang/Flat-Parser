@@ -8,4 +8,22 @@ data class extends TokenPattern {
   let static Logger log = Logger(SingleTokenPattern.class)
 
   public getMatcher() => SingleTokenMatcher(this)
+
+  public toPatternString() -> String {
+    var str = "<"
+    str += Token.Type.toString(tokenType)
+    if (values) {
+      str += "[" + values.join(" ") + "]"
+    }
+    if (value) {
+      str += ":" + value
+    }
+    if (label) {
+      str += " as #{label}"
+    }
+    str += getModifiersString()
+    str += ">"
+
+    return str
+  }
 }

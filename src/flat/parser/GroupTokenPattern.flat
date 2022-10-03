@@ -20,4 +20,6 @@ data class extends TokenPattern {
   ) {}
 
   public getMatcher() => GroupTokenMatcher(this)
+
+  public toPatternString() => "(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
 }
