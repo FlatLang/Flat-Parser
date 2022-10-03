@@ -59,7 +59,7 @@ class extends ParserBase {
     )
 
     let parameters = match.getMatches<NodeTokenMatch>("parameters")
-      .map(m => m.parser.generateNode(context, m))
+      .map(m => m.parser.generateNode(functionContext, m))
 
     functionNode.children.addAll(parameters)
 
