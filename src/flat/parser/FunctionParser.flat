@@ -65,20 +65,4 @@ class extends ParserBase {
 
     return functionNode
   }
-
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-        .getMatch<CaptureTokenMatch>("parameters")
-        .capture
-        .split({ _.value == "," })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: parameterParsers
-        )
-      })
-    )
-  }
 }
