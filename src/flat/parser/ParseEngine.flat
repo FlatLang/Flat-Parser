@@ -210,7 +210,6 @@ class {
     if (!containsValidMatches()) {
       ParseEngine.log.debugFunc({"No valid matches. Not generating node"})
       invalidTokens()
-      resetCurrentScope()
       return
     }
 
@@ -268,6 +267,7 @@ class {
 
   public invalidTokens() {
     invalidTokensError(tokens)
+    resetCurrentScope()
     tokens = Token[]
   }
 
