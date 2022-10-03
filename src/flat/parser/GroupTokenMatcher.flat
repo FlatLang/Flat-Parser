@@ -91,6 +91,7 @@ data class extends TokenMatcher {
       addSuccessfulMatch(tokenMatch)
 
       if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
+        log.traceFunc({"Repeating matcher: " + magenta(matcher.pattern.toPatternString())})
         matcher = matcher.pattern.getMatcher()
       } else if (iterator.hasNext) {
         if (!matcher.complete) { // FIXME: handle non-greedy
@@ -114,7 +115,7 @@ data class extends TokenMatcher {
 
       return generateMatch()
     } else if (matcher.partial) {
-      log.traceFunc({"Returning null for partial match"})
+      log.traceFunc({"Returning null for partial match. matcher: " + magenta(matcher.pattern.toPatternString())})
       return null
     } else if (nonGreedyMatchers.isNotEmpty) {
       log.traceFunc({"Did not match the non-greedy matcher check. Reverting back to before non-greedy check"})
@@ -127,8 +128,8 @@ data class extends TokenMatcher {
         return match()
       }).last
     } else if (matcher.pattern.optional && iterator.hasNext) {
-      log.traceFunc({"Did not match the optional matcher. Skipping to next matcher"})
       nextMatcher()
+      log.traceFunc({"Did not match the optional matcher. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
       return match()
     } else {
       log.traceFunc({"|
