@@ -13,10 +13,10 @@ data class extends TokenPattern {
     var str = "<"
     str += Token.Type.toString(tokenType)
     if (values) {
-      str += "[" + values.join(" ") + "]"
+      str += "[" + values.map({ "\"#{_}\"" }).join(" ") + "]"
     }
     if (value) {
-      str += ":" + value
+      str += ":\"" + value + "\""
     }
     if (label) {
       str += " as #{label}"
