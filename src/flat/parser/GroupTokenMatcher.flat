@@ -91,84 +91,7 @@ data class extends TokenMatcher {
     }
 
     if (let tokenMatch = matcher.match(token)) {
-      log.traceFunc({"|
-        Matched tokens (token: '#{green(token.value)}'): [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-          matched tokens: [#{tokenMatch.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-          pattern: #{magenta(matcher.pattern.toPatternString())}
-        |"})
-      addSuccessfulMatch(tokenMatch)
-
-      let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
-
-      if (containsRemainingTokens) {
-        let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
-        log.traceFunc({"|
-          Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
-            successfulMatchedTokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-            tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-          |"})
-        tokensToMatch.forEach({ tokens.removeLast() })
-
-        if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-          repeatMatcher()
-        } else if (iterator.hasNext && matcher.complete) { // FIXME: handle non-greedy
-          nextMatcher()
-          log.traceFunc({"Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-        }
-
-        log.traceFunc({"Iterating through tokens: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]"})
-        tokensToMatch.forEach({
-          tokens.add(_)
-          return match()
-        })
-        log.traceFunc({"Returning composite group token match"})
-        return GroupTokenMatch(
-          tokens: successfulMatchedTokens.copy(),
-          tokenMatches: successfulMatches.copy(),
-          label: pattern.label
-        )
-      } else {
-        log.traceFunc({"No partial match remaining tokens"})
-      }
-
-      if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-        repeatMatcher()
-        if (iterator.allNext.any({ !_.pattern.optional })) {
-          log.traceFunc({"Contains future required matchers. Returning null"})
-          return null
-        } else {
-          log.traceFunc({"The rest of the matchers are optional. Returning match"})
-        }
-      } else if (iterator.hasNext) {
-        if (!matcher.complete) { // FIXME: handle non-greedy
-          if (iterator.allNext.any({ !_.pattern.optional })) {
-            log.traceFunc({"Contains future required matchers. Returning null"})
-            return null
-          } else {
-            log.traceFunc({"The rest of the matchers are optional. Returning match"})
-          }
-        } else {
-          nextMatcher()
-          if (iterator.allNextInclusive.all({ _.pattern.optional })) {
-            log.traceFunc({"The rest of the matchers are optional. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-            valid = true
-          } else {
-            log.traceFunc({"There are still some required matchers. Returning null and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-            return null
-          }
-        }
-      } else {
-        log.traceFunc({"No more matchers. Returning match. Disqualified: #{matcher.disqualified}. Complete: #{matcher.complete}"})
-        disqualified = matcher.disqualified
-        valid = matcher.valid
-        complete = matcher.complete
-      }
-
-      return GroupTokenMatch(
-        tokens: tokens.copy(),
-        tokenMatches: successfulMatches.copy(),
-        label: pattern.label
-      )
+      return handleSuccessfulMatch(tokenMatch)
     } else if (matcher.partial) {
       log.traceFunc({"Returning null for partial match. matcher: " + magenta(matcher.pattern.toPatternString())})
       return null
@@ -193,6 +116,93 @@ data class extends TokenMatcher {
         |"})
       disqualified = true
       return null
+    }
+  }
+
+  handleSuccessfulMatch(TokenMatch tokenMatch) -> GroupTokenMatch {
+    log.traceFunc({"|
+      Matched tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        matched tokens: [#{tokenMatch.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        pattern: #{magenta(matcher.pattern.toPatternString())}
+      |"})
+    addSuccessfulMatch(tokenMatch)
+
+    if (let remainingMatch = checkRemainingMatch()) {
+      return remainingMatch
+    }
+
+    if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
+      repeatMatcher()
+      if (iterator.allNext.any({ !_.pattern.optional })) {
+        log.traceFunc({"Contains future required matchers. Returning null"})
+        return null
+      } else {
+        log.traceFunc({"The rest of the matchers are optional. Returning match"})
+      }
+    } else if (iterator.hasNext) {
+      if (!matcher.complete) { // FIXME: handle non-greedy
+        if (iterator.allNext.any({ !_.pattern.optional })) {
+          log.traceFunc({"Contains future required matchers. Returning null"})
+          return null
+        } else {
+          log.traceFunc({"The rest of the matchers are optional. Returning match"})
+        }
+      } else {
+        nextMatcher()
+        if (iterator.allNextInclusive.all({ _.pattern.optional })) {
+          log.traceFunc({"The rest of the matchers are optional. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+          valid = true
+        } else {
+          log.traceFunc({"There are still some required matchers. Returning null and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+          return null
+        }
+      }
+    } else {
+      log.traceFunc({"No more matchers. Returning match. Disqualified: #{matcher.disqualified}. Complete: #{matcher.complete}"})
+      disqualified = matcher.disqualified
+      valid = matcher.valid
+      complete = matcher.complete
+    }
+
+    return GroupTokenMatch(
+      tokens: tokens.copy(),
+      tokenMatches: successfulMatches.copy(),
+      label: pattern.label
+    )
+  }
+
+  checkRemainingMatch() -> GroupTokenMatch => null {
+    let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
+
+    if (containsRemainingTokens) {
+      let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
+      log.traceFunc({"|
+        Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
+          successfulMatchedTokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        |"})
+      tokensToMatch.forEach({ tokens.removeLast() })
+
+      if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
+        repeatMatcher()
+      } else if (iterator.hasNext && matcher.complete) { // FIXME: handle non-greedy
+        nextMatcher()
+        log.traceFunc({"Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+      }
+
+      log.traceFunc({"Iterating through tokens: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]"})
+      tokensToMatch.forEach({
+        tokens.add(_)
+        return match()
+      })
+      log.traceFunc({"Returning composite group token match"})
+      return GroupTokenMatch(
+        tokens: successfulMatchedTokens.copy(),
+        tokenMatches: successfulMatches.copy(),
+        label: pattern.label
+      )
+    } else {
+      log.traceFunc({"No partial match remaining tokens"})
     }
   }
 
