@@ -1,0 +1,181 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/parser/Parser
+import flat/annotations/VisibleModifier
+import flat/annotations/PublicModifier
+import flat/annotations/PrivateModifier
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
+import flat/ast/FileNode
+import flat/ast/PackageNode
+import flat/compiler/models/Token
+import flat/io/File
+
+testable class {
+  test `can match import parser`() {
+    let importParser = ImportParser()
+    let pattern = NodeTokenPattern([importParser])
+
+    let result = pattern
+      .getMatcher()
+      .match(Token(value: "import", type: Token.Type.IDENTIFIER))
+
+    let expected = [Token(value: "import", type: Token.Type.IDENTIFIER)]
+
+    expect(result?.tokens).toBe(expected)
+  }
+
+  test `doesnt match package token when not using package parser`() {
+    let importParser = ImportParser()
+    let pattern = NodeTokenPattern([importParser])
+
+    let result = pattern
+      .getMatcher()
+      .match(Token(value: "package", type: Token.Type.IDENTIFIER))
+
+    expect(result).toBe(null)
+  }
+
+  test `matches full import parser`() {
+    let importParser = ImportParser()
+    let pattern = NodeTokenPattern([importParser])
+
+    let result = pattern
+      .getMatcher()
+      :match(Token(value: "import", type: Token.Type.IDENTIFIER))
+      .match(Token(value: "test", type: Token.Type.IDENTIFIER))
+
+    expect(result?.parser).toBe(importParser)
+  }
+
+  test `can match correctly in a group token pattern`() {
+    let parameterParser = ParameterParser()
+    let pattern = GroupTokenPattern([
+      NodeTokenPattern([parameterParser]),
+      SingleTokenPattern(Token.Type.SYMBOL, ",")
+    ])
+
+    let result = pattern
+      .getMatcher()
+      .matchAll([
+        Token(value: "String", type: Token.Type.IDENTIFIER),
+        Token(value: "test", type: Token.Type.IDENTIFIER),
+        Token(value: ",", type: Token.Type.SYMBOL)
+      ]).last
+
+    expect(result).toBe(
+      GroupTokenMatch(
+        tokens: [
+          Token(value: "String", type: Token.Type.IDENTIFIER),
+          Token(value: "test", type: Token.Type.IDENTIFIER),
+          Token(value: ",", type: Token.Type.SYMBOL)
+        ],
+        tokenMatches: [
+          NodeTokenMatch(
+            tokens: [
+              Token(value: "String", type: Token.Type.IDENTIFIER),
+              Token(value: "test", type: Token.Type.IDENTIFIER)
+            ],
+            parser: parameterParser
+          ),
+          SingleTokenMatch(tokens: [Token(value: ",", type: Token.Type.SYMBOL)])
+        ]
+      )
+    )
+  }
+
+  test `can match correctly in a group token pattern and get node`() {
+    let parameterParser = ParameterParser()
+    let pattern = GroupTokenPattern([
+      NodeTokenPattern([parameterParser], label: "parameter"),
+      SingleTokenPattern(Token.Type.SYMBOL, ",")
+    ])
+
+    let match = pattern
+      .getMatcher()
+      .matchAll([
+        Token(value: "String", type: Token.Type.IDENTIFIER),
+        Token(value: "test", type: Token.Type.IDENTIFIER),
+        Token(value: ",", type: Token.Type.SYMBOL)
+      ]).last
+
+    let result = parameterParser.generateNode(null, match.getMatch("parameter"))
+
+    expect(result).toBe(
+      ParameterNode(
+        type: "String",
+        name: "test"
+      )
+    )
+  }
+
+  test `can match a parameter in parentheses`() {
+    let parameterParser = ParameterParser()
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      NodeTokenPattern([ParameterParser()], label: "parameter"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        NodeTokenPattern([ParameterParser()], label: "parameter")
+      ], optional: true, repeat: true),
+      SingleTokenPattern(Token.Type.SYMBOL, ")")
+    ])
+
+    let match = pattern
+      .getMatcher()
+      .matchAll([
+        Token(value: "(", type: Token.Type.SYMBOL),
+        Token(value: "String", type: Token.Type.IDENTIFIER),
+        Token(value: "test", type: Token.Type.IDENTIFIER),
+        Token(value: ")", type: Token.Type.SYMBOL)
+      ]).last
+
+    expect(match).toNotBe(null)
+
+    let result = parameterParser.generateNode(null, match.getMatch("parameter"))
+
+    expect(result).toBe(
+      ParameterNode(
+        type: "String",
+        name: "test"
+      )
+    )
+  }
+
+  test `can match a parameter with array brackets in parentheses`() {
+    let parameterParser = ParameterParser()
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      NodeTokenPattern([ParameterParser()], label: "parameter"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        NodeTokenPattern([ParameterParser()], label: "parameter")
+      ], optional: true, repeat: true),
+      SingleTokenPattern(Token.Type.SYMBOL, ")")
+    ])
+
+    let match = pattern
+      .getMatcher()
+      .matchAll([
+        Token(value: "(", type: Token.Type.SYMBOL),
+        Token(value: "String", type: Token.Type.IDENTIFIER),
+        Token(value: "[", type: Token.Type.SYMBOL),
+        Token(value: "]", type: Token.Type.SYMBOL),
+        Token(value: "test", type: Token.Type.IDENTIFIER),
+        Token(value: ")", type: Token.Type.SYMBOL)
+      ]).last
+
+    expect(match).toNotBe(null)
+
+    let result = parameterParser.generateNode(null, match.getMatch("parameter"))
+
+    expect(result).toBe(
+      ParameterNode(
+        type: "String",
+        name: "test",
+        arrayDimensions: 1
+      )
+    )
+  }
+}

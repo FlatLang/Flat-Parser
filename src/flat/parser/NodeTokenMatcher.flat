@@ -1,0 +1,55 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends TokenMatcher {
+  static Logger log = Logger(NodeTokenMatcher.class)
+
+  NodeTokenPattern pattern
+
+  override public match(Token token) -> NodeTokenMatch {
+    return tokenMatches.add(doMatch(token))
+  }
+
+  doMatch(Token token) -> NodeTokenMatch {
+    if (disqualified) return null
+    log.traceFunc({"Matching token '#{token.value}'"})
+
+    var ParserBase matchParser
+    let TokenMatch[] matches = Array()
+
+    for (parser in pattern.parsers) {
+      if (let match = parser.match(token)) {
+        matches.add(match)
+        if (!matchParser) {
+          matchParser = parser
+        }
+      }
+    }
+
+    if (pattern.parsers.all(p => !p.matcher.complete && p.matcher.disqualified)) {
+      log.trace("All matchers are disqualified. Disqualified")
+      disqualified = true
+      return null
+    }
+
+    tokens.add(token)
+
+    valid = true
+
+    if (matches.isNotEmpty) {
+      log.trace("Matches: #{matches.map(m => m.class.name)}")
+      complete = matchParser.matcher.complete
+    } else {
+      log.trace("Matches are empty")
+    }
+
+    return NodeTokenMatch(
+      tokens: tokens.copy(),
+      label: pattern.label,
+      parser: matchParser
+    )
+  }
+}

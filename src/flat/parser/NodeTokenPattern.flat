@@ -1,0 +1,19 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends TokenPattern {
+  let static Logger log = Logger(NodeTokenPattern.class)
+
+  public construct(
+    visible ParserBase[] parsers,
+    this String: label = null,
+    this Bool optional = false,
+    this Bool repeat = false,
+    this Bool greedy = true
+  ) {}
+
+  public getMatcher() => NodeTokenMatcher(this)
+}
