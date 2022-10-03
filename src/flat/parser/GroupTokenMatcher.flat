@@ -82,7 +82,7 @@ data class extends TokenMatcher {
       log.traceFunc({"Matched tokens: [#{tokens.map(t => "'" + t.value + "'").join(", ")}]"})
       addSuccessfulMatch(tokenMatch)
 
-      if (matcher.pattern.repeat) {
+      if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
         matcher = matcher.pattern.getMatcher()
       } else if (iterator.hasNext) {
         if (!matcher.complete) { // FIXME: handle non-greedy
