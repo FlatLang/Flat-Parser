@@ -34,6 +34,11 @@ data class extends TokenMatcher {
     matcher = iterator.stepNext
   }
 
+  repeatMatcher() {
+    log.traceFunc({"Repeating matcher"})
+    matcher = matcher.pattern.getMatcher()
+  }
+
   addSuccessfulMatch(TokenMatch tokenMatch) {
     if (!Object.referenceEquals(matcher, lastMatcher)) {
       successfulMatches.add(tokenMatch)
@@ -91,8 +96,7 @@ data class extends TokenMatcher {
       addSuccessfulMatch(tokenMatch)
 
       if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-        log.traceFunc({"Repeating matcher"})
-        matcher = matcher.pattern.getMatcher()
+        repeatMatcher()
         if (iterator.allNext.any({ !_.pattern.optional })) {
           log.traceFunc({"Contains future required matchers. Returning null"})
           return null
