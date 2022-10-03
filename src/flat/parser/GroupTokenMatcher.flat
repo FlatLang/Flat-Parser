@@ -91,8 +91,14 @@ data class extends TokenMatcher {
       addSuccessfulMatch(tokenMatch)
 
       if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-        log.traceFunc({"Repeating matcher: " + magenta(matcher.pattern.toPatternString())})
+        log.traceFunc({"Repeating matcher"})
         matcher = matcher.pattern.getMatcher()
+        if (iterator.allNext.any({ !_.pattern.optional })) {
+          log.traceFunc({"Contains future required matchers. Returning null"})
+          return null
+        } else {
+          log.traceFunc({"The rest of the matchers are optional. Returning match"})
+        }
       } else if (iterator.hasNext) {
         if (!matcher.complete) { // FIXME: handle non-greedy
           log.traceFunc({"The match may not be complete, but is valid. Returning match"})
