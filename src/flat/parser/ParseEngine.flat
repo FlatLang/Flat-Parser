@@ -110,7 +110,7 @@ class {
       }
     } else {
       ParseEngine.log.debugFunc({"Has current matches"})
-      ParseEngine.log.traceFunc({"Current matches: #{getCurrentMatches()}"})
+      ParseEngine.log.traceFunc({"Current matches:\n  #{getCurrentMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
 
       if (containsValidMatches()) {
         ParseEngine.log.debugFunc({"Has valid matches"})
