@@ -549,4 +549,23 @@ testable class {
     expect(match).toBe(null)
     expect(matcher.partial).toBe(true)
   }
+
+  test `does not return full match if last required pattern is not matched, where the pattern before it is completed`() {
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, repeat: true)
+      ]),
+      SingleTokenPattern(Token.Type.SYMBOL, ")")
+    ])
+
+    let matcher = pattern.getMatcher()
+    let match = matcher.matchAll([
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "value", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(match).toBe(null)
+    expect(matcher.partial).toBe(true)
+  }
 }
