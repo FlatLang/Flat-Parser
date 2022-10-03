@@ -136,6 +136,7 @@ data class extends TokenMatcher {
   )
 
   override public reset() {
+    if (matcher == null) return
     super.reset()
 
     iterator.reset()
