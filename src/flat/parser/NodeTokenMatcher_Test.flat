@@ -18,8 +18,7 @@ testable class {
     let pattern = NodeTokenPattern([importParser])
 
     let matcher = pattern.getMatcher()
-    let result = matcher
-      .match(Token(value: "import", type: Token.Type.IDENTIFIER))
+    let result = matcher.match(Token(value: "import", type: Token.Type.IDENTIFIER))
 
     expect(result).toBe(null)
     expect(matcher.partial).toBe(true)
@@ -30,11 +29,10 @@ testable class {
     let pattern = NodeTokenPattern([importParser])
 
     let matcher = pattern.getMatcher()
-    let result = matcher
-      .matchAll([
-        Token(value: "import", type: Token.Type.IDENTIFIER),
-        Token(value: "test", type: Token.Type.IDENTIFIER)
-      ]).last
+    let result = matcher.matchAll([
+      Token(value: "import", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER)
+    ]).last
 
     let expected = [
       Token(value: "import", type: Token.Type.IDENTIFIER),
@@ -50,8 +48,7 @@ testable class {
     let pattern = NodeTokenPattern([importParser])
 
     let matcher = pattern.getMatcher()
-    let result = matcher
-      .match(Token(value: "package", type: Token.Type.IDENTIFIER))
+    let result = matcher.match(Token(value: "package", type: Token.Type.IDENTIFIER))
 
     expect(result).toBe(null)
   }
@@ -76,12 +73,11 @@ testable class {
     ])
 
     let matcher = pattern.getMatcher()
-    let result = matcher
-      .matchAll([
-        Token(value: "String", type: Token.Type.IDENTIFIER),
-        Token(value: "test", type: Token.Type.IDENTIFIER),
-        Token(value: ",", type: Token.Type.SYMBOL)
-      ]).last
+    let result = matcher.matchAll([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL)
+    ]).last
 
     expect(result).toBe(
       GroupTokenMatch(
@@ -112,12 +108,11 @@ testable class {
     ])
 
     let matcher = pattern.getMatcher()
-    let match = matcher
-      .matchAll([
-        Token(value: "String", type: Token.Type.IDENTIFIER),
-        Token(value: "test", type: Token.Type.IDENTIFIER),
-        Token(value: ",", type: Token.Type.SYMBOL)
-      ]).last
+    let match = matcher.matchAll([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL)
+    ]).last
 
     expect(match).toNotBe(null)
 
@@ -144,13 +139,12 @@ testable class {
     ])
 
     let matcher = pattern.getMatcher()
-    let match = matcher
-      .matchAll([
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "String", type: Token.Type.IDENTIFIER),
-        Token(value: "test", type: Token.Type.IDENTIFIER),
-        Token(value: ")", type: Token.Type.SYMBOL)
-      ]).last
+    let match = matcher.matchAll([
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]).last
 
     expect(match).toNotBe(null)
 
@@ -177,15 +171,14 @@ testable class {
     ])
 
     let matcher = pattern.getMatcher()
-    let match = matcher
-      .matchAll([
-        Token(value: "(", type: Token.Type.SYMBOL),
-        Token(value: "String", type: Token.Type.IDENTIFIER),
-        Token(value: "[", type: Token.Type.SYMBOL),
-        Token(value: "]", type: Token.Type.SYMBOL),
-        Token(value: "test", type: Token.Type.IDENTIFIER),
-        Token(value: ")", type: Token.Type.SYMBOL)
-      ]).last
+    let match = matcher.matchAll([
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "]", type: Token.Type.SYMBOL),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]).last
 
     expect(match).toNotBe(null)
 
