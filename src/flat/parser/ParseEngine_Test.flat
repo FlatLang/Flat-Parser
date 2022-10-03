@@ -6,6 +6,7 @@ import flat/annotations/LetModifier
 import flat/compiler/models/Token
 import flat/ast/Node
 import flat/ast/AnnotationNode
+import flat/ast/ClassNode
 import flat/ast/ClassScopeNode
 import flat/ast/FileNode
 import flat/ast/FieldNode
@@ -164,6 +165,7 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
+    engine.pushScope(ClassParser(), ClassNode())
     engine.pushScope(ClassScopeParser(), ClassScopeNode())
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
@@ -182,6 +184,7 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
+    engine.pushScope(ClassParser(), ClassNode())
     engine.pushScope(ClassScopeParser(), ClassScopeNode())
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
