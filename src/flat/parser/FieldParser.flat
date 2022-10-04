@@ -7,7 +7,7 @@ import flat/extensions/SyntaxStringFunctions
 
 import flat/ast/Node
 
-class extends ParserBase {
+data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     AssignmentParser()
   ])

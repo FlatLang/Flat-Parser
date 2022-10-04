@@ -14,7 +14,7 @@ import flat/ast/Node
 
 import flat/extensions/SyntaxStringFunctions
 
-class extends ParserBase {
+data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([

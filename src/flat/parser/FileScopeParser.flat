@@ -3,7 +3,7 @@ package flat/parser
 import flat/compiler/models/Token
 import flat/ast/FileScopeNode
 
-class extends ParserBase {
+data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     AnnotationParser(),
     CommentParser(),

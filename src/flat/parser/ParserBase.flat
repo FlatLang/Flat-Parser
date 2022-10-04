@@ -3,7 +3,7 @@ package flat/parser
 import flat/ast/Node
 import flat/compiler/models/Token
 
-abstract class {
+abstract data class {
   ParserBase[] childParsers => null
   lazy AnnotationParser annotationParser => AnnotationParser()
   lazy TokenPattern pattern => null

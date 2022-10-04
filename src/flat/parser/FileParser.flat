@@ -3,7 +3,7 @@ package flat/parser
 import flat/compiler/models/Token
 import flat/ast/FileNode
 
-class extends ParserBase {
+data class extends ParserBase {
   override ParserBase[] childParsers => null
 
   override public generateNode(ParseContext context, TokenMatch match) -> FileNode {

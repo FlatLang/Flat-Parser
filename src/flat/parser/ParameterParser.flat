@@ -3,7 +3,7 @@ package flat/parser
 import flat/ast/ParameterNode
 import flat/compiler/models/Token
 
-class extends ParserBase {
+data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([

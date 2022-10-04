@@ -3,7 +3,7 @@ package flat/parser
 import flat/ast/FunctionCallNode
 import flat/compiler/models/Token
 
-class extends ParserBase {
+data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     CommentParser(),
     DotAccessParser(),
