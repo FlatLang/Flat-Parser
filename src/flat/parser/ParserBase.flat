@@ -17,6 +17,8 @@ abstract data class {
 
   public checkStatementContinuation(ParseContext context, Token token) => false
 
+  public matchAll(Token[] tokens) -> TokenMatch[] => tokens.map({ this.match(_) })
+
   public match(Token token) -> TokenMatch => null {
     if (!matcher) return null
 
