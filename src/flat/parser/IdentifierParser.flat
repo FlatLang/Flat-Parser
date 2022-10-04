@@ -22,7 +22,7 @@ data class extends ParserBase {
     if (token.type != Token.Type.SYMBOL) return false
 
     match token.value {
-      "." => ":" => "=" => return true
+      "." => ":" => "=" => "[" => return true
     }
   }
 
