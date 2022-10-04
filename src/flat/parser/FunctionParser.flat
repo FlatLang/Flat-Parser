@@ -17,17 +17,11 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
-    GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "("),
-      GroupTokenPattern([
-        NodeTokenPattern([ParameterParser()], label: "parameters"),
-        GroupTokenPattern([
-          SingleTokenPattern(Token.Type.SYMBOL, ","),
-          NodeTokenPattern([ParameterParser()], label: "parameters")
-        ], optional: true, repeat: true),
-      ], optional: true),
-      SingleTokenPattern(Token.Type.SYMBOL, ")")
-    ]),
+    CaptureTokenPattern(
+      label: "parameters",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    ),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "->"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
@@ -48,21 +42,26 @@ data class extends ParserBase {
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count
 
-    let functionNode = FunctionNode(
+    return FunctionNode(
       type: type,
       name: name,
       arrayDimensions: bracketCount
     )
+  }
 
-    let functionContext = context.copy(
-      parentStack: context.parentStack.copy():push(functionNode)
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+      .getMatch<CaptureTokenMatch>("parameters")
+      .capture
+      .split({ _.value == "," })
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: [ParameterParser()]
+        )
+      })
     )
-
-    let parameters = match.getMatches<NodeTokenMatch>("parameters")
-      .map(m => m.parser.generateNode(functionContext, m))
-
-    functionNode.children.addAll(parameters)
-
-    return functionNode
   }
 }

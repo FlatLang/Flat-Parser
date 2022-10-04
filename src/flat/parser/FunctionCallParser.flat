@@ -21,17 +21,11 @@ data class extends ParserBase {
       end: Token(value: ">"),
       optional: true
     ),
-    GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "("),
-      GroupTokenPattern([
-        NodeTokenPattern(argumentParsers, label: "arguments"),
-        GroupTokenPattern([
-          SingleTokenPattern(Token.Type.SYMBOL, ","),
-          NodeTokenPattern(argumentParsers, label: "arguments")
-        ], optional: true, repeat: true),
-      ], optional: true),
-      SingleTokenPattern(Token.Type.SYMBOL, ")")
-    ])
+    CaptureTokenPattern(
+      label: "arguments",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    )
   ])
 
   ParserBase[] argumentParsers => [
@@ -45,21 +39,24 @@ data class extends ParserBase {
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
-    let name = match.getValue("name")
-
-    let functionCallNode = FunctionCallNode(
-      name: name
+    return FunctionCallNode(
+      name: match.getValue("name")
     )
+  }
 
-    let functionCallContext = context.copy(
-      parentStack: context.parentStack.copy():push(functionCallNode)
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+      .getMatch<CaptureTokenMatch>("arguments")
+      .capture
+      .split({ _.value == "," })
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: argumentParsers
+        )
+      })
     )
-
-    let arguments = match.getMatches<NodeTokenMatch>("arguments")
-      .map(m => m.parser.generateNode(functionCallContext, m))
-
-    functionCallNode.children.addAll(arguments)
-
-    return functionCallNode
   }
 }

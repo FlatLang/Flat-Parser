@@ -289,7 +289,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can access parameters from node taken match`() {
+  async test `can access parameters from capture match`() {
     let matcher = FunctionParser().matcher
     let match = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -301,18 +301,13 @@ testable class {
 
     expect(match).toNotBe(null, "Match is null")
 
-    let nodeMatch = match.getMatches<NodeTokenMatch>("parameters")
+    let capture = match.getMatch<CaptureTokenMatch>("parameters")
 
-    expect(nodeMatch).toNotBe(null, "Node match is null")
+    expect(capture).toNotBe(null, "Capture match is null")
 
-    let result = ParameterParser().generateNode(null, nodeMatch.first)
-
-    expect(result).toBe(
-      ParameterNode(
-        type: "Test",
-        name: "value",
-        arrayDimensions: 0
-      )
-    )
+    expect(capture.capture).toBe([
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "value", type: Token.Type.IDENTIFIER)
+    ])
   }
 }

@@ -51,20 +51,6 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `does not match invalid arguments`() {
-    let matcher = FunctionCallParser().matcher
-    let match = matcher.matchAll([
-      Token(value: "test", type: Token.Type.IDENTIFIER),
-      Token(value: "(", type: Token.Type.SYMBOL),
-      Token(value: "value", type: Token.Type.IDENTIFIER),
-      Token(value: "$", type: Token.Type.SYMBOL),
-      Token(value: "$", type: Token.Type.SYMBOL),
-      Token(value: ")", type: Token.Type.SYMBOL)
-    ]).last
-
-    expect(match).toBe(null)
-  }
-
   async test `does not completely match partial function call`() {
     let matcher = FunctionCallParser().matcher
     let match = matcher.matchAll([
