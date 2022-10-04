@@ -4,7 +4,7 @@ import flat/compiler/models/Token
 import flat/ast/FileNode
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => null
+  override ParserBase[] childParsers => Array()
 
   override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
     return null
