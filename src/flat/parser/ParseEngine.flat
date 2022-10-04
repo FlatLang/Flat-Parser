@@ -170,7 +170,29 @@ class {
 
     stream.emit("data", node)$
 
+    parseChildNodes(parser, node)
+
     return node
+  }
+
+  public parseChildNodes(ParserBase parser, Node parent) {
+    if (let requests = parser.getChildParseRequests(context.parseContext, parser.lastMatch).requests) {
+      requests.forEach((request) => {
+        snapshopEngineContext()
+
+        context.setChildParsers(context.currentParser, context.currentNode, request.parsers)
+        context.tokens = Token[]
+
+        ParseEngine.log.debugFunc({"Parsing child node with tokens: [#{request.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
+        request.tokens.forEach({ consume(_) })
+
+        if (context.tokens.isNotEmpty) {
+          tryGenerateNodeForRemainingTokens()
+        }
+
+        restoreSnapshopEngineContext()
+      })
+    }
   }
 
   public generateAnnotation(AnnotationParser parser) -> AnnotationNode {
