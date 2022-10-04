@@ -1,0 +1,83 @@
+package flat/parser
+
+import flat/datastruct/list/Stack
+import flat/ast/Node
+import flat/ast/AnnotationNode
+import flat/ast/FileNode
+import flat/ast/ClassNode
+import flat/ast/FunctionNode
+import flat/ast/ScopeNode
+import flat/ast/ClassScopeNode
+import flat/ast/FunctionScopeNode
+import flat/ast/FileScopeNode
+import flat/compiler/models/Token
+import flat/io/File
+import flat/log/Logger
+import flat/stream/Stream
+
+data class {
+  visible Stack<Node> parentStack = Stack()
+  visible Stack<ParserBase> parserStack = Stack()
+  visible Stack<Array<ParserBase>> parsersStack = Stack()
+  visible var Node currentNode
+  visible var ParserBase currentParser
+  visible var ParserBase[] currentParsers = ParserBase[]
+  visible var Token[] tokens = Token[]
+  visible var ParseContext parseContext = ParseContext()
+
+  public resetCurrentScope() {
+    ParseEngine.log.debugFunc({"Resetting current scope"})
+    currentNode = parentStack.peek()
+    currentParser = parserStack.peek()
+    currentParsers = parsersStack.peek()
+    parseContext = parseContext.copy(
+      parentStack: parentStack.copy(),
+      annotations: Array()
+    )
+  }
+
+  public pushScope(ParserBase parser, Node node) {
+    ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node} (parser: #{parser.class.name})"})
+    currentNode = parentStack.push(node)
+    currentParser = parserStack.push(parser)
+    currentParsers = parsersStack.push(parser.childParsers)
+    parseContext = parseContext.copy(parentStack: parentStack.copy())
+  }
+
+  public popScope(Token token) {
+    if (parentStack.count > 1) {
+      ParseEngine.log.debugFunc({"Popping node from parent stack: #{parentStack.peek()}"})
+      currentNode = parentStack:pop().peek()
+      currentParser = parserStack:pop().peek()
+      currentParsers = parsersStack:pop().peek()
+      parseContext = parseContext.copy(parentStack: parentStack.copy())
+    } else {
+      ParseEngine.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+    }
+  }
+
+  public updateScopeForNode(ParserBase parser, Node node) {
+    match node.class {
+      FileNode.class => fallthrough
+      ClassNode.class => fallthrough
+      FunctionNode.class => fallthrough
+      FileScopeNode.class => fallthrough
+      ClassScopeNode.class => fallthrough
+      FunctionScopeNode.class => fallthrough
+      ScopeNode.class => pushScope(parser, node)
+      default => {
+        if (let childParsers = parser.childParsers) {
+          setChildParsers(parser, node, childParsers)
+        }
+      }
+    }
+  }
+
+  public setChildParsers(ParserBase parser, Node node, ParserBase[] childParsers) {
+    ParseEngine.log.debugFunc({"Setting child parsers to: [#{childParsers.map(p => p.class.name).join(", ")}]"})
+    currentNode = node
+    currentParser = parser
+    currentParsers = childParsers
+    parseContext = parseContext.copy(parentStack: parentStack.copy():push(currentNode))
+  }
+}

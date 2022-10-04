@@ -150,16 +150,16 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    expect(engine.parentStack.count).toBe(2)
+    expect(engine.context.parentStack.count).toBe(2)
 
     engine.consume(Token(value: "class", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "{", type: Token.Type.SYMBOL))
 
-    expect(engine.parentStack.count).toBe(3)
+    expect(engine.context.parentStack.count).toBe(3)
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
 
-    expect(engine.parentStack.count).toBe(4)
+    expect(engine.context.parentStack.count).toBe(4)
   }
 
   async test `sets currentNode to latest parsed node`() {
@@ -167,15 +167,15 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "=", type: Token.Type.SYMBOL))
 
-    expect(engine.currentNode).toBe(FieldNode(
+    expect(engine.context.currentNode).toBe(FieldNode(
       type: "String",
       name: "thing"
     ))
@@ -186,15 +186,15 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "String", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "thing", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "aling", type: Token.Type.IDENTIFIER))
 
-    expect(engine.currentNode).toBe(ClassScopeNode())
+    expect(engine.context.currentNode).toBe(ClassScopeNode())
   }
 
   async test `can parse successful function call with argument`() {
@@ -202,14 +202,14 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
-    engine.pushScope(FunctionParser(), FunctionNode())
-    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(FunctionParser(), FunctionNode())
+    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
 
-    var Node node = null
+    let nodes = Node[]
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { nodes.add(_) })
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -218,16 +218,14 @@ testable class {
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "str", type: Token.Type.IDENTIFIER))
 
-    expect(node).toBe(
+    expect(nodes).toBe([
       FunctionCallNode(
-        name: "test",
-        children: [
-          IdentifierNode(
-            name: "aoeu"
-          )
-        ]
+        name: "test"
+      ),
+      IdentifierNode(
+        name: "aoeu"
       )
-    )
+    ])
   }
 
   async test `resets parsers after successful function call parse`() {
@@ -235,10 +233,10 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
-    engine.pushScope(FunctionParser(), FunctionNode())
-    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(FunctionParser(), FunctionNode())
+    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
 
     var Node node = null
 
@@ -251,7 +249,7 @@ testable class {
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "str", type: Token.Type.IDENTIFIER))
 
-    expect(engine.currentNode).toBe(FunctionScopeNode())
+    expect(engine.context.currentNode).toBe(FunctionScopeNode())
   }
 
   async test `resets parsers after partial function call parse`() {
@@ -259,10 +257,10 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
-    engine.pushScope(FunctionParser(), FunctionNode())
-    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(FunctionParser(), FunctionNode())
+    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
 
     var Node node = null
 
@@ -275,16 +273,7 @@ testable class {
     engine.consume(Token(value: "$", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
-    expect(node).toBe(
-      FunctionCallNode(
-        name: "test",
-        children: [
-          IdentifierNode(
-            name: "value"
-          )
-        ]
-      )
-    )
+    expect(node).toBe(null)
 
     engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -300,10 +289,10 @@ testable class {
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
-    engine.pushScope(ClassParser(), ClassNode())
-    engine.pushScope(ClassScopeParser(), ClassScopeNode())
-    engine.pushScope(FunctionParser(), FunctionNode())
-    engine.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(FunctionParser(), FunctionNode())
+    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
 
     var Node node = null
 
@@ -321,23 +310,28 @@ testable class {
     engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
 
     expect(node).toBe(
-      FunctionCallNode(
-        name: "test",
-        children: [
-          IdentifierNode(
-            name: "args"
-          ),
-          FunctionCallNode(
-            name: "File",
-            children: [
-              IdentifierNode(
-                name: "args"
-              )
-            ]
-          )
-        ]
+      IdentifierNode(
+        name: "args"
       )
     )
+    // expect(node).toBe(
+    //   FunctionCallNode(
+    //     name: "test",
+    //     children: [
+    //       IdentifierNode(
+    //         name: "args"
+    //       ),
+    //       FunctionCallNode(
+    //         name: "File",
+    //         children: [
+    //           IdentifierNode(
+    //             name: "args"
+    //           )
+    //         ]
+    //       )
+    //     ]
+    //   )
+    // )
 
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
