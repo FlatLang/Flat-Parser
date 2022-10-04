@@ -28,4 +28,25 @@ testable class {
     ])
     expect(matcher.partial).toBe(false)
   }
+
+  async test `can parse a basic array access with integer index`() {
+    let parser = ArrayAccessParser()
+    let matcher = parser.matcher
+    let result = matcher.matchAll([
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "1", type: Token.Type.INTEGER),
+      Token(value: "]", type: Token.Type.SYMBOL)
+    ]).last
+
+    expect(result?.tokens).toBe([
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "1", type: Token.Type.INTEGER),
+      Token(value: "]", type: Token.Type.SYMBOL)
+    ])
+
+    expect(result?.getMatch("index")?.tokens).toBe([
+      Token(value: "1", type: Token.Type.INTEGER)
+    ])
+    expect(matcher.partial).toBe(false)
+  }
 }
