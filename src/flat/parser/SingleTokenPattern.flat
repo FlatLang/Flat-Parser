@@ -21,8 +21,8 @@ data class extends TokenPattern {
     if (label) {
       str += " as #{label}"
     }
-    str += getModifiersString()
     str += ">"
+    str += getModifiersString()
 
     return str
   }
