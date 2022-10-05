@@ -314,24 +314,6 @@ testable class {
         name: "args"
       )
     )
-    // expect(node).toBe(
-    //   FunctionCallNode(
-    //     name: "test",
-    //     children: [
-    //       IdentifierNode(
-    //         name: "args"
-    //       ),
-    //       FunctionCallNode(
-    //         name: "File",
-    //         children: [
-    //           IdentifierNode(
-    //             name: "args"
-    //           )
-    //         ]
-    //       )
-    //     ]
-    //   )
-    // )
 
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
