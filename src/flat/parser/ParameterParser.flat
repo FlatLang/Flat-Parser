@@ -4,6 +4,10 @@ import flat/ast/ParameterNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    AssignmentParser()
+  ])
+
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([

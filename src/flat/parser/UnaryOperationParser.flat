@@ -1,0 +1,29 @@
+package flat/parser
+
+import flat/ast/UnaryOperationNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    LiteralParser(),
+    FunctionCallParser()
+  ])
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, values: [
+      "++", "--", "!", "$", "-"
+    ])
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> UnaryOperationNode {
+    return UnaryOperationNode(
+      operator: match.tokens.first.value
+    )
+  }
+}

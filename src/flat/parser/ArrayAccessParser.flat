@@ -9,7 +9,9 @@ data class extends ParserBase {
     DotAccessParser(),
     ColonAccessParser(),
     AssignmentParser(),
-    ArrayAccessParser()
+    ArrayAccessParser(),
+    BinaryOperationParser(),
+    UnaryOperationParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()

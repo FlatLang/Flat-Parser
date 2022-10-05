@@ -9,7 +9,9 @@ data class extends ParserBase {
     DotAccessParser(),
     ColonAccessParser(),
     AssignmentParser(),
-    ArrayAccessParser()
+    ArrayAccessParser(),
+    BinaryOperationParser(),
+    UnaryOperationParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
@@ -21,9 +23,7 @@ data class extends ParserBase {
   override public checkStatementContinuation(ParseContext context, Token token) => false {
     if (token.type != Token.Type.SYMBOL) return false
 
-    match token.value {
-      "." => ":" => "=" => "[" => return true
-    }
+    return true
   }
 
   override public generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
