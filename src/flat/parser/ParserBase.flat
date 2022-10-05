@@ -17,12 +17,12 @@ abstract data class {
 
   public checkStatementContinuation(ParseContext context, Token token) => false
 
-  public matchAll(Token[] tokens) -> TokenMatch[] => tokens.map({ this.match(_) })
+  public matchAll(Token[] tokens, ParseContext context = null) -> TokenMatch[] => tokens.map({ this.match(_, context) })
 
-  public match(Token token) -> TokenMatch => null {
+  public match(Token token, ParseContext context = null) -> TokenMatch => null {
     if (!matcher) return null
 
-    if (let match = matcher.match(token))  {
+    if (let match = matcher.match(token, context))  {
       lastMatch = match
       return match
     }

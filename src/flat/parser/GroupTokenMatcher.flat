@@ -50,9 +50,9 @@ data class extends TokenMatcher {
     successfulMatchedTokens.addAll(tokenMatch.tokens)
   }
 
-  override public match(Token token) => tokenMatches.add(doMatch(token))
+  override public match(Token token, ParseContext context = null) => tokenMatches.add(doMatch(token, context))
 
-  doMatch(Token token) -> TokenMatch => null {
+  doMatch(Token token, ParseContext context) -> TokenMatch => null {
     if (disqualified) return null
     if (tokens.isEmpty) {
       if (iterator.hasNext) {
@@ -69,10 +69,10 @@ data class extends TokenMatcher {
 
     tokens.add(token)
 
-    return match()
+    return this.match(context)
   }
 
-  match() -> TokenMatch => null {
+  match(ParseContext context) -> TokenMatch => null {
     let token = tokens.last
 
     log.traceFunc({"|
@@ -90,8 +90,8 @@ data class extends TokenMatcher {
       }
     }
 
-    if (let tokenMatch = matcher.match(token)) {
-      return handleSuccessfulMatch(tokenMatch)
+    if (let tokenMatch = matcher.match(token, context)) {
+      return handleSuccessfulMatch(tokenMatch, context)
     } else if (matcher.partial) {
       log.traceFunc({"Returning null for partial match. matcher: " + magenta(matcher.pattern.toPatternString())})
       return null
@@ -103,12 +103,12 @@ data class extends TokenMatcher {
       nonGreedyChecked = true
       return tokensToMatch.map({
         tokens.add(_)
-        return match()
+        return this.match(context)
       }).last
     } else if (matcher.pattern.optional && iterator.hasNext) {
       nextMatcher()
       log.traceFunc({"Did not match the optional matcher. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-      return match()
+      return this.match(context)
     } else {
       log.traceFunc({"|
         Did not match the required matcher. Disqualified
@@ -119,7 +119,7 @@ data class extends TokenMatcher {
     }
   }
 
-  handleSuccessfulMatch(TokenMatch tokenMatch) -> GroupTokenMatch {
+  handleSuccessfulMatch(TokenMatch tokenMatch, ParseContext context) -> GroupTokenMatch {
     log.traceFunc({"|
       Matched tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
         matched tokens: [#{tokenMatch.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
@@ -127,7 +127,7 @@ data class extends TokenMatcher {
       |"})
     addSuccessfulMatch(tokenMatch)
 
-    if (let remainingMatch = checkRemainingMatch()) {
+    if (let remainingMatch = checkRemainingMatch(tokenMatch, context)) {
       return remainingMatch
     }
 
@@ -171,7 +171,7 @@ data class extends TokenMatcher {
     )
   }
 
-  checkRemainingMatch() -> GroupTokenMatch => null {
+  checkRemainingMatch(TokenMatch tokenMatch, ParseContext context) -> GroupTokenMatch => null {
     let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
 
     if (containsRemainingTokens) {
@@ -193,7 +193,7 @@ data class extends TokenMatcher {
       log.traceFunc({"Iterating through tokens: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]"})
       tokensToMatch.forEach({
         tokens.add(_)
-        return match()
+        return this.match(context)
       })
       log.traceFunc({"Returning composite group token match"})
       return GroupTokenMatch(

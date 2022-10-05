@@ -71,7 +71,7 @@ class {
     ParseEngine.log.debugFunc({"Parsers: [#{context.currentParsers.map(p => p.class.name).join(", ")}]"})
 
     context.currentParsers.forEach((parser) => {
-      if (let match = parser.match(token)) {
+      if (let match = parser.match(token, context.parseContext)) {
         ParseEngine.log.debugFunc({"Matched: #{parser.class.name}"})
       } else if (parser.matcher.partial) {
         ParseEngine.log.debugFunc({"Partial match: #{parser.class.name}"})

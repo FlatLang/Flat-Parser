@@ -13,7 +13,7 @@ data class extends TokenMatcher {
 
   var NodeTokenMatch lastMatch
 
-  override public match(Token token) -> NodeTokenMatch {
+  override public match(Token token, ParseContext context = null) -> NodeTokenMatch {
     return tokenMatches.add(doMatch(token))
   }
 

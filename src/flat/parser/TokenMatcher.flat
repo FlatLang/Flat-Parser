@@ -26,9 +26,9 @@ abstract data class {
   var Bool _complete = false
   visible var Bool complete <=> _complete
 
-  public matchAll(Token[] tokens) -> TokenMatch[] => tokens.map({ this.match(_) })
+  public matchAll(Token[] tokens, ParseContext context = null) -> TokenMatch[] => tokens.map({ this.match(_, context) })
 
-  public abstract match(Token token) -> TokenMatch
+  public abstract match(Token token, ParseContext context = null) -> TokenMatch
 
   public reset() {
     _tokens = Array()
