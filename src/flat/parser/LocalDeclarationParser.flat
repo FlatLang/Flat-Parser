@@ -1,0 +1,46 @@
+package flat/parser
+
+import flat/ast/LocalDeclarationNode
+import flat/compiler/models/Token
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    AssignmentParser()
+  ])
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => XorTokenPattern([
+    GroupTokenPattern([
+      XorTokenPattern([
+        PreconditionTokenPattern([LetModifier.class]),
+        PreconditionTokenPattern([VarModifier.class])
+      ], label: "implicit_modifier"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
+    ]),
+    GroupTokenPattern([
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_type"),
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.SYMBOL, "["),
+          SingleTokenPattern(Token.Type.SYMBOL, "]")
+        ], repeat: true, greedy: false, optional: true, label: "brackets")
+      ], label: "type_group"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
+    ])
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+
+  override public generateNode(ParseContext context, TokenMatch match) -> LocalDeclarationNode {
+    return LocalDeclarationNode(
+      type: match.getValue("declaration_type"),
+      name: match.getValue("declaration_name"),
+      arrayDimensions: match.getMatches("brackets").count
+    )
+  }
+}

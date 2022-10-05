@@ -10,7 +10,8 @@ data class extends ParserBase {
     FunctionCallParser(),
     IdentifierParser(),
     ArrayInstantiationParser(),
-    LiteralParser()
+    LiteralParser(),
+    LocalDeclarationParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
