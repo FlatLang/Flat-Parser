@@ -6,12 +6,11 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     AnnotationParser(),
-    CommentParser(),
+    LocalDeclarationParser(),
     FunctionCallParser(),
     IdentifierParser(),
     ArrayInstantiationParser(),
-    LiteralParser(),
-    LocalDeclarationParser()
+    LiteralParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
