@@ -21,5 +21,13 @@ data class extends TokenPattern {
 
   public getMatcher() => GroupTokenMatcher(this)
 
-  public toPatternString() => "(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
+  public toPatternString() -> String {
+    var str = "(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
+
+    if (label) {
+      str += " as #{label}"
+    }
+
+    return str
+  }
 }
