@@ -1,0 +1,22 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/compiler/models/Token
+
+data class extends TokenMatch {
+  visible TokenMatch tokenMatch
+
+  override public getValues(String label) -> String[] {
+    return tokenMatch.getValues(label)
+  }
+
+  override public getMatches<Type extends TokenMatch>(String label) -> Type[] {
+    let array = Type[]
+
+    tokenMatch.getMatches(label)
+      .filter({ _.label == label })
+      :forEach({ array.add(_) })
+
+    return array
+  }
+}
