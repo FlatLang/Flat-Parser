@@ -9,20 +9,23 @@ data class extends TokenPattern {
 
   public getMatcher() => SingleTokenMatcher(this)
 
-  public toPatternString() -> String {
+  override public toPatternString() -> String {
     var str = "<"
     str += Token.Type.toString(tokenType)
+
     if (values) {
       str += "[" + values.map({ "\"#{_}\"" }).join(" ") + "]"
     }
     if (value) {
       str += ":\"" + value + "\""
     }
+
+    str += ">"
+    str += getModifiersString()
+
     if (label) {
       str += " as #{label}"
     }
-    str += ">"
-    str += getModifiersString()
 
     return str
   }
