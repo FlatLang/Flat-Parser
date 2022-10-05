@@ -23,7 +23,7 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    expect(result?.getMatch("index")?.tokens).toBe([
+    expect(result?.getMatch<CaptureTokenMatch>("index")?.capture).toBe([
       Token(value: "test", type: Token.Type.IDENTIFIER)
     ])
     expect(matcher.partial).toBe(false)
@@ -44,7 +44,7 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    expect(result?.getMatch("index")?.tokens).toBe([
+    expect(result?.getMatch<CaptureTokenMatch>("index")?.capture).toBe([
       Token(value: "1", type: Token.Type.INTEGER)
     ])
     expect(matcher.partial).toBe(false)
