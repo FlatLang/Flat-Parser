@@ -44,14 +44,10 @@ testable class {
         tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
         label: "declaration_name"
       ),
-      SingleTokenMatch(
-        tokens: [Token(value: "[", type: Token.Type.SYMBOL)],
-        label: "bracket_start"
-      ),
-      SingleTokenMatch(
-        tokens: [Token(value: "]", type: Token.Type.SYMBOL)],
-        label: "bracket_end"
-      )
+      GroupTokenMatch(tokenMatches: [
+        SingleTokenMatch(tokens: [Token(value: "[", type: Token.Type.SYMBOL)]),
+        SingleTokenMatch(tokens: [Token(value: "]", type: Token.Type.SYMBOL)])
+      ], label: "brackets")
     ])
 
     let result = parser.generateNode(null, match)

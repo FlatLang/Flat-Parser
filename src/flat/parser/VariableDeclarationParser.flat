@@ -11,9 +11,9 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_type"),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
-      SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
-    ], repeat: true, optional: true),
+      SingleTokenPattern(Token.Type.SYMBOL, "["),
+      SingleTokenPattern(Token.Type.SYMBOL, "]")
+    ], repeat: true, optional: true, label: "brackets"),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
   ])
 
@@ -22,7 +22,7 @@ data class extends ParserBase {
   override public generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
     let type = match.getValue("declaration_type")
     let name = match.getValue("declaration_name")
-    let bracketCount = match.getValues("bracket_start").count
+    let bracketCount = match.getMatches("brackets").count
 
     return VariableDeclarationNode(
       type: type,
