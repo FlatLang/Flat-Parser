@@ -70,4 +70,11 @@ data class extends TokenMatcher {
       return null
     }
   }
+
+  override public reset() {
+    log.traceFunc({"Resetting matcher"})
+    super.reset()
+
+    matchers.forEach({ _.reset() })
+  }
 }
