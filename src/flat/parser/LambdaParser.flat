@@ -34,4 +34,19 @@ data class extends ParserBase {
   override public generateNode(ParseContext context, TokenMatch match) -> LambdaNode {
     return LambdaNode()
   }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    if (let body = match.getMatch<CaptureTokenMatch>("body")) {
+      return ParseRequest(
+        requests: [
+          ParseRequestData(
+            tokens: body.capture,
+            parsers: FunctionScopeParser().childParsers
+          )
+        ]
+      )
+    } else {
+      return super.getChildParseRequests(context, match)
+    }
+  }
 }
