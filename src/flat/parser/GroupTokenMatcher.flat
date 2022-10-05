@@ -175,6 +175,12 @@ data class extends TokenMatcher {
     let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
 
     if (containsRemainingTokens) {
+      if (tokenMatch.class.isOfType(PreconditionTokenMatch.class)) {
+        nextMatcher()
+        log.traceFunc({"Matched a PreconditionTokenMatcher. Skipped to the next matcher: " + magenta(matcher.pattern.toPatternString())})
+        return this.match(context)
+      }
+
       let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
       log.traceFunc({"|
         Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]

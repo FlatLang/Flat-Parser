@@ -568,4 +568,49 @@ testable class {
     expect(match).toBe(null)
     expect(matcher.partial).toBe(true)
   }
+
+  test `continues on when precondition matcher matches`() {
+    let pattern = GroupTokenPattern([
+      PreconditionTokenPattern([LetModifier.class]),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "test"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "test2")
+    ])
+
+    let context = ParseContext(
+      annotations: [LetModifier(aliasUsed: "let")]
+    )
+
+    let matcher = pattern.getMatcher()
+    let match = matcher.matchAll([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "test2", type: Token.Type.IDENTIFIER)
+    ], context).last
+
+    expect(match).toNotBe(null)
+    expect(match.tokens).toBe([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "test2", type: Token.Type.IDENTIFIER)
+    ])
+    expect(matcher.partial).toBe(false)
+  }
+
+  test `breaks when precondition matcher doesnt matches`() {
+    let pattern = GroupTokenPattern([
+      PreconditionTokenPattern([LetModifier.class]),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "test"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, "test2")
+    ])
+
+    let context = ParseContext(
+      annotations: [VarModifier(aliasUsed: "var")]
+    )
+
+    let matcher = pattern.getMatcher()
+    let match = matcher.matchAll([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "test2", type: Token.Type.IDENTIFIER)
+    ], context).last
+
+    expect(match).toBe(null)
+  }
 }
