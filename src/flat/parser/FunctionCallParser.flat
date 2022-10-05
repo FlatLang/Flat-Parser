@@ -33,7 +33,8 @@ data class extends ParserBase {
     CommentParser(),
     FunctionCallParser(),
     IdentifierParser(),
-    LiteralParser()
+    LiteralParser(),
+    LambdaParser()
   ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
