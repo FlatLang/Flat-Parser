@@ -1,0 +1,37 @@
+package flat/parser
+
+import flat/datastruct/HashMap
+import flat/compiler/models/Token
+import flat/ast/AnnotationNode
+import flat/log/Logger
+
+data class extends TokenPattern {
+  let static Logger log = Logger(PreconditionTokenPattern.class)
+
+  public construct(
+    visible Array<Class<AnnotationNode>> annotations = null,
+    this String: label = null,
+    this Bool optional = false,
+    this Bool repeat = false,
+    this Bool greedy = true
+  ) {}
+
+  public getMatcher() => PreconditionTokenMatcher(this)
+
+  override public toPatternString() -> String {
+    var str = "pre("
+
+    if (annotations) {
+      str += "Annotations[#{annotations.map(a => a.name).join(", ")}]"
+    }
+
+    str += ")"
+    str += getModifiersString()
+
+    if (label) {
+      str += " as #{label}"
+    }
+
+    return str
+  }
+}

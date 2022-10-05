@@ -13,6 +13,7 @@ import flat/parser/Parser
   GroupTokenMatcher_Test,
   CaptureTokenMatcher_Test,
   NodeTokenMatcher_Test,
+  PreconditionTokenMatcher_Test,
   PackageParser_Test,
   ImportParser_Test,
   VariableDeclarationParser_Test,
