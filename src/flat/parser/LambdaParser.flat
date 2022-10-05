@@ -8,41 +8,39 @@ data class extends ParserBase {
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    XorTokenPattern([
-      GroupTokenPattern([
-        CaptureTokenPattern(
-          label: "parameters",
-          start: Token(value: "("),
-          end: Token(value: ")")
-        ),
-        SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-      ]),
-      GroupTokenPattern([
-        SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
-        SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-      ]),
-      GroupTokenPattern([
-        XorTokenPattern([
-          GroupTokenPattern([
-            CaptureTokenPattern(
-              label: "parameters",
-              start: Token(value: "("),
-              end: Token(value: ")")
-            ),
-            SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-          ]),
-          GroupTokenPattern([
-            SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
-            SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-          ])
-        ], optional: true),
-        CaptureTokenPattern(
-          label: "body",
-          start: Token(value: "{"),
-          end: Token(value: "}")
-        )
-      ])
+  override lazy TokenPattern pattern => XorTokenPattern([
+    GroupTokenPattern([
+      CaptureTokenPattern(
+        label: "parameters",
+        start: Token(value: "("),
+        end: Token(value: ")")
+      ),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
+    ]),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
+    ]),
+    GroupTokenPattern([
+      XorTokenPattern([
+        GroupTokenPattern([
+          CaptureTokenPattern(
+            label: "parameters",
+            start: Token(value: "("),
+            end: Token(value: ")")
+          ),
+          SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
+        ]),
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
+          SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
+        ])
+      ], optional: true),
+      CaptureTokenPattern(
+        label: "body",
+        start: Token(value: "{"),
+        end: Token(value: "}")
+      )
     ])
   ])
 
