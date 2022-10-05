@@ -11,23 +11,23 @@ data class extends ParserBase {
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.STRING, label: "value", optional: true),
-    SingleTokenPattern(Token.Type.INTEGER, label: "value", optional: true)
+  override lazy TokenPattern pattern => XorTokenPattern([
+    SingleTokenPattern(Token.Type.STRING),
+    SingleTokenPattern(Token.Type.INTEGER)
   ])
 
   override public generateNode(ParseContext context, TokenMatch match) -> LiteralNode {
-    let value = match.getMatch("value")
+    let token = match.tokens.first
 
     var Int literalType
 
-    match value.tokens.first.type {
+    match token.type {
       Token.Type.STRING => literalType = LiteralNode.Type.STRING
       Token.Type.INTEGER => literalType = LiteralNode.Type.INTEGER
     }
 
     return LiteralNode(
-      value: value.tokens.first.value,
+      value: token.value,
       literalType: literalType
     )
   }
