@@ -322,4 +322,28 @@ testable class {
 
     expect(node).toBe(FunctionCallNode(name: "log"))
   }
+
+  async test `adds annotations to parse context after parsing one`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+    engine.context.pushScope(FunctionParser(), FunctionNode())
+    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+
+    var Node node = null
+
+    stream.on<Node>("data", { node = _ })
+
+    expect(engine.context.parseContext.annotations.isEmpty).toBe(true)
+
+    engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
+
+    expect(node).toBe(null)
+    expect(engine.context.parseContext.annotations).toBe([
+      LetModifier(aliasUsed: "let")
+    ])
+  }
 }
