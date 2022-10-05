@@ -55,16 +55,6 @@ class {
     match token.type {
       Token.Type.COMMENT =>
       Token.Type.WS => return
-      Token.Type.SYMBOL => {
-        match token.value {
-          "}" => {
-            ParseEngine.log.debugFunc({"Encountered closing brace"})
-            tryGenerateNodeForRemainingTokens()
-            context.popScope(token)
-            return
-          }
-        }
-      }
     }
 
     if (context.tokens.isEmpty) {
@@ -103,7 +93,7 @@ class {
         let node = generateNode(parser)
         context.updateScopeForNode(parser, node)
         clearTokensAfterParse(parser)
-      } else {
+      } else if (!checkScopeEnd()) {
         ParseEngine.log.debugFunc({"No completed matches"})
         invalidTokens()
       }
@@ -230,7 +220,7 @@ class {
   public tryGenerateNodeForRemainingTokens() {
     if (context.tokens.isEmpty) return
 
-    if (!containsCompletedMatches()) {
+    if (!containsCompletedMatches() && !checkScopeEnd()) {
       ParseEngine.log.debugFunc({"No completed matches. Not generating node"})
       invalidTokens()
       return
@@ -240,6 +230,18 @@ class {
     let node = generateNode(parser)
     context.updateScopeForNode(parser, node)
     clearTokensAfterParse(parser)
+  }
+
+  public checkScopeEnd() => false {
+    if (context.tokens.isNotEmpty) {
+      let token = context.tokens.last
+
+      if (token.value == "}") {
+        ParseEngine.log.debugFunc({"Encountered closing brace"})
+        context.popScope(token)
+        return true
+      }
+    }
   }
 
   public checkStatementEnd(Token token) {
