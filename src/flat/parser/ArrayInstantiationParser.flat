@@ -1,0 +1,33 @@
+package flat/parser
+
+import flat/ast/ArrayInstantiationNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    CommentParser(),
+    DotAccessParser(),
+    ColonAccessParser(),
+    AssignmentParser(),
+    ArrayAccessParser()
+  ])
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, value: "["),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "]")
+    ], repeat: true, label: "brackets")
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ArrayInstantiationNode {
+    return ArrayInstantiationNode(
+      type: match.getValue("type"),
+      arrayDimensions: match.getMatches("brackets").count
+    )
+  }
+}

@@ -25,7 +25,8 @@ import flat/parser/Parser
   ClassScopeParser_Test,
   ParameterParser_Test,
   FunctionCallParser_Test,
-  ArrayAccessParser_Test
+  ArrayAccessParser_Test,
+  ArrayInstantiationParser_Test
 ]]
 class {
   public static async main(String args[]) {

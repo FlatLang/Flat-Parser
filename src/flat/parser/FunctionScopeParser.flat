@@ -9,6 +9,7 @@ data class extends ParserBase {
     CommentParser(),
     FunctionCallParser(),
     IdentifierParser(),
+    ArrayInstantiationParser(),
     LiteralParser()
   ])
 
