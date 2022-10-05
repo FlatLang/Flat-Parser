@@ -13,10 +13,6 @@ data class extends TokenMatch {
   override public getMatches<Type extends TokenMatch>(String label) -> Type[] {
     let array = Type[]
 
-    if (this.label == label) {
-      array.add(this)
-    }
-
     tokenMatches
       :forEach({ array.addAll(_.getMatches(label)) })
       .filter({ _.label == label })
