@@ -25,13 +25,19 @@ data class extends TokenMatcher {
   var Token[] successfulMatchedTokens = Token[]
 
   nextMatcher() {
+    nonGreedyChecked = false
+
     while (nonGreedyMatchers.isNotEmpty) {
       log.traceFunc({"Popping nonGreedyMatcher"})
       nonGreedyMatchers.pop()
-      iterator.stepNext
+
+      matcher = iterator.stepNext
+
+      if (nonGreedyMatchers.isEmpty) {
+        return
+      }
     }
 
-    nonGreedyChecked = false
     matcher = iterator.stepNext
   }
 
@@ -43,11 +49,13 @@ data class extends TokenMatcher {
   addSuccessfulMatch(TokenMatch tokenMatch) {
     if (!Object.referenceEquals(matcher, lastMatcher)) {
       successfulMatches.add(tokenMatch)
+      successfulMatchedTokens.addAll(tokenMatch.tokens)
     } else {
       successfulMatches[successfulMatches.count - 1] = tokenMatch
+      successfulMatchedTokens = Token[]
+      successfulMatches.forEach({ successfulMatchedTokens.addAll(_.tokens) })
     }
     lastMatcher = matcher
-    successfulMatchedTokens.addAll(tokenMatch.tokens)
   }
 
   override public match(Token token, ParseContext context = null) => tokenMatches.add(doMatch(token, context))
@@ -105,18 +113,28 @@ data class extends TokenMatcher {
         tokens.add(_)
         return this.match(context)
       }).last
-    } else if (matcher.pattern.optional && iterator.hasNext) {
-      nextMatcher()
-      log.traceFunc({"Did not match the optional matcher. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-      return this.match(context)
-    } else {
-      log.traceFunc({"|
-        Did not match the required matcher. Disqualified
-          pattern: #{magenta(matcher.pattern.toPatternString())}
-        |"})
-      disqualified = true
-      return null
+    } else if (iterator.hasNext) {
+      if (matcher.complete) {
+        nextMatcher()
+        log.traceFunc({"The matcher was complete before it broke. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+        log.traceFunc({"Successful matched tokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]"})
+        return this.match(context)
+      } else if (matcher.pattern.optional) {
+        nextMatcher()
+        log.traceFunc({"Did not match the optional matcher. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+        return this.match(context)
+      } else if (matcher.tokenMatches.getLast(1) != null) { // maybe need to check that the most recent match wasnt required
+        nextMatcher()
+        log.traceFunc({"Did not match, but had most recently successfully matched. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+        return this.match(context)
+      }
     }
+
+    log.traceFunc({"|
+      Did not match the required matcher. Disqualified
+        pattern: #{magenta(matcher.pattern.toPatternString())}
+      |"})
+    disqualified = true
   }
 
   handleSuccessfulMatch(TokenMatch tokenMatch, ParseContext context) -> GroupTokenMatch {
@@ -131,23 +149,39 @@ data class extends TokenMatcher {
       return remainingMatch
     }
 
-    if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-      repeatMatcher()
-      if (iterator.allNext.any({ !_.pattern.optional })) {
-        log.traceFunc({"Contains future required matchers. Returning null"})
-        return null
-      } else {
-        log.traceFunc({"The rest of the matchers are optional. Returning match"})
-      }
-    } else if (iterator.hasNext) {
-      if (!matcher.complete) { // FIXME: handle non-greedy
-        if (iterator.allNext.any({ !_.pattern.optional })) {
-          log.traceFunc({"Contains future required matchers. Returning null"})
-          return null
+    if (matcher.pattern.repeat) {
+      if (matcher.complete) {
+        log.traceFunc({"Matcher is complete"})
+        if (matcher.pattern.greedy) {
+          repeatMatcher()
+          if (iterator.allNext.any({ !_.pattern.optional })) {
+            log.traceFunc({"Contains future required matchers. Returning null"})
+            return null
+          } else {
+            log.traceFunc({"The rest of the matchers are optional. Returning match"})
+          }
         } else {
-          log.traceFunc({"The rest of the matchers are optional. Returning match"})
+          if (iterator.hasNext) {
+            nextMatcher()
+            log.traceFunc({"This matcher is not greedy and there are other matchers. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+          } else {
+            log.traceFunc({"This matcher is not greedy and there are no other matchers. Completing and returning match"})
+            complete = true
+            repeatMatcher()
+          }
         }
       } else {
+        log.traceFunc({"Matcher is not complete"})
+        if (iterator.hasNext) {
+          nextMatcher()
+          log.traceFunc({"There are other matchers. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+        } else {
+          log.traceFunc({"There are no other matchers. Completing and returning match"})
+          complete = true
+        }
+      }
+    } else if (iterator.hasNext) {
+      if (matcher.disqualified) {
         nextMatcher()
         if (iterator.allNextInclusive.all({ _.pattern.optional })) {
           log.traceFunc({"The rest of the matchers are optional. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
@@ -155,6 +189,14 @@ data class extends TokenMatcher {
         } else {
           log.traceFunc({"There are still some required matchers. Returning null and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
           return null
+        }
+      } else { // FIXME: handle non-greedy
+        log.traceFunc({"Matcher is not disqualified, not iterating to next matcher"})
+        if (iterator.allNext.any({ !_.pattern.optional })) {
+          log.traceFunc({"Contains future required matchers. Returning null"})
+          return null
+        } else {
+          log.traceFunc({"The rest of the matchers are optional. Returning match"})
         }
       }
     } else {
@@ -175,12 +217,6 @@ data class extends TokenMatcher {
     let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
 
     if (containsRemainingTokens) {
-      if (tokenMatch.class.isOfType(PreconditionTokenMatch.class)) {
-        nextMatcher()
-        log.traceFunc({"Matched a PreconditionTokenMatcher. Skipped to the next matcher: " + magenta(matcher.pattern.toPatternString())})
-        return this.match(context)
-      }
-
       let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
       log.traceFunc({"|
         Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
