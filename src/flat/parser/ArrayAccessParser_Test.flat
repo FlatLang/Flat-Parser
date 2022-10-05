@@ -49,4 +49,27 @@ testable class {
     ])
     expect(matcher.partial).toBe(false)
   }
+
+  async test `can get child parse requests`() {
+    let parser = ArrayAccessParser()
+    let matcher = parser.matcher
+    let result = matcher.matchAll([
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "1", type: Token.Type.INTEGER),
+      Token(value: "]", type: Token.Type.SYMBOL)
+    ]).last
+
+    expect(result?.tokens).toBe([
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "1", type: Token.Type.INTEGER),
+      Token(value: "]", type: Token.Type.SYMBOL)
+    ])
+
+    let childRequests = parser.getChildParseRequests(null, result)
+
+    expect(childRequests.requests.count).toBe(1)
+    expect(childRequests.requests.first.tokens).toBe([
+      Token(value: "1", type: Token.Type.INTEGER)
+    ])
+  }
 }
