@@ -1,0 +1,16 @@
+package flat/parser
+
+import flat/ast/ArrowExpressionNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll(AssignmentParser().childParsers)
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=>")
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ArrowExpressionNode {
+    return ArrowExpressionNode()
+  }
+}
