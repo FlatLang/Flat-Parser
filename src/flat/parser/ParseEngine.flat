@@ -41,6 +41,12 @@ class {
   public getCompletedMatches() =>
     context.currentParsers.filter({ _.lastMatch != null })
 
+  public containsExactMatches() =>
+    context.currentParsers.any(p => p.lastMatch != null && p.acceptImmediately())
+
+  public getExactMatches() =>
+    context.currentParsers.filter(p => p.lastMatch != null && p.acceptImmediately())
+
   public getBestMatch(ParserBase[] parsers) -> ParserBase {
     let maxTokenCount = parsers.max({ _.lastMatch.tokens.count })
 
@@ -78,10 +84,21 @@ class {
       }
     })
 
-    checkMatches()
+    checkMatches(token)
   }
 
-  checkMatches() {
+  checkMatches(Token token) {
+    if (containsExactMatches()) {
+      ParseEngine.log.debugFunc({"Contains exact matches"})
+      let exactMatches = getExactMatches()
+      ParseEngine.log.traceFunc({"Exact matches:\n  #{exactMatches.map(m => m.pattern.toPatternString()).join("\n  ")}"})
+      let parser = getBestMatch(exactMatches)
+      let node = generateNode(parser)
+      context.updateScopeForNode(parser, node)
+      clearTokensAfterParse(parser, token)
+      return
+    }
+
     let containsPartialMatches = containsPartialMatches()
 
     if (!containsPartialMatches()) {
@@ -92,7 +109,7 @@ class {
         let parser = getBestMatch(getCompletedMatches())
         let node = generateNode(parser)
         context.updateScopeForNode(parser, node)
-        clearTokensAfterParse(parser)
+        clearTokensAfterParse(parser, token)
       } else if (!checkScopeEnd()) {
         ParseEngine.log.debugFunc({"No completed matches"})
         invalidTokens()
@@ -111,7 +128,7 @@ class {
           ParseEngine.log.debugFunc({"Generating annotation"})
           if (let annotation = generateAnnotation(parser)) {
             context.parseContext.annotations.add(annotation)
-            clearTokensAfterParse(parser)
+            clearTokensAfterParse(parser, token)
           }
         } else {
           ParseEngine.log.debugFunc({"Not an annotation. Skipping"})
@@ -127,7 +144,7 @@ class {
     context.currentParsers.forEach({ _.reset() })
   }
 
-  public clearTokensAfterParse(ParserBase parser) {
+  public clearTokensAfterParse(ParserBase parser, Token token) {
     ParseEngine.log.debugFunc({"Removing tokens from last parse: [#{parser.lastMatch.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
     parser.lastMatch.tokens.forEach({
       if (context.tokens.isNotEmpty) {
@@ -135,20 +152,26 @@ class {
       }
     })
 
-    if (context.tokens.isNotEmpty) {
-      ParseEngine.log.debugFunc({"Checking statement end for token '#{context.tokens.first.value}' (Parser: #{context.currentParser.class.name})"})
-      if (isStatementEnd(context.tokens.first)) {
-        context.resetCurrentScope()
-      } else {
-        ParseEngine.log.debugFunc({"Not statement end"})
-      }
+    ParseEngine.log.debugFunc({"Checking statement end for token '#{token.value}' (Parser: #{context.currentParser.class.name})"})
+    if (isStatementEnd(token)) {
+      ParseEngine.log.debugFunc({"Is statement end"})
+      handleStatementEnd()
     } else {
-      ParseEngine.log.debugFunc({"No tokens left after clearing tokens"})
+      ParseEngine.log.debugFunc({"Not statement end"})
     }
 
     reset()
 
     context.tokens.forEach({ matchToken(_) })
+  }
+
+  handleStatementEnd() {
+    context.resetCurrentScope()
+    let shouldPop = context.currentNode.class.isOfType(FunctionNode.class) ||
+      context.currentNode.class.isOfType(ClassNode.class)
+    if (shouldPop) {
+      context.popScope()
+    }
   }
 
   public generateNode(ParserBase parser) -> Node {
@@ -220,16 +243,21 @@ class {
   public tryGenerateNodeForRemainingTokens() {
     if (context.tokens.isEmpty) return
 
-    if (!containsCompletedMatches() && !checkScopeEnd()) {
+    if (checkScopeEnd()) {
+      ParseEngine.log.debugFunc({"Popped scope. Not generating node"})
+      return
+    } else if (!containsCompletedMatches()) {
       ParseEngine.log.debugFunc({"No completed matches. Not generating node"})
       invalidTokens()
       return
     }
 
+    let token = context.tokens.last
+
     let parser = getBestMatch(getCompletedMatches())
     let node = generateNode(parser)
     context.updateScopeForNode(parser, node)
-    clearTokensAfterParse(parser)
+    clearTokensAfterParse(parser, token)
   }
 
   public checkScopeEnd() => false {
@@ -238,7 +266,10 @@ class {
 
       if (token.value == "}") {
         ParseEngine.log.debugFunc({"Encountered closing brace"})
+        context.tokens.removeLast()
+        tryGenerateNodeForRemainingTokens()
         context.popScope(token)
+        reset()
         return true
       }
     }
@@ -267,13 +298,13 @@ class {
   public invalidTokensError(Token[] tokens) {
     ParseEngine.log.debugFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}]. Resetting tokens. Parser #{context.currentParser.class.name}"})
     if (tokens.isNotEmpty && tokens.first.location) {
-      let location = if (tokens.count == 1 && tokens.first.value.count == 1) {
-        "#{tokens.first.location.lineNumber}:#{tokens.first.location.column}"
-      } else {
-        "#{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"
-      }
+      if (tokens.count == 1) {
+        let token = tokens.first
 
-      ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{location}"})
+        ParseEngine.log.errorFunc({"Could not parse token '#{token.value}' at #{token.location.lineNumber}:#{token.location.column}"})
+      } else {
+        ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
+      }
     }
   }
 }
