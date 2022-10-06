@@ -8,6 +8,7 @@ data class extends ParserBase {
     AnnotationParser(),
     IfParser(),
     ElseParser(),
+    ReturnParser(),
     LocalDeclarationParser(),
     FunctionCallParser(),
     IdentifierParser(),
