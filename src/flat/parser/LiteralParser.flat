@@ -9,8 +9,6 @@ data class extends ParserBase {
     ColonAccessParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => XorTokenPattern([
     SingleTokenPattern(Token.Type.STRING),
     SingleTokenPattern(Token.Type.INTEGER)

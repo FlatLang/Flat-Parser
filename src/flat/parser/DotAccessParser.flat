@@ -9,8 +9,6 @@ data class extends ParserBase {
     FunctionCallParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.SYMBOL, value: "."),
   ])

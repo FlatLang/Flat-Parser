@@ -7,7 +7,7 @@ abstract data class {
   ParserBase[] childParsers => null
   lazy AnnotationParser annotationParser => AnnotationParser()
   lazy TokenPattern pattern => null
-  lazy TokenMatcher matcher => null
+  visible lazy TokenMatcher matcher => pattern.getMatcher()
 
   public var TokenMatch lastMatch
 

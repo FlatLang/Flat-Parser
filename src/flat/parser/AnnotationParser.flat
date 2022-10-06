@@ -10,8 +10,6 @@ data class extends ParserBase {
     ModifierParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "["),

@@ -13,8 +13,6 @@ data class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "else")
   ])

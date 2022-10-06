@@ -16,7 +16,6 @@ data class extends ParserBase {
     ArrayInstantiationParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.SYMBOL, value: "{"),

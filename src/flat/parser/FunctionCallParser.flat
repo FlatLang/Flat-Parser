@@ -13,8 +13,6 @@ data class extends ParserBase {
     UnaryOperationParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(

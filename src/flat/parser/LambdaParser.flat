@@ -6,8 +6,6 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override ParserBase[] childParsers => FunctionScopeParser().childParsers
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
       CaptureTokenPattern(

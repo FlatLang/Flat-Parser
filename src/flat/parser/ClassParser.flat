@@ -8,8 +8,6 @@ data class extends ParserBase {
     ClassScopeParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true),
