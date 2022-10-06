@@ -1,0 +1,27 @@
+package flat/parser
+
+import flat/ast/ElseNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  let static Logger log = Logger(ElseParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([FunctionScopeParser()])
+    :addAll(FunctionScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "else")
+  ])
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ElseNode {
+    return ElseNode()
+  }
+}
