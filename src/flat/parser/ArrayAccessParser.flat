@@ -11,7 +11,9 @@ data class extends ParserBase {
     AssignmentParser(),
     ArrayAccessParser(),
     BinaryOperationParser(),
-    UnaryOperationParser()
+    UnaryOperationParser(),
+    TernaryParser(),
+    MatchCaseParser()
   ])
 
   override lazy TokenPattern pattern => CaptureTokenPattern(

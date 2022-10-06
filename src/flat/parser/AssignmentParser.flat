@@ -8,7 +8,8 @@ data class extends ParserBase {
     IdentifierParser(),
     ArrayInstantiationParser(),
     LiteralParser(),
-    FunctionCallParser()
+    FunctionCallParser(),
+    PriorityParser()
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([

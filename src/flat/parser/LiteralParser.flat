@@ -6,7 +6,10 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     DotAccessParser(),
-    ColonAccessParser()
+    ColonAccessParser(),
+    BinaryOperationParser(),
+    TernaryParser(),
+    MatchCaseParser()
   ])
 
   override lazy TokenPattern pattern => XorTokenPattern([

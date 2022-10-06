@@ -10,7 +10,9 @@ data class extends ParserBase {
     ColonAccessParser(),
     ArrayAccessParser(),
     BinaryOperationParser(),
-    UnaryOperationParser()
+    UnaryOperationParser(),
+    TernaryParser(),
+    MatchCaseParser()
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
