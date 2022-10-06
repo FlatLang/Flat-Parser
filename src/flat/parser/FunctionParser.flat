@@ -7,9 +7,9 @@ import flat/log/Logger
 data class extends ParserBase {
   let static Logger log = Logger(FunctionParser.class)
 
-  override ParserBase[] childParsers => Array():addAll([
-    FunctionScopeParser()
-  ])
+  override ParserBase[] childParsers => Array()
+    :addAll([FunctionScopeParser()])
+    :addAll(FunctionScopeParser().childParsers)
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
@@ -30,12 +30,8 @@ data class extends ParserBase {
         SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true),
-    GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "=>")
-    ], optional: true)
+    SingleTokenPattern(Token.Type.SYMBOL, "=>", optional: true)
   ])
-
-  ParserBase[] parameterParsers => [ParameterParser()]
 
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")
@@ -59,7 +55,10 @@ data class extends ParserBase {
       requests: tokens.map({
         return ParseRequestData(
           tokens: _,
-          parsers: [ParameterParser()]
+          parsers: [
+            AnnotationParser(),
+            ParameterParser()
+          ]
         )
       })
     )
