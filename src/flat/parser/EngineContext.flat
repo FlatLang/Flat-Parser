@@ -57,6 +57,8 @@ data class {
   }
 
   public updateScopeForNode(ParserBase parser, Node node) {
+    parseContext = parseContext.copy(annotations: AnnotationNode[])
+
     match node.class {
       FileNode.class => fallthrough
       ClassNode.class => fallthrough
