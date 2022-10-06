@@ -9,11 +9,11 @@ data class extends ParserBase {
     IfParser(),
     ElseParser(),
     ReturnParser(),
+    LiteralParser(),
     LocalDeclarationParser(),
     FunctionCallParser(),
     IdentifierParser(),
-    ArrayInstantiationParser(),
-    LiteralParser()
+    ArrayInstantiationParser()
   ])
 
   override lazy TokenMatcher matcher => pattern.getMatcher()
