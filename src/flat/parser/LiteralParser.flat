@@ -16,6 +16,8 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.INTEGER)
   ])
 
+  override public acceptImmediately() => true
+
   override public generateNode(ParseContext context, TokenMatch match) -> LiteralNode {
     let token = match.tokens.first
 
