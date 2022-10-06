@@ -16,6 +16,7 @@ abstract data class {
   public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest()
 
   public checkStatementContinuation(ParseContext context, Token token) => false
+  public acceptImmediately() => false
 
   public matchAll(Token[] tokens, ParseContext context = null) -> TokenMatch[] => tokens.map({ this.match(_, context) })
 
