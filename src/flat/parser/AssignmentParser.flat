@@ -12,9 +12,7 @@ data class extends ParserBase {
     PriorityParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.SYMBOL, "=")
-  ])
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=")
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 

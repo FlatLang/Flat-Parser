@@ -16,10 +16,8 @@ data class extends ParserBase {
     MatchCaseParser()
   ])
 
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
-  ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => false {
     if (token.type != Token.Type.SYMBOL) return false

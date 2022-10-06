@@ -6,9 +6,7 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.COMMENT, label: "comment")
-  ])
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.COMMENT, label: "comment")
 
   override public generateNode(ParseContext context, TokenMatch match) -> CommentNode {
     let value = match.getValue("comment")

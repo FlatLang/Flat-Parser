@@ -12,9 +12,7 @@ data class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "return")
-  ])
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "return")
 
   override public acceptImmediately() => true
 
