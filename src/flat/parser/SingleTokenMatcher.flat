@@ -42,7 +42,7 @@ data class extends TokenMatcher {
     }
 
     return SingleTokenMatch(
-      tokens: tokens.copy(),
+      tokens: pattern.includeTokens ? tokens.copy() : Token[],
       label: pattern.label
     )
   }

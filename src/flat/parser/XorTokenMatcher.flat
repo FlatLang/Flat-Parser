@@ -61,7 +61,7 @@ data class extends TokenMatcher {
       }
 
       return XorTokenMatch(
-        tokens: match.tokens,
+        tokens: pattern.includeTokens ? match.tokens : Token[],
         label: pattern.label,
         tokenMatch: match
       )

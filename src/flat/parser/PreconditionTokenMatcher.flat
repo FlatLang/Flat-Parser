@@ -33,7 +33,7 @@ data class extends TokenMatcher {
     log.traceFunc({"Precondition passed successfully"})
 
     return PreconditionTokenMatch(
-      tokens: tokens.copy(),
+      tokens: pattern.includeTokens ? tokens.copy() : Token[],
       label: pattern.label
     )
   }

@@ -207,7 +207,7 @@ data class extends TokenMatcher {
     }
 
     return GroupTokenMatch(
-      tokens: tokens.copy(),
+      tokens: pattern.includeTokens ? tokens.copy() : Token[],
       tokenMatches: successfulMatches.copy(),
       label: pattern.label
     )

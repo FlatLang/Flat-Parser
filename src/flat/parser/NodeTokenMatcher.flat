@@ -55,7 +55,7 @@ data class extends TokenMatcher {
       log.traceFunc({"Matches: [#{matches.map(m => green(m.class.name)).join(", ")}] parser: #{matchParser.class.name}"})
       complete = matchParser.matcher.complete && pattern.parsers.none({ _.matcher.partial })
       lastMatch = NodeTokenMatch(
-        tokens: tokens.copy(),
+        tokens: pattern.includeTokens ? tokens.copy() : Token[],
         label: pattern.label,
         parser: matchParser
       )
