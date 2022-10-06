@@ -25,6 +25,12 @@ data class extends ParserBase {
     GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_type"),
+        CaptureTokenPattern(
+          label: "generic_parameters",
+          start: Token(value: "<"),
+          end: Token(value: ">"),
+          optional: true
+        ),
         GroupTokenPattern([
           SingleTokenPattern(Token.Type.SYMBOL, "["),
           SingleTokenPattern(Token.Type.SYMBOL, "]")
