@@ -9,7 +9,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse function without parameters or type`() {
+  test `can parse function without parameters or type`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -27,7 +27,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with single parameter, but no type`() {
+  test `can parse function with single parameter, but no type`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -49,7 +49,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with multiple parameters, but no type`() {
+  test `can parse function with multiple parameters, but no type`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -77,22 +77,9 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with multiple parameters and a basic type`() {
+  test `can parse function with multiple parameters and a basic type`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
-      Token(value: "test", type: Token.Type.IDENTIFIER),
-      Token(value: "(", type: Token.Type.SYMBOL),
-      Token(value: "Test", type: Token.Type.IDENTIFIER),
-      Token(value: "value", type: Token.Type.IDENTIFIER),
-      Token(value: ",", type: Token.Type.SYMBOL),
-      Token(value: "Test", type: Token.Type.IDENTIFIER),
-      Token(value: "value2", type: Token.Type.IDENTIFIER),
-      Token(value: ")", type: Token.Type.SYMBOL),
-      Token(value: "->", type: Token.Type.SYMBOL),
-      Token(value: "Object", type: Token.Type.IDENTIFIER)
-    ]).last
-
-    let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "Test", type: Token.Type.IDENTIFIER),
@@ -103,13 +90,26 @@ testable class {
       Token(value: ")", type: Token.Type.SYMBOL),
       Token(value: "->", type: Token.Type.SYMBOL),
       Token(value: "Object", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    let expected = [
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "value", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL),
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "value2", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "->", type: Token.Type.SYMBOL),
+      Token(value: "Object", type: Token.Type.IDENTIFIER)
     ]
 
     expect(result?.tokens).toBe(expected)
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with multiple parameters and a type with array single brackets`() {
+  test `can parse function with multiple parameters and a type with array single brackets`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -145,7 +145,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with multiple parameters and a type with array multiple brackets`() {
+  test `can parse function with multiple parameters and a type with array multiple brackets`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -185,7 +185,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with three parameters and a type with array multiple brackets`() {
+  test `can parse function with three parameters and a type with array multiple brackets`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -239,7 +239,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with no parameters and a type with array multiple brackets`() {
+  test `can parse function with no parameters and a type with array multiple brackets`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -269,7 +269,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse function with expression return`() {
+  test `can parse function with expression return`() {
     let matcher = FunctionParser().matcher
     let result = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -289,7 +289,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can access parameters from capture match`() {
+  test `can access parameters from capture match`() {
     let matcher = FunctionParser().matcher
     let match = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),

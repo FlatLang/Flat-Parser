@@ -17,7 +17,7 @@ import flat/stream/Stream
 import flat/io/File
 
 testable class {
-  async test `can consume a token`() {
+  test `can consume a token`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -27,7 +27,7 @@ testable class {
     expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
-  async test `can find a package match`() {
+  test `can find a package match`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -54,7 +54,7 @@ testable class {
     ])
   }
 
-  async test `does not return package match once the next token breaks the parser matcher`() {
+  test `does not return package match once the next token breaks the parser matcher`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -66,7 +66,7 @@ testable class {
     expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
-  async test `returns valid package match once the next token breaks the parser matcher`() {
+  test `returns valid package match once the next token breaks the parser matcher`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -97,14 +97,14 @@ testable class {
     expect(engine.getPartialMatches().mapNotNull({ _.lastMatch })).toBe(Array())
   }
 
-  async test `emits node after valid package match once the next token breaks the parser matcher`() {
+  test `emits node after valid package match once the next token breaks the parser matcher`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
@@ -116,14 +116,14 @@ testable class {
     expect(node).toBe(PackageNode(location: "test"))
   }
 
-  async test `can parse full package before creating node`() {
+  test `can parse full package before creating node`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     engine.consume(Token(value: "package", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
@@ -145,7 +145,7 @@ testable class {
     expect(node).toBe(PackageNode(location: "test/test2/test3"))
   }
 
-  async test `pushes scope to parentStack`() {
+  test `pushes scope to parentStack`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -162,7 +162,7 @@ testable class {
     expect(engine.context.parentStack.count).toBe(4)
   }
 
-  async test `sets currentNode to latest parsed node`() {
+  test `sets currentNode to latest parsed node`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -181,7 +181,7 @@ testable class {
     ))
   }
 
-  async test `resets currentNode after latest parsed node statement is ended`() {
+  test `resets currentNode after latest parsed node statement is ended`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -197,7 +197,7 @@ testable class {
     expect(engine.context.currentNode).toBe(ClassScopeNode())
   }
 
-  async test `can parse successful function call with argument`() {
+  test `can parse successful function call with argument`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -209,7 +209,7 @@ testable class {
 
     let nodes = Node[]
 
-    stream.on<Node>("data", { nodes.add(_) })
+    stream.on<Node>("data", { nodes.add(_) })$
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -228,7 +228,7 @@ testable class {
     ])
   }
 
-  async test `resets parsers after successful function call parse`() {
+  test `resets parsers after successful function call parse`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -240,7 +240,7 @@ testable class {
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -252,7 +252,7 @@ testable class {
     expect(engine.context.currentNode).toBe(FunctionScopeNode())
   }
 
-  async test `resets parsers after partial function call parse`() {
+  test `resets parsers after partial function call parse`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -264,7 +264,7 @@ testable class {
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -284,7 +284,7 @@ testable class {
     expect(node).toBe(FunctionCallNode(name: "log"))
   }
 
-  async test `resets parsers after failed function call parse`() {
+  test `resets parsers after failed function call parse`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -296,7 +296,7 @@ testable class {
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -323,7 +323,7 @@ testable class {
     expect(node).toBe(FunctionCallNode(name: "log"))
   }
 
-  async test `adds annotations to parse context after parsing one`() {
+  test `adds annotations to parse context after parsing one`() {
     let fileNode = FileNode(file: File("Test.flat"))
     let stream = Stream(true)
     let engine = ParseEngine(fileNode, stream)
@@ -335,7 +335,7 @@ testable class {
 
     var Node node = null
 
-    stream.on<Node>("data", { node = _ })
+    stream.on<Node>("data", { node = _ })$
 
     expect(engine.context.parseContext.annotations.isEmpty).toBe(true)
 
