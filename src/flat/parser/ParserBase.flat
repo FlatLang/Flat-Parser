@@ -6,7 +6,7 @@ import flat/compiler/models/Token
 abstract data class {
   ParserBase[] childParsers => null
   lazy AnnotationParser annotationParser => AnnotationParser()
-  lazy TokenPattern pattern => null
+  visible lazy TokenPattern pattern => null
   visible lazy TokenMatcher matcher => pattern.getMatcher()
 
   public var TokenMatch lastMatch
