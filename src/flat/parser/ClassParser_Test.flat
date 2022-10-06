@@ -47,4 +47,22 @@ testable class {
 
     expect(result).toBe(expected)
   }
+
+  test `can match implicit name with extension`() {
+    let matcher = ClassParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "extends", type: Token.Type.IDENTIFIER),
+      Token(value: "Test", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    let expected = [
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "extends", type: Token.Type.IDENTIFIER),
+      Token(value: "Test", type: Token.Type.IDENTIFIER)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
+  }
 }
