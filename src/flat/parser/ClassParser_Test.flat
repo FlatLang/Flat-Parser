@@ -11,7 +11,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse declaration`() {
+  test `can parse declaration`() {
     let parser = ClassParser()
 
     let match = SingleTokenMatch(
@@ -29,7 +29,7 @@ testable class {
     expect(result).toBe(expected)
   }
 
-  async test `inherits name from file name`() {
+  test `inherits name from file name`() {
     let parser = ClassParser()
 
     let context = ParseContext(
