@@ -1,0 +1,28 @@
+package flat/parser
+
+import flat/ast/FileNode
+import flat/ast/AnnotationNode
+import flat/annotations/PublicModifier
+import flat/annotations/LetModifier
+import flat/compiler/models/Token
+import flat/io/File
+
+testable class {
+  test `can match basic match`() {
+    let parser = MatchParser()
+
+    let matcher = parser.matcher
+    let result = matcher.matchAll([
+      Token(value: "match", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL)
+    ]).last
+
+    expect(result?.tokens).toBe([
+      Token(value: "match", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER)
+    ])
+
+    expect(matcher.partial).toBe(false)
+  }
+}
