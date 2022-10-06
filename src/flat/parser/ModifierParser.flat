@@ -29,7 +29,7 @@ data class extends ParserBase {
     )
   ])
 
-  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode => null {
     let alias = match.getValue("alias")
 
     if (VisibleModifier.aliases.any({ _ == alias})) {
@@ -53,7 +53,5 @@ data class extends ParserBase {
     if (AsyncModifier.aliases.any({ _ == alias})) {
       return AsyncModifier(aliasUsed: alias)
     }
-
-    return null
   }
 }
