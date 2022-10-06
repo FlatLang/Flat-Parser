@@ -44,15 +44,25 @@ data class {
     parseContext = parseContext.copy(parentStack: parentStack.copy())
   }
 
-  public popScope(Token token) {
+  public popScope(Token token = null) {
     if (parentStack.count > 1) {
-      ParseEngine.log.debugFunc({"Popping node from parent stack: #{parentStack.peek()}"})
+      let popped = parentStack.peek()
+      ParseEngine.log.debugFunc({"Popping node from parent stack: #{popped}"})
       currentNode = parentStack:pop().peek()
       currentParser = parserStack:pop().peek()
       currentParsers = parsersStack:pop().peek()
       parseContext = parseContext.copy(parentStack: parentStack.copy())
-    } else {
+
+      let shouldPop = currentNode.class.isOfType(FunctionNode.class) ||
+        currentNode.class.isOfType(ClassNode.class)
+
+      if (shouldPop) {
+        popScope(token)
+      }
+    } else if (token) {
       ParseEngine.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+    } else {
+      ParseEngine.log.errorFunc({"Unexpected end of scope"})
     }
   }
 
