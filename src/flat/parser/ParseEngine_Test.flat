@@ -13,6 +13,7 @@ import flat/ast/FieldNode
 import flat/ast/FunctionCallNode
 import flat/ast/PackageNode
 import flat/ast/IdentifierNode
+import flat/ast/DotAccessNode
 import flat/stream/Stream
 import flat/io/File
 
@@ -344,6 +345,43 @@ testable class {
     expect(node).toBe(null)
     expect(engine.context.parseContext.annotations).toBe([
       LetModifier(aliasUsed: "let")
+    ])
+  }
+
+  test `can parse function declaration with expression return`() {
+    let fileNode = FileNode(file: File("Test.flat"))
+    let stream = Stream(true)
+    let engine = ParseEngine(fileNode, stream)
+
+    engine.context.pushScope(ClassParser(), ClassNode())
+    engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
+
+    let nodes = Node[]
+
+    stream.on<Node>("data", { nodes.add(_) })$
+
+    engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "=>", type: Token.Type.SYMBOL))
+
+    engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
+    engine.consume(Token(value: ".", type: Token.Type.SYMBOL))
+    engine.consume(Token(value: "bob", type: Token.Type.IDENTIFIER))
+
+    engine.consume(Token(value: "public", type: Token.Type.IDENTIFIER))
+
+    expect(nodes).toBe([
+      FunctionNode(
+        name: "test"
+      ),
+      IdentifierNode(
+        name: "log"
+      ),
+      DotAccessNode(),
+      IdentifierNode(
+        name: "bob"
+      )
     ])
   }
 }
