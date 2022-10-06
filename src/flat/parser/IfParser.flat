@@ -1,0 +1,47 @@
+package flat/parser
+
+import flat/ast/IfNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  let static Logger log = Logger(IfParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([FunctionScopeParser()])
+    :addAll(FunctionScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "if"),
+    CaptureTokenPattern(
+      label: "condition",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    )
+  ])
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> IfNode {
+    return IfNode()
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+      .getMatches<CaptureTokenMatch>("condition")
+      .map({ _.capture })
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: FunctionParser().childParsers
+        )
+      })
+    )
+  }
+}
