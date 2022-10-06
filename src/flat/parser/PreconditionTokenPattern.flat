@@ -20,7 +20,13 @@ data class extends TokenPattern {
   public getMatcher() => PreconditionTokenMatcher(this)
 
   override public toPatternString() -> String {
-    var str = "pre("
+    var str = ""
+
+    if (label) {
+      str += "#{label}:"
+    }
+
+    str += "pre("
 
     if (annotations) {
       str += "Annotations[#{annotations.map(a => a.name).join(", ")}]"
@@ -28,10 +34,6 @@ data class extends TokenPattern {
 
     str += ")"
     str += getModifiersString()
-
-    if (label) {
-      str += " as #{label}"
-    }
 
     return str
   }

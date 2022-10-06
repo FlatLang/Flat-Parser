@@ -10,7 +10,13 @@ data class extends TokenPattern {
   public getMatcher() => SingleTokenMatcher(this)
 
   override public toPatternString() -> String {
-    var str = "<"
+    var str = ""
+
+    if (label) {
+      str += "#{label}:"
+    }
+
+    str += "<"
     str += Token.Type.toString(tokenType)
 
     if (values) {
@@ -22,10 +28,6 @@ data class extends TokenPattern {
 
     str += ">"
     str += getModifiersString()
-
-    if (label) {
-      str += " as #{label}"
-    }
 
     return str
   }

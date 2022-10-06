@@ -9,8 +9,39 @@ data class extends TokenPattern {
 
   visible Token start
   visible Token end
+  visible Bool includeEndToken = true
 
   override public getMatcher() => CaptureTokenMatcher(this)
 
-  public toPatternString() => "capture(\"#{start.value}\" \"#{end.value}\")#{getModifiersString()}"
+  public toPatternString() -> String {
+    var str = ""
+
+    if (label) {
+      str += "#{label}:"
+    }
+
+    str += "capture("
+
+    if (start) {
+      str += "start:\"#{start.value}\" "
+    }
+    if (end) {
+      str += "end:"
+
+      if (!includeEndToken) {
+        str += "~"
+      }
+
+      str += "\"#{end.value}\" "
+    }
+    if (minimumTokenCount) {
+      str += "min:#{minimumTokenCount} "
+    }
+
+    str = str.trimEnd()
+
+    str += ")#{getModifiersString()}"
+
+    return str
+  }
 }

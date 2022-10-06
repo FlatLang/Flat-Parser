@@ -20,11 +20,13 @@ data class extends TokenPattern {
   public getMatcher() => XorTokenMatcher(this)
 
   override public toPatternString() -> String {
-    var str = "xor(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
+    var str = ""
 
     if (label) {
-      str += " as #{label}"
+      str += "#{label}:"
     }
+
+    str += "xor(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
 
     return str
   }

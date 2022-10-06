@@ -22,11 +22,13 @@ data class extends TokenPattern {
   public getMatcher() => GroupTokenMatcher(this)
 
   public toPatternString() -> String {
-    var str = "(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
+    var str = ""
 
     if (label) {
-      str += " as #{label}"
+      str += "#{label}:"
     }
+
+    str += "(#{patterns.map(p => p.toPatternString()).join(" ")})#{getModifiersString()}"
 
     return str
   }
