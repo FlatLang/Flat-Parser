@@ -23,7 +23,7 @@ data class extends TokenMatcher {
 
     tokens.add(token)
 
-    let index = SyntaxTokenFunctions.findTokenOnTopLevel(tokens, pattern.end, 0)
+    let index = SyntaxTokenFunctions.findTokenOnTopLevel(tokens, pattern.end, 0, skipGenerics: true)
 
     if (tokens.isNotEmpty && index == tokens.count - 1) {
       let capture = pattern.start ? tokens.skip(1) : tokens
