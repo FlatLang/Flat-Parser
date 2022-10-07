@@ -20,7 +20,11 @@ data class extends ParserBase {
     ], repeat: true, label: "brackets")
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
+    match token.value {
+      "{" => return false
+    }
+  }
 
   override public generateNode(ParseContext context, TokenMatch match) -> ArrayInstantiationNode {
     return ArrayInstantiationNode(
