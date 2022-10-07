@@ -1,0 +1,55 @@
+package flat/parser
+
+import flat/ast/ArrayInitializerNode
+import flat/compiler/models/Token
+import flat/compiler/models/SyntaxTokenFunctions
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    CommentParser(),
+    DotAccessParser(),
+    ColonAccessParser(),
+    AssignmentParser(),
+    ArrayAccessParser()
+  ])
+
+  override lazy TokenPattern pattern => CaptureTokenPattern(
+    start: Token(type: Token.Type.SYMBOL, value: "["),
+    end: Token(type: Token.Type.SYMBOL, value: "]"),
+    label: "initializer"
+  )
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
+    match token.value {
+      "{" => return false
+    }
+  }
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ArrayInitializerNode {
+    return ArrayInitializerNode()
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
+      match.getMatch<CaptureTokenMatch>("initializer").capture,
+      Token(type: Token.Type.SYMBOL, value: ",")
+    )
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: [
+            AnnotationParser(),
+            FunctionCallParser(),
+            IdentifierParser(),
+            LiteralParser(),
+            RegexPatternParser(),
+            LambdaParser(),
+            ArrayInitializerParser()
+          ]
+        )
+      })
+    )
+  }
+}

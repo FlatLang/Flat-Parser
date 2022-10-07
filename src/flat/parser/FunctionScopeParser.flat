@@ -24,7 +24,8 @@ data class extends ParserBase {
     IdentifierParser(),
     ArrayInstantiationParser(),
     UnaryOperationParser(),
-    PriorityParser()
+    PriorityParser(),
+    ArrayInitializerParser()
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
