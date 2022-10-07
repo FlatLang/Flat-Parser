@@ -295,21 +295,10 @@ class {
   }
 
   public checkStatementEnd(Token token) {
-    log.debugFunc({"#{context.parentStack.peek().class.name} ----- #{context.currentNode.class.name}"})
-
     if (isStatementEnd(token)) {
       ParseEngine.log.debugFunc({"Reached end of statement (token: '#{token.value}', tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}]). Generating node"})
       context.resetCurrentScope()
       reset()
-    } else if (context.parentStack.peek().class.isOfType(FunctionNode.class)) {
-      match token.value {
-        "{" => {
-          ParseEngine.log.debugFunc({"Reached end of statement (hardcoded) (token: '#{token.value}', tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}]). Generating node"})
-          context.resetCurrentScope()
-          reset()
-        }
-        default => ParseEngine.log.debugFunc({"Not end of statement"})
-      }
     } else {
       ParseEngine.log.debugFunc({"Not end of statement"})
     }

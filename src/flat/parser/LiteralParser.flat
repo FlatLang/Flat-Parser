@@ -19,7 +19,11 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.NULL)
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
+    match token.value {
+      "{" => return false
+    }
+  }
 
   override public acceptImmediately() => true
 
