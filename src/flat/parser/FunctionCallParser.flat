@@ -60,7 +60,8 @@ data class extends ParserBase {
             LiteralParser(),
             RegexPatternParser(),
             LambdaParser(),
-            ArrayInitializerParser()
+            ArrayInitializerParser(),
+            UnaryOperationParser()
           ]
         )
       })
