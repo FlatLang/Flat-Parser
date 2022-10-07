@@ -336,7 +336,6 @@ class {
       } else {
         ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
       }
-      System.exit(1)
     }
   }
 }
