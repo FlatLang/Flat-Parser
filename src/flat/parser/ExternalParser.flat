@@ -1,0 +1,30 @@
+package flat/parser
+
+import flat/ast/ExternalNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  let static Logger log = Logger(ExternalParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([FunctionScopeParser()])
+    :addAll(FunctionScopeParser().childParsers)
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+    CaptureTokenPattern(
+      label: "body",
+      start: Token(value: "{"),
+      end: Token(value: "}")
+    )
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ExternalNode {
+    return ExternalNode()
+  }
+}
