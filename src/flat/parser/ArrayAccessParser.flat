@@ -5,7 +5,6 @@ import flat/compiler/models/Token
 
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
-    CommentParser(),
     DotAccessParser(),
     ColonAccessParser(),
     AssignmentParser(),
@@ -24,7 +23,6 @@ data class extends ParserBase {
 
   ParserBase[] indexParsers => [
     AnnotationParser(),
-    CommentParser(),
     FunctionCallParser(),
     IdentifierParser(),
     ArrayInstantiationParser(),

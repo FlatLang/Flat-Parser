@@ -6,7 +6,6 @@ import flat/ast/FileScopeNode
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     AnnotationParser(),
-    CommentParser(),
     ImportParser(),
     PackageParser(),
     ClassParser()
