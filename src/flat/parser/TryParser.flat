@@ -1,0 +1,23 @@
+package flat/parser
+
+import flat/ast/TryNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  let static Logger log = Logger(TryParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([FunctionScopeParser()])
+    :addAll(FunctionScopeParser().childParsers)
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "try")
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> TryNode {
+    return TryNode()
+  }
+}
