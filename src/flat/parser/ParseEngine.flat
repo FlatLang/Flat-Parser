@@ -168,7 +168,7 @@ class {
       if (isStatementEnd(token)) {
         ParseEngine.log.debugFunc({"Is statement end"})
         context.resetCurrentScope()
-        handleStatementEnd()
+        handleStatementEnd(token)
       } else {
         ParseEngine.log.debugFunc({"Not statement end"})
       }
@@ -183,7 +183,11 @@ class {
     context.tokens.forEach({ matchToken(_) })
   }
 
-  handleStatementEnd() {
+  handleStatementEnd(Token token) {
+    match token.value {
+      "{" => return
+    }
+
     let shouldPop = (
       context.currentNode.class.isOfType(FunctionNode.class) ||
       context.currentNode.class.isOfType(ClassNode.class) ||
@@ -304,6 +308,7 @@ class {
     if (isStatementEnd(token)) {
       ParseEngine.log.debugFunc({"Reached end of statement (token: '#{token.value}', tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}]). Generating node"})
       context.resetCurrentScope()
+      handleStatementEnd(token)
       reset()
     } else {
       ParseEngine.log.debugFunc({"Not end of statement"})
