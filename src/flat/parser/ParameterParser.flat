@@ -20,6 +20,7 @@ data class extends ParserBase {
       SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
       SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
     ], repeat: true, optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ":", label: "require_name", optional: true),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
   ])
 
@@ -33,7 +34,8 @@ data class extends ParserBase {
     return ParameterNode(
       type: type,
       name: name,
-      arrayDimensions: bracketCount
+      arrayDimensions: bracketCount,
+      requireName: match.getValue("require_name") != null
     )
   }
 }
