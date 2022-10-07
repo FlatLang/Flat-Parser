@@ -14,7 +14,11 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, values: [
-    "+", "-", "*", "/", "%", "+=", "-=", "*=", "/=", "%=", "!=", "==", "&&", "&", "||", "|", "<", ">", "<=", ">="
+    "+", "-", "*", "/", "%",
+    "+=", "-=", "*=", "/=", "%=",
+    "!=", "==", "&&", "&", "||", "|",
+    "<", ">", "<=", ">=",
+    "?:"
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
