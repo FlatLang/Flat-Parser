@@ -54,7 +54,9 @@ data class extends ParserBase {
         requests: [
           ParseRequestData(
             tokens: body.capture,
-            parsers: FunctionScopeParser().childParsers
+            parsers: Array()
+              :addAll(FunctionScopeParser().childParsers)
+              :addAll([BinaryOperationParser()])
           )
         ]
       )
