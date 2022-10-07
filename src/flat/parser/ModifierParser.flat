@@ -7,6 +7,8 @@ import flat/annotations/LetModifier
 import flat/annotations/VarModifier
 import flat/annotations/StaticModifier
 import flat/annotations/AsyncModifier
+import flat/annotations/DataModifier
+import flat/annotations/LazyModifier
 import flat/annotations/Modifier
 import flat/compiler/models/Token
 import flat/ast/AnnotationNode
@@ -17,8 +19,10 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array()
+  override lazy TokenPattern pattern => SingleTokenPattern(
+    Token.Type.IDENTIFIER,
+    label: "alias",
+    values: Array()
       :addAll(VisibleModifier.aliases)
       :addAll(PublicModifier.aliases)
       :addAll(PrivateModifier.aliases)
@@ -26,8 +30,9 @@ data class extends ParserBase {
       :addAll(VarModifier.aliases)
       :addAll(StaticModifier.aliases)
       :addAll(AsyncModifier.aliases)
-    )
-  ])
+      :addAll(DataModifier.aliases)
+      :addAll(LazyModifier.aliases)
+  )
 
   override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode => null {
     let alias = match.getValue("alias")
@@ -52,6 +57,12 @@ data class extends ParserBase {
     }
     if (AsyncModifier.aliases.any({ _ == alias})) {
       return AsyncModifier(aliasUsed: alias)
+    }
+    if (DataModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
+    }
+    if (LazyModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
     }
   }
 }
