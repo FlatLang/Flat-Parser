@@ -11,8 +11,6 @@ data class extends ParserBase {
     :addAll([FunctionScopeParser()])
     :addAll(FunctionScopeParser().childParsers)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "if"),
     CaptureTokenPattern(
@@ -21,6 +19,8 @@ data class extends ParserBase {
       end: Token(value: ")")
     )
   ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
 
   override public acceptImmediately() => true
 
