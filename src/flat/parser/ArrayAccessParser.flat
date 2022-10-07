@@ -28,7 +28,8 @@ data class extends ParserBase {
     FunctionCallParser(),
     IdentifierParser(),
     ArrayInstantiationParser(),
-    LiteralParser()
+    LiteralParser(),
+    RegexPatternParser()
   ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true

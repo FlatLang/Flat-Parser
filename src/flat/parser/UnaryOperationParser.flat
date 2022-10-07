@@ -8,6 +8,7 @@ data class extends ParserBase {
     IdentifierParser(),
     ArrayInstantiationParser(),
     LiteralParser(),
+    RegexPatternParser(),
     FunctionCallParser()
   ])
 
