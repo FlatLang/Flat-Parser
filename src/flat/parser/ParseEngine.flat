@@ -101,7 +101,7 @@ class {
       let parser = getBestMatch(exactMatches)
       let node = generateNode(parser)
       context.updateScopeForNode(parser, node)
-      clearTokensAfterParse(parser, false)
+      clearTokensAfterParse(parser)
       return
     }
 
@@ -150,7 +150,7 @@ class {
     context.currentParsers.forEach({ _.reset() })
   }
 
-  public clearTokensAfterParse(ParserBase parser, Bool checkScopePop = true) {
+  public clearTokensAfterParse(ParserBase parser) {
     ParseEngine.log.debugFunc({"Removing tokens from last parse: [#{parser.lastMatch.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
     parser.lastMatch.tokens.forEach({
       if (context.tokens.isNotEmpty) {
@@ -165,10 +165,7 @@ class {
       if (isStatementEnd(token)) {
         ParseEngine.log.debugFunc({"Is statement end"})
         context.resetCurrentScope()
-        if (checkScopePop) {
-          ParseEngine.log.debugFunc({"Checking if scope to pop"})
-          handleStatementEnd()
-        }
+        handleStatementEnd()
       } else {
         ParseEngine.log.debugFunc({"Not statement end"})
       }
