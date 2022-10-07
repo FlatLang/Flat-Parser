@@ -2,6 +2,7 @@ package flat/parser
 
 import flat/ast/FunctionCallNode
 import flat/compiler/models/Token
+import flat/compiler/models/SyntaxTokenFunctions
 
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
@@ -48,10 +49,10 @@ data class extends ParserBase {
   }
 
   override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatch<CaptureTokenMatch>("arguments")
-      .capture
-      .split({ _.value == "," })
+    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
+      match.getMatch<CaptureTokenMatch>("arguments").capture,
+      Token(type: Token.Type.SYMBOL, value: ",")
+    )
 
     return ParseRequest(
       requests: tokens.map({
