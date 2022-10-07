@@ -29,7 +29,9 @@ import flat/parser/Parser
   FunctionCallParser_Test,
   ArrayAccessParser_Test,
   ArrayInstantiationParser_Test,
-  LocalDeclarationParser_Test
+  LocalDeclarationParser_Test,
+  MatchParser_Test,
+  MatchCaseParser_Test
 ]]
 class {
   public static async main(String args[]) {
