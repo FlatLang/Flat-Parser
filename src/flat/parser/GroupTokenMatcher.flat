@@ -184,7 +184,13 @@ data class extends TokenMatcher {
         log.traceFunc({"Matcher is not complete"})
         if (iterator.hasNext) {
           nextMatcher()
-          log.traceFunc({"There are other matchers. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+          if (iterator.allNextInclusive.all({ _.pattern.optional })) {
+            log.traceFunc({"The rest of the matchers are optional. Returning match and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+            valid = true
+          } else {
+            log.traceFunc({"There are still some required matchers. Returning null and skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+            return null
+          }
         } else {
           log.traceFunc({"There are no other matchers. Completing and returning match"})
           complete = true

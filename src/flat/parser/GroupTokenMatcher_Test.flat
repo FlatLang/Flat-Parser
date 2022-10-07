@@ -648,4 +648,69 @@ testable class {
     expect(result?.tokens).toBe(expected)
     expect(matcher.partial).toBe(true)
   }
+
+  test `can handle matching required pattern after repeating pattern`() {
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+      GroupTokenPattern([
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+        ], optional: true),
+        SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+      ], repeat: true, optional: true),
+      CaptureTokenPattern(
+        label: "body",
+        start: Token(value: "{"),
+        end: Token(value: "}")
+      )
+    ])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "external", type: Token.Type.IDENTIFIER),
+      Token(value: "not", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ]).last
+
+    let expected = [
+      Token(value: "external", type: Token.Type.IDENTIFIER),
+      Token(value: "not", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(false)
+  }
+
+  test `does not match when required pattern after repeating pattern is not matched`() {
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+      GroupTokenPattern([
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+        ], optional: true),
+        SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+      ], repeat: true, optional: true),
+      CaptureTokenPattern(
+        label: "body",
+        start: Token(value: "{"),
+        end: Token(value: "}")
+      )
+    ])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "external", type: Token.Type.IDENTIFIER),
+      Token(value: "not", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    expect(result).toBe(null)
+  }
 }
