@@ -18,12 +18,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
 
-
-  override public checkStatementContinuation(ParseContext context, Token token) => false {
-    if (token.type != Token.Type.SYMBOL) return false
-
-    return true
-  }
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
   override public generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
     let name = match.getValue("name")
