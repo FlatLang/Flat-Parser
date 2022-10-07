@@ -29,7 +29,7 @@ data class extends ParserBase {
       requests: [
         ParseRequestData(
           tokens: tokens,
-          parsers: FunctionScopeParser().childParsers
+          parsers: LocalScopeParser().childParsers
         )
       ]
     )

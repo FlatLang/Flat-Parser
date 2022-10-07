@@ -8,8 +8,8 @@ data class extends ParserBase {
   let static Logger log = Logger(MatchParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll([FunctionScopeParser()])
-    :addAll(FunctionScopeParser().childParsers)
+    :addAll([LocalScopeParser()])
+    :addAll(LocalScopeParser().childParsers)
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 

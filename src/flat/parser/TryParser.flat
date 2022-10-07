@@ -8,8 +8,8 @@ data class extends ParserBase {
   let static Logger log = Logger(TryParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll([FunctionScopeParser()])
-    :addAll(FunctionScopeParser().childParsers)
+    :addAll([LocalScopeParser()])
+    :addAll(LocalScopeParser().childParsers)
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "try")
 

@@ -8,7 +8,7 @@ import flat/ast/ClassNode
 import flat/ast/FunctionNode
 import flat/ast/ScopeNode
 import flat/ast/ClassScopeNode
-import flat/ast/FunctionScopeNode
+import flat/ast/LocalScopeNode
 import flat/ast/MatchScopeNode
 import flat/ast/MatchNode
 import flat/ast/WhileLoopNode
@@ -91,7 +91,7 @@ data class {
       ClassNode.class => fallthrough
       ClassScopeNode.class => fallthrough
       FunctionNode.class => fallthrough
-      FunctionScopeNode.class => fallthrough
+      LocalScopeNode.class => fallthrough
       MatchNode.class => fallthrough
       MatchScopeNode.class => fallthrough
       WhileLoopNode.class => fallthrough

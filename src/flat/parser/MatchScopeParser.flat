@@ -5,7 +5,7 @@ import flat/ast/MatchScopeNode
 
 data class extends ParserBase {
   override ParserBase[] childParsers => Array()
-    :addAll(FunctionScopeParser().childParsers)
+    :addAll(LocalScopeParser().childParsers)
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
 

@@ -4,7 +4,7 @@ import flat/ast/LambdaNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => FunctionScopeParser().childParsers
+  override ParserBase[] childParsers => LocalScopeParser().childParsers
 
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
@@ -55,7 +55,7 @@ data class extends ParserBase {
           ParseRequestData(
             tokens: body.capture,
             parsers: Array()
-              :addAll(FunctionScopeParser().childParsers)
+              :addAll(LocalScopeParser().childParsers)
               :addAll([BinaryOperationParser()])
           )
         ]

@@ -1,6 +1,6 @@
 package flat/parser
 
-import flat/ast/FunctionScopeNode
+import flat/ast/LocalScopeNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
@@ -34,7 +34,7 @@ data class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FunctionScopeNode {
-    return FunctionScopeNode()
+  override public generateNode(ParseContext context, TokenMatch match) -> LocalScopeNode {
+    return LocalScopeNode()
   }
 }

@@ -7,7 +7,7 @@ import flat/log/Logger
 data class extends ParserBase {
   let static Logger log = Logger(FieldAccessorFunctionParser.class)
 
-  override ParserBase[] childParsers => [FunctionScopeParser()]
+  override ParserBase[] childParsers => [LocalScopeParser()]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 

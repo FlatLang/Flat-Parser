@@ -7,7 +7,7 @@ import flat/ast/AnnotationNode
 import flat/ast/ClassNode
 import flat/ast/ClassScopeNode
 import flat/ast/FunctionNode
-import flat/ast/FunctionScopeNode
+import flat/ast/LocalScopeNode
 import flat/ast/FileNode
 import flat/ast/FieldNode
 import flat/ast/FunctionCallNode
@@ -206,7 +206,7 @@ testable class {
     engine.context.pushScope(ClassParser(), ClassNode())
     engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
     engine.context.pushScope(FunctionParser(), FunctionNode())
-    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
     let nodes = Node[]
 
@@ -237,7 +237,7 @@ testable class {
     engine.context.pushScope(ClassParser(), ClassNode())
     engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
     engine.context.pushScope(FunctionParser(), FunctionNode())
-    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
     var Node node = null
 
@@ -250,7 +250,7 @@ testable class {
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "str", type: Token.Type.IDENTIFIER))
 
-    expect(engine.context.currentNode).toBe(FunctionScopeNode())
+    expect(engine.context.currentNode).toBe(LocalScopeNode())
   }
 
   test `resets parsers after partial function call parse`() {
@@ -261,7 +261,7 @@ testable class {
     engine.context.pushScope(ClassParser(), ClassNode())
     engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
     engine.context.pushScope(FunctionParser(), FunctionNode())
-    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
     var Node node = null
 
@@ -293,7 +293,7 @@ testable class {
     engine.context.pushScope(ClassParser(), ClassNode())
     engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
     engine.context.pushScope(FunctionParser(), FunctionNode())
-    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
     var Node node = null
 
@@ -332,7 +332,7 @@ testable class {
     engine.context.pushScope(ClassParser(), ClassNode())
     engine.context.pushScope(ClassScopeParser(), ClassScopeNode())
     engine.context.pushScope(FunctionParser(), FunctionNode())
-    engine.context.pushScope(FunctionScopeParser(), FunctionScopeNode())
+    engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
     var Node node = null
 

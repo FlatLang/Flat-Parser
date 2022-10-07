@@ -8,7 +8,7 @@ data class extends ParserBase {
   let static Logger log = Logger(PriorityParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll(FunctionScopeParser().childParsers)
+    :addAll(LocalScopeParser().childParsers)
     :add(BinaryOperationParser())
 
   override lazy TokenPattern pattern => GroupTokenPattern([
