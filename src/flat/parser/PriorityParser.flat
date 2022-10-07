@@ -9,6 +9,7 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => Array()
     :addAll(FunctionScopeParser().childParsers)
+    :add(BinaryOperationParser())
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     CaptureTokenPattern(
