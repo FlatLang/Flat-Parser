@@ -9,7 +9,13 @@ import flat/ast/FunctionNode
 import flat/ast/ScopeNode
 import flat/ast/ClassScopeNode
 import flat/ast/FunctionScopeNode
+import flat/ast/MatchScopeNode
+import flat/ast/MatchNode
+import flat/ast/WhileLoopNode
+import flat/ast/ForLoopNode
 import flat/ast/FileScopeNode
+import flat/ast/FallthroughNode
+import flat/ast/MatchCaseNode
 import flat/compiler/models/Token
 import flat/io/File
 import flat/log/Logger
@@ -95,7 +101,7 @@ class {
       let parser = getBestMatch(exactMatches)
       let node = generateNode(parser)
       context.updateScopeForNode(parser, node)
-      clearTokensAfterParse(parser, token)
+      clearTokensAfterParse(parser, false)
       return
     }
 
@@ -109,7 +115,7 @@ class {
         let parser = getBestMatch(getCompletedMatches())
         let node = generateNode(parser)
         context.updateScopeForNode(parser, node)
-        clearTokensAfterParse(parser, token)
+        clearTokensAfterParse(parser)
       } else if (!checkScopeEnd()) {
         ParseEngine.log.debugFunc({"No completed matches"})
         invalidTokens()
@@ -128,7 +134,7 @@ class {
           ParseEngine.log.debugFunc({"Generating annotation"})
           if (let annotation = generateAnnotation(parser)) {
             context.parseContext.annotations.add(annotation)
-            clearTokensAfterParse(parser, token)
+            clearTokensAfterParse(parser)
           }
         } else {
           ParseEngine.log.debugFunc({"Not an annotation. Skipping"})
@@ -144,7 +150,7 @@ class {
     context.currentParsers.forEach({ _.reset() })
   }
 
-  public clearTokensAfterParse(ParserBase parser, Token token) {
+  public clearTokensAfterParse(ParserBase parser, Bool checkScopePop = true) {
     ParseEngine.log.debugFunc({"Removing tokens from last parse: [#{parser.lastMatch.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
     parser.lastMatch.tokens.forEach({
       if (context.tokens.isNotEmpty) {
@@ -152,23 +158,40 @@ class {
       }
     })
 
-    ParseEngine.log.debugFunc({"Checking statement end for token '#{token.value}' (Parser: #{context.currentParser.class.name})"})
-    if (isStatementEnd(token)) {
-      ParseEngine.log.debugFunc({"Is statement end"})
-      handleStatementEnd()
-    } else {
-      ParseEngine.log.debugFunc({"Not statement end"})
+    if (context.tokens.isNotEmpty) {
+      let token = context.tokens.first
+
+      ParseEngine.log.debugFunc({"Checking statement end for token '#{token.value}' (Parser: #{context.currentParser.class.name})"})
+      if (isStatementEnd(token)) {
+        ParseEngine.log.debugFunc({"Is statement end"})
+        context.resetCurrentScope()
+        if (checkScopePop) {
+          ParseEngine.log.debugFunc({"Checking if scope to pop"})
+          handleStatementEnd()
+        }
+      } else {
+        ParseEngine.log.debugFunc({"Not statement end"})
+      }
     }
 
     reset()
+
+    if (context.tokens.isNotEmpty) {
+      checkStatementEnd(context.tokens.first)
+    }
 
     context.tokens.forEach({ matchToken(_) })
   }
 
   handleStatementEnd() {
-    context.resetCurrentScope()
-    let shouldPop = context.currentNode.class.isOfType(FunctionNode.class) ||
-      context.currentNode.class.isOfType(ClassNode.class)
+    let shouldPop = (
+      context.currentNode.class.isOfType(FunctionNode.class) ||
+      context.currentNode.class.isOfType(ClassNode.class) ||
+      context.currentNode.class.isOfType(MatchNode.class) ||
+      context.currentNode.class.isOfType(WhileLoopNode.class) ||
+      context.currentNode.class.isOfType(ForLoopNode.class)
+    )
+
     if (shouldPop) {
       context.popScope()
     }
@@ -178,18 +201,16 @@ class {
     ParseEngine.log.debugFunc({"Generating node for parser: #{parser.class.name}"})
     let node = parser.generateNode(context.parseContext, parser.lastMatch)
 
-    if (!node) {
-      throw Exception("Failed to parse node for parser: #{parser}")
+    if (node) {
+      stream.emit("data", node)$
     }
 
-    stream.emit("data", node)$
-
-    parseChildNodes(parser, node)
+    parseChildNodes(parser)
 
     return node
   }
 
-  public parseChildNodes(ParserBase parser, Node parent) {
+  public parseChildNodes(ParserBase parser) {
     if (let requests = parser.getChildParseRequests(context.parseContext, parser.lastMatch).requests) {
       requests.forEach((request) => {
         snapshopEngineContext()
@@ -199,6 +220,7 @@ class {
 
         ParseEngine.log.debugFunc({"Parsing child node with tokens: [#{request.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
         request.tokens.forEach({ consume(_) })
+        ParseEngine.log.debugFunc({"Finished consuming tokens for child node: [#{request.tokens.map(t => "'" + t.value + "'").join(", ")}]"})
 
         if (context.tokens.isNotEmpty) {
           tryGenerateNodeForRemainingTokens()
@@ -257,7 +279,7 @@ class {
     let parser = getBestMatch(getCompletedMatches())
     let node = generateNode(parser)
     context.updateScopeForNode(parser, node)
-    clearTokensAfterParse(parser, token)
+    clearTokensAfterParse(parser)
   }
 
   public checkScopeEnd() => false {
@@ -276,9 +298,21 @@ class {
   }
 
   public checkStatementEnd(Token token) {
+    log.debugFunc({"#{context.parentStack.peek().class.name} ----- #{context.currentNode.class.name}"})
+
     if (isStatementEnd(token)) {
       ParseEngine.log.debugFunc({"Reached end of statement (token: '#{token.value}', tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}]). Generating node"})
-      tryGenerateNodeForRemainingTokens()
+      context.resetCurrentScope()
+      reset()
+    } else if (context.parentStack.peek().class.isOfType(FunctionNode.class)) {
+      match token.value {
+        "{" => {
+          ParseEngine.log.debugFunc({"Reached end of statement (hardcoded) (token: '#{token.value}', tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}]). Generating node"})
+          context.resetCurrentScope()
+          reset()
+        }
+        default => ParseEngine.log.debugFunc({"Not end of statement"})
+      }
     } else {
       ParseEngine.log.debugFunc({"Not end of statement"})
     }
@@ -305,6 +339,7 @@ class {
       } else {
         ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
       }
+      System.exit(1)
     }
   }
 }

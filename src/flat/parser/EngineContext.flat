@@ -9,6 +9,10 @@ import flat/ast/FunctionNode
 import flat/ast/ScopeNode
 import flat/ast/ClassScopeNode
 import flat/ast/FunctionScopeNode
+import flat/ast/MatchScopeNode
+import flat/ast/MatchNode
+import flat/ast/WhileLoopNode
+import flat/ast/ForLoopNode
 import flat/ast/FileScopeNode
 import flat/compiler/models/Token
 import flat/io/File
@@ -54,7 +58,10 @@ data class {
       parseContext = parseContext.copy(parentStack: parentStack.copy())
 
       let shouldPop = currentNode.class.isOfType(FunctionNode.class) ||
-        currentNode.class.isOfType(ClassNode.class)
+        currentNode.class.isOfType(ClassNode.class) ||
+        currentNode.class.isOfType(MatchNode.class) ||
+        currentNode.class.isOfType(WhileLoopNode.class) ||
+        currentNode.class.isOfType(ForLoopNode.class)
 
       if (shouldPop) {
         popScope(token)
@@ -71,11 +78,15 @@ data class {
 
     match node.class {
       FileNode.class => fallthrough
-      ClassNode.class => fallthrough
-      FunctionNode.class => fallthrough
       FileScopeNode.class => fallthrough
+      ClassNode.class => fallthrough
       ClassScopeNode.class => fallthrough
+      FunctionNode.class => fallthrough
       FunctionScopeNode.class => fallthrough
+      MatchNode.class => fallthrough
+      MatchScopeNode.class => fallthrough
+      WhileLoopNode.class => fallthrough
+      ForLoopNode.class => fallthrough
       ScopeNode.class => pushScope(parser, node)
       default => {
         if (let childParsers = parser.childParsers) {
