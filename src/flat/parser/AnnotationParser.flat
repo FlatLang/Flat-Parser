@@ -10,22 +10,9 @@ data class extends ParserBase {
     ModifierParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "["),
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "identifier"),
-      SingleTokenPattern(Token.Type.SYMBOL, "]")
-    ], optional: true),
-    GroupTokenPattern(annotationParsers.map({ _.pattern }), optional: true)
-  ])
+  override lazy TokenPattern pattern => XorTokenPattern(annotationParsers.map({ _.pattern }))
 
   override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
-    if (let annotation = annotationParsers.firstNonNull({ _.generateNode(context, match) })) {
-      return annotation
-    }
-
-    let identifier = match.getValue("identifier")
-
-    return null
+    return annotationParsers.firstNonNull({ _.generateNode(context, match) })
   }
 }
