@@ -57,4 +57,46 @@ testable class {
 
     expect(result).toBe(expected)
   }
+
+  test `can match basic import`() {
+    let matcher = ImportParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "import", type: Token.Type.IDENTIFIER),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: "/", type: Token.Type.SYMBOL),
+      Token(value: "flob", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    let expected = [
+      Token(value: "import", type: Token.Type.IDENTIFIER),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: "/", type: Token.Type.SYMBOL),
+      Token(value: "flob", type: Token.Type.IDENTIFIER)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
+  }
+
+  test `can match static import`() {
+    let matcher = ImportParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "import", type: Token.Type.IDENTIFIER),
+      Token(value: "static", type: Token.Type.IDENTIFIER),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: "/", type: Token.Type.SYMBOL),
+      Token(value: "flob", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    let expected = [
+      Token(value: "import", type: Token.Type.IDENTIFIER),
+      Token(value: "static", type: Token.Type.IDENTIFIER),
+      Token(value: "bob", type: Token.Type.IDENTIFIER),
+      Token(value: "/", type: Token.Type.SYMBOL),
+      Token(value: "flob", type: Token.Type.IDENTIFIER)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
+  }
 }

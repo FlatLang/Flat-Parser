@@ -10,6 +10,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "import"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "static", optional: true, label: "static"),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
@@ -21,7 +22,8 @@ data class extends ParserBase {
     let components = match.getValues("import_location_component")
 
     return ImportNode(
-      location: components.join()
+      location: components.join(),
+      staticImport: match.getValues("static").isNotEmpty
     )
   }
 }
