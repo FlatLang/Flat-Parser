@@ -16,6 +16,9 @@ import flat/ast/ForLoopNode
 import flat/ast/FileScopeNode
 import flat/ast/FallthroughNode
 import flat/ast/MatchCaseNode
+import flat/ast/FieldNode
+import flat/ast/FieldAccessorFunctionNode
+import flat/ast/FieldMutatorFunctionNode
 import flat/compiler/models/Token
 import flat/io/File
 import flat/log/Logger
@@ -186,7 +189,10 @@ class {
       context.currentNode.class.isOfType(ClassNode.class) ||
       context.currentNode.class.isOfType(MatchNode.class) ||
       context.currentNode.class.isOfType(WhileLoopNode.class) ||
-      context.currentNode.class.isOfType(ForLoopNode.class)
+      context.currentNode.class.isOfType(ForLoopNode.class) ||
+      context.currentNode.class.isOfType(FieldNode.class) ||
+      context.currentNode.class.isOfType(FieldAccessorFunctionNode.class) ||
+      context.currentNode.class.isOfType(FieldMutatorFunctionNode.class)
     )
 
     if (shouldPop) {

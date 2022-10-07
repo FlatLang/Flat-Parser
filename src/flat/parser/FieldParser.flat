@@ -9,6 +9,7 @@ import flat/ast/Node
 
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
+    FieldScopeParser(),
     AssignmentParser(),
     ArrowExpressionParser()
   ])
