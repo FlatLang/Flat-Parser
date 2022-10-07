@@ -9,6 +9,7 @@ data class extends ParserBase {
     ThrowParser(),
     IfParser(),
     TryParser(),
+    CatchParser(),
     ElseParser(),
     ExternalParser(),
     ReturnParser(),
