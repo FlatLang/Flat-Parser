@@ -14,8 +14,12 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => XorTokenPattern([
     SingleTokenPattern(Token.Type.STRING),
-    SingleTokenPattern(Token.Type.INTEGER)
+    SingleTokenPattern(Token.Type.INTEGER),
+    SingleTokenPattern(Token.Type.BOOL),
+    SingleTokenPattern(Token.Type.NULL)
   ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
   override public acceptImmediately() => true
 
@@ -27,6 +31,8 @@ data class extends ParserBase {
     match token.type {
       Token.Type.STRING => literalType = LiteralNode.Type.STRING
       Token.Type.INTEGER => literalType = LiteralNode.Type.INTEGER
+      Token.Type.BOOL => literalType = LiteralNode.Type.BOOL
+      Token.Type.NULL => literalType = LiteralNode.Type.NULL
     }
 
     return LiteralNode(
