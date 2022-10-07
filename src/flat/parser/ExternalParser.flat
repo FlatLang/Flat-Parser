@@ -13,6 +13,13 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+    GroupTokenPattern([
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+      ], optional: true),
+      SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+    ], repeat: true, optional: true),
     CaptureTokenPattern(
       label: "body",
       start: Token(value: "{"),
@@ -25,6 +32,9 @@ data class extends ParserBase {
   override public acceptImmediately() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> ExternalNode {
-    return ExternalNode()
+    return ExternalNode(
+      includes: match.getValues("include"),
+      excludes: match.getValues("exclude")
+    )
   }
 }
