@@ -101,10 +101,24 @@ data class extends TokenMatcher {
       return null
     } else if (nonGreedyMatchers.isNotEmpty) {
       log.traceFunc({"Did not match the non-greedy matcher check. Reverting back to before non-greedy check"})
+
       let tokensToMatch = matcher.tokens
       tokensToMatch.forEach({ tokens.removeLast() })
-      matcher = nonGreedyMatchers.pop()
-      nonGreedyChecked = true
+
+      if (matcher.pattern.optional && let next = iterator.allNext.skip(nonGreedyMatchers.count).first) {
+        nonGreedyMatchers.push(matcher)
+        matcher = next.copy()
+        log.traceFunc({"Matcher was optional and has a next matcher. Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+      } else {
+        while (nonGreedyMatchers.count > 1) {
+          nonGreedyMatchers.pop()
+        }
+
+        matcher = nonGreedyMatchers.pop()
+        nonGreedyChecked = true
+        log.traceFunc({"Popped greedy matchers"})
+      }
+
       return tokensToMatch.map({
         tokens.add(_)
         return this.match(context)

@@ -613,4 +613,39 @@ testable class {
 
     expect(match).toBe(null)
   }
+
+  test `can handle reaching forward multiple patterns for a non-greedy match`() {
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "extends_class_name")
+      ], optional: true),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+        GroupTokenPattern([
+          SingleTokenPattern(Token.Type.SYMBOL, ","),
+          SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name")
+        ], repeat: true, optional: true)
+      ], optional: true)
+    ])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "implements", type: Token.Type.IDENTIFIER),
+      Token(value: "Test", type: Token.Type.IDENTIFIER)
+    ]).last
+
+    let expected = [
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "implements", type: Token.Type.IDENTIFIER),
+      Token(value: "Test", type: Token.Type.IDENTIFIER)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(true)
+  }
 }
