@@ -18,6 +18,14 @@ data class extends ParserBase {
         label: "generic_arguments",
         start: Token(value: "<"),
         end: Token(value: ">"),
+        allowedTokens: [
+          Token(type: Token.Type.IDENTIFIER),
+          Token(type: Token.Type.SYMBOL, value: "<"),
+          Token(type: Token.Type.SYMBOL, value: ">"),
+          Token(type: Token.Type.SYMBOL, value: "["),
+          Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: ",")
+        ],
         optional: true
       )
     ], optional: true, label: "extends_class"),
@@ -28,6 +36,14 @@ data class extends ParserBase {
         label: "generic_arguments",
         start: Token(value: "<"),
         end: Token(value: ">"),
+        allowedTokens: [
+          Token(type: Token.Type.IDENTIFIER),
+          Token(type: Token.Type.SYMBOL, value: "<"),
+          Token(type: Token.Type.SYMBOL, value: ">"),
+          Token(type: Token.Type.SYMBOL, value: "["),
+          Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: ",")
+        ],
         optional: true
       ),
       GroupTokenPattern([
@@ -37,6 +53,14 @@ data class extends ParserBase {
           label: "generic_arguments",
           start: Token(value: "<"),
           end: Token(value: ">"),
+          allowedTokens: [
+            Token(type: Token.Type.IDENTIFIER),
+            Token(type: Token.Type.SYMBOL, value: "<"),
+            Token(type: Token.Type.SYMBOL, value: ">"),
+            Token(type: Token.Type.SYMBOL, value: "["),
+            Token(type: Token.Type.SYMBOL, value: "]"),
+            Token(type: Token.Type.SYMBOL, value: ",")
+          ],
           optional: true
         )
       ], repeat: true, optional: true, label: "implements_class")
