@@ -159,8 +159,10 @@ data class extends TokenMatcher {
       |"})
     addSuccessfulMatch(tokenMatch)
 
-    if (let remainingMatch = checkRemainingMatch(tokenMatch, context)) {
-      return remainingMatch
+    if (successfulMatchedTokens.count < tokens.count) {
+      return checkRemainingMatch(tokenMatch, context)
+    } else {
+      log.traceFunc({"No partial match remaining tokens"})
     }
 
     if (matcher.pattern.repeat) {
@@ -235,38 +237,42 @@ data class extends TokenMatcher {
     )
   }
 
-  checkRemainingMatch(TokenMatch tokenMatch, ParseContext context) -> GroupTokenMatch => null {
-    let containsRemainingTokens = successfulMatchedTokens.count < tokens.count
+  checkRemainingMatch(TokenMatch tokenMatch, ParseContext context) -> TokenMatch => null {
+    let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
+    log.traceFunc({"|
+      Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
+        successfulMatchedTokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+        tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+      |"})
+    tokensToMatch.forEach({ tokens.removeLast() })
 
-    if (containsRemainingTokens) {
-      let tokensToMatch = tokens.skip(successfulMatchedTokens.count)
-      log.traceFunc({"|
-        Contains remaining tokens from partial match: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
-          successfulMatchedTokens: [#{successfulMatchedTokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-          tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-        |"})
-      tokensToMatch.forEach({ tokens.removeLast() })
+    var Bool continueMatching = false
 
-      if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
-        repeatMatcher()
-      } else if (iterator.hasNext && matcher.complete) { // FIXME: handle non-greedy
-        nextMatcher()
-        log.traceFunc({"Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
-      }
+    if (matcher.pattern.repeat && matcher.complete) { // Should this be `matcher.disqualified`?
+      repeatMatcher()
+      continueMatching = true
+    } else if (iterator.hasNext && matcher.complete) { // FIXME: handle non-greedy
+      nextMatcher()
+      log.traceFunc({"Skipped to next matcher: " + magenta(matcher.pattern.toPatternString())})
+      continueMatching = true
+    }
 
+    if (continueMatching) {
       log.traceFunc({"Iterating through tokens: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]"})
-      tokensToMatch.forEach({
+      return tokensToMatch.map({
         tokens.add(_)
         return this.match(context)
-      })
-      log.traceFunc({"Returning composite group token match"})
+      }).last
+    } else {
+      log.traceFunc({"Returning successful match without the remaining tokens"})
+      complete = true
+      disqualified = true
+
       return GroupTokenMatch(
         tokens: successfulMatchedTokens.copy(),
         tokenMatches: successfulMatches.copy(),
         label: pattern.label
       )
-    } else {
-      log.traceFunc({"No partial match remaining tokens"})
     }
   }
 
