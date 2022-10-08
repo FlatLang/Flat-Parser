@@ -22,7 +22,7 @@ data class extends ParserBase {
     ], repeat: true, optional: true),
     SingleTokenPattern(Token.Type.SYMBOL, ":", label: "require_name", optional: true),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
-  ])
+  ], label: "parameter")
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
