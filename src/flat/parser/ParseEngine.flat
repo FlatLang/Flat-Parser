@@ -24,6 +24,8 @@ import flat/io/File
 import flat/log/Logger
 import flat/stream/Stream
 
+import static flat/colorizer/Colorizer
+
 class {
   let static Logger log = Logger(ParseEngine.class)
 
@@ -82,7 +84,7 @@ class {
   }
 
   public matchToken(Token token) {
-    ParseEngine.log.debugFunc({"Matching token: '#{token.value}' (tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}])"})
+    ParseEngine.log.debugFunc({"Matching token: '#{token.value}' (line #{magenta(token.location.lineNumber.toString())}) (tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}])"})
     ParseEngine.log.debugFunc({"Parsers: [#{context.currentParsers.map(p => p.class.name).join(", ")}]"})
 
     context.currentParsers.forEach((parser) => {
