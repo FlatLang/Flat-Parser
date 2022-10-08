@@ -1,0 +1,17 @@
+package flat/parser
+
+import flat/ast/ContinueNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  let static Logger log = Logger(ContinueParser.class)
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "continue")
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ContinueNode {
+    return ContinueNode()
+  }
+}
