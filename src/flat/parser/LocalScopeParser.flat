@@ -16,6 +16,7 @@ data class extends ParserBase {
     LiteralParser(),
     RegexPatternParser(),
     MatchParser(),
+    SwitchParser(),
     WhileLoopParser(),
     ForLoopParser(),
     FallthroughParser(),
