@@ -30,6 +30,7 @@ class {
   let static Logger log = Logger(ParseEngine.class)
 
   var Bool parsingChildren = false
+  var Int lastLineNumber = 0
   visible var EngineContext context = EngineContext()
   Stack<EngineContext> snapshots = Stack()
 
@@ -73,6 +74,11 @@ class {
     match token.type {
       Token.Type.COMMENT =>
       Token.Type.WS => return
+    }
+
+    if (token.location.lineNumber > lastLineNumber) {
+      lastLineNumber = token.location.lineNumber
+      log.debugFunc({"line #{magenta(token.location.lineNumber.toString())} col #{magenta(token.location.column.toString())}"})
     }
 
     if (!parsingChildren && context.tokens.isEmpty) {
