@@ -32,7 +32,7 @@ class {
 
   public construct(
     private FileNode fileNode,
-    private Stream stream
+    private var Stream stream
   ) {
     context.pushScope(FileParser(), fileNode)
     context.pushScope(FileScopeParser(), FileScopeNode())
@@ -102,9 +102,10 @@ class {
       let exactMatches = getExactMatches()
       ParseEngine.log.traceFunc({"Exact matches:\n  #{exactMatches.map(m => m.pattern.toPatternString()).join("\n  ")}"})
       let parser = getBestMatch(exactMatches)
-      let node = generateNode(parser)
-      context.updateScopeForNode(parser, node)
-      clearTokensAfterParse(parser)
+      if (let node = generateNode(parser)) {
+        context.updateScopeForNode(parser, node)
+        clearTokensAfterParse(parser)
+      }
       return
     }
 
@@ -116,9 +117,10 @@ class {
         ParseEngine.log.debugFunc({"Has completed matches"})
         ParseEngine.log.traceFunc({"Completed matches:\n  #{getCompletedMatches().map(m => m.pattern.toPatternString()).join("\n  ")}"})
         let parser = getBestMatch(getCompletedMatches())
-        let node = generateNode(parser)
-        context.updateScopeForNode(parser, node)
-        clearTokensAfterParse(parser)
+        if (let node = generateNode(parser)) {
+          context.updateScopeForNode(parser, node)
+          clearTokensAfterParse(parser)
+        }
       } else if (!checkScopeEnd()) {
         ParseEngine.log.debugFunc({"No completed matches"})
         invalidTokens()
@@ -269,24 +271,27 @@ class {
     context = snapshots.pop()
   }
 
-  public tryGenerateNodeForRemainingTokens() {
-    if (context.tokens.isEmpty) return
+  public tryGenerateNodeForRemainingTokens() => false {
+    if (context.tokens.isEmpty) return false
 
     if (checkScopeEnd()) {
       ParseEngine.log.debugFunc({"Popped scope. Not generating node"})
-      return
+      return false
     } else if (!containsCompletedMatches()) {
       ParseEngine.log.debugFunc({"No completed matches. Not generating node"})
       invalidTokens()
-      return
+      return false
     }
 
     let token = context.tokens.last
 
     let parser = getBestMatch(getCompletedMatches())
-    let node = generateNode(parser)
-    context.updateScopeForNode(parser, node)
-    clearTokensAfterParse(parser)
+
+    if (let node = generateNode(parser)) {
+      context.updateScopeForNode(parser, node)
+      clearTokensAfterParse(parser)
+      return true
+    }
   }
 
   public checkScopeEnd() => false {
@@ -319,11 +324,49 @@ class {
     return !context.currentParser.checkStatementContinuation(context.parseContext, token)
   }
 
+  var Bool attemptingResilientParse = false
+
   public invalidTokens() {
+    if (attemptingResilientParse) return
+    attemptingResilientParse = true
+
     invalidTokensError(context.tokens)
+
     context.resetCurrentScope()
+
+    snapshopEngineContext()
     reset()
-    context.tokens = Token[]
+
+    var matched = false
+    let mainStream = stream
+
+    stream = Stream(true)
+
+    while (context.tokens.isNotEmpty) {
+      let tokens = context.tokens
+      context.tokens = Token[]
+      tokens.forEach({ consume(_) })
+
+      if (context.tokens.count == tokens.count) break
+
+      matched = true
+      context.resetCurrentScope()
+      context.tokens = context.tokens.skip(1)
+    }
+
+    if (matched) {
+      stream.on("data", {
+        mainStream.emit("data", _)$
+      })$
+    } else {
+      restoreSnapshopEngineContext()
+      reset()
+      context.tokens = Token[]
+    }
+
+    stream = mainStream
+
+    attemptingResilientParse = false
   }
 
   public invalidTokensError(Token[] tokens) {

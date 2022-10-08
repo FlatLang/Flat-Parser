@@ -295,9 +295,9 @@ testable class {
     engine.context.pushScope(FunctionParser(), FunctionNode())
     engine.context.pushScope(LocalScopeParser(), LocalScopeNode())
 
-    var Node node = null
+    let nodes = Node[]
 
-    stream.on<Node>("data", { node = _ })$
+    stream.on<Node>("data", { nodes.add(_) })$
 
     engine.consume(Token(value: "test", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -310,18 +310,23 @@ testable class {
 
     engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
 
-    expect(node).toBe(
-      IdentifierNode(
-        name: "args"
-      )
-    )
+    expect(nodes).toBe([
+      FunctionCallNode(name: "test"),
+      FunctionCallNode(name: "File"),
+      IdentifierNode(name: "args")
+    ])
 
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
     engine.consume(Token(value: "}", type: Token.Type.SYMBOL))
 
-    expect(node).toBe(FunctionCallNode(name: "log"))
+    expect(nodes).toBe([
+      FunctionCallNode(name: "test"),
+      FunctionCallNode(name: "File"),
+      IdentifierNode(name: "args"),
+      FunctionCallNode(name: "log")
+    ])
   }
 
   test `adds annotations to parse context after parsing one`() {
