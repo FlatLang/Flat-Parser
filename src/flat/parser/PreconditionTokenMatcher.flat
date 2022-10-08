@@ -31,6 +31,8 @@ data class extends TokenMatcher {
     }
 
     log.traceFunc({"Precondition passed successfully"})
+    complete = true
+    valid = true
 
     return PreconditionTokenMatch(
       tokens: pattern.includeTokens ? tokens.copy() : Token[],
