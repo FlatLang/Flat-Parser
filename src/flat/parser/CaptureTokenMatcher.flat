@@ -21,6 +21,11 @@ data class extends TokenMatcher {
       disqualified = true
       return null
     }
+    if (pattern.allowedTokens && !pattern.allowedTokens.any(t => (t.value == null || t.value == token.value) && t.type == token.type)) {
+      log.traceFunc({"Token '#{token.value}' does match allowed values. Disqualified"})
+      disqualified = true
+      return null
+    }
 
     tokens.add(token)
 
