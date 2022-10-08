@@ -1,9 +1,15 @@
 package flat/parser
 
+import flat/ast/IdentifierNode
+import flat/ast/FunctionCallNode
+import flat/ast/PriorityNode
 import flat/ast/UnaryOperationNode
 import flat/compiler/models/Token
+import flat/log/Logger
 
 data class extends ParserBase {
+  let static Logger log = Logger(UnaryOperationParser.class)
+
   override ParserBase[] childParsers => Array():addAll([
     IdentifierParser(),
     ArrayInstantiationParser(),
@@ -20,7 +26,13 @@ data class extends ParserBase {
     ]
   )
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
+  override public checkStatementContinuation(ParseContext context, Token token) => true {
+    match context.statementParentStack.peek(1).class {
+      IdentifierNode.class => return false
+      FunctionCallNode.class => return false
+      PriorityNode.class => return false
+    }
+  }
 
   override public generateNode(ParseContext context, TokenMatch match) -> UnaryOperationNode {
     return UnaryOperationNode(
