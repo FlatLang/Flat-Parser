@@ -35,7 +35,7 @@ data class extends ParserBase {
           SingleTokenPattern(Token.Type.SYMBOL, "["),
           SingleTokenPattern(Token.Type.SYMBOL, "]")
         ], repeat: true, greedy: false, optional: true, label: "brackets")
-      ], label: "type_group"),
+      ], label: "type"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
     ])
   ])
