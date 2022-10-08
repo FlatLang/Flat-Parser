@@ -21,15 +21,6 @@ data class extends ParserBase {
     label: "index"
   )
 
-  ParserBase[] indexParsers => [
-    AnnotationParser(),
-    FunctionCallParser(),
-    IdentifierParser(),
-    ArrayInstantiationParser(),
-    LiteralParser(),
-    RegexPatternParser()
-  ]
-
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
     match token.value {
       "{" => return false
@@ -49,7 +40,15 @@ data class extends ParserBase {
       requests: tokens.map({
         return ParseRequestData(
           tokens: _,
-          parsers: indexParsers
+          parsers: [
+            AnnotationParser(),
+            FunctionCallParser(),
+            IdentifierParser(),
+            ArrayInstantiationParser(),
+            ArrayInitializerParser(),
+            LiteralParser(),
+            RegexPatternParser()
+          ]
         )
       })
     )
