@@ -76,7 +76,7 @@ class {
       Token.Type.WS => return
     }
 
-    if (token.location.lineNumber > lastLineNumber) {
+    if (token.location && token.location.lineNumber > lastLineNumber) {
       lastLineNumber = token.location.lineNumber
       log.debugFunc({"line #{magenta(token.location.lineNumber.toString())} col #{magenta(token.location.column.toString())}"})
     }
@@ -91,7 +91,7 @@ class {
   }
 
   public matchToken(Token token) {
-    ParseEngine.log.debugFunc({"Matching token: '#{token.value}' (line #{magenta(token.location.lineNumber.toString())}) (tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}])"})
+    ParseEngine.log.debugFunc({"Matching token: '#{token.value}' (line #{magenta(token.location?.lineNumber.toString())}) (tokens: [#{context.tokens.map(t => "'" + t.value + "'").join(", ")}])"})
     ParseEngine.log.debugFunc({"Parsers: [#{context.currentParsers.map(p => p.class.name).join(", ")}]"})
 
     context.currentParsers.forEach((parser) => {
