@@ -29,6 +29,7 @@ import static flat/colorizer/Colorizer
 class {
   let static Logger log = Logger(ParseEngine.class)
 
+  var Bool parsingChildren = false
   visible var EngineContext context = EngineContext()
   Stack<EngineContext> snapshots = Stack()
 
@@ -74,7 +75,7 @@ class {
       Token.Type.WS => return
     }
 
-    if (context.tokens.isEmpty) {
+    if (!parsingChildren && context.tokens.isEmpty) {
       checkStatementEnd(token)
     }
 
@@ -223,6 +224,7 @@ class {
 
   public parseChildNodes(ParserBase parser) {
     if (let requests = parser.getChildParseRequests(context.parseContext, parser.lastMatch).requests) {
+      parsingChildren = true
       requests.forEach((request) => {
         snapshopEngineContext()
 
@@ -239,6 +241,7 @@ class {
 
         restoreSnapshopEngineContext()
       })
+      parsingChildren = false
     }
   }
 
