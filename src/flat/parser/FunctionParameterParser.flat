@@ -1,12 +1,12 @@
 package flat/parser
 
-import flat/ast/FunctionNode
+import flat/ast/FunctionParameterNode
 import flat/compiler/models/Token
 import flat/compiler/models/SyntaxTokenFunctions
 import flat/log/Logger
 
 data class extends ParserBase {
-  let static Logger log = Logger(FunctionParser.class)
+  let static Logger log = Logger(FunctionParameterParser.class)
 
   override ParserBase[] childParsers => Array()
     :addAll([LocalScopeParser()])
@@ -42,16 +42,15 @@ data class extends ParserBase {
         SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
         SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
-    ], optional: true),
-    SingleTokenPattern(Token.Type.SYMBOL, "=>", optional: true)
+    ], optional: true)
   ])
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
+  override public generateNode(ParseContext context, TokenMatch match) -> FunctionParameterNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count
 
-    return FunctionNode(
+    return FunctionParameterNode(
       type: type,
       name: name,
       arrayDimensions: bracketCount
@@ -70,8 +69,7 @@ data class extends ParserBase {
           tokens: _,
           parsers: [
             AnnotationParser(),
-            ParameterParser(),
-            FunctionParameterParser()
+            IdentifierParser()
           ]
         )
       })
