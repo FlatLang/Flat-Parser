@@ -9,6 +9,7 @@ import flat/annotations/StaticModifier
 import flat/annotations/AsyncModifier
 import flat/annotations/DataModifier
 import flat/annotations/LazyModifier
+import flat/annotations/NativeModifier
 import flat/annotations/Modifier
 import flat/compiler/models/Token
 import flat/ast/AnnotationNode
@@ -32,6 +33,7 @@ data class extends ParserBase {
       :addAll(AsyncModifier.aliases)
       :addAll(DataModifier.aliases)
       :addAll(LazyModifier.aliases)
+      :addAll(NativeModifier.aliases)
   )
 
   override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode => null {
@@ -62,6 +64,9 @@ data class extends ParserBase {
       return DataModifier(aliasUsed: alias)
     }
     if (LazyModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
+    }
+    if (NativeModifier.aliases.any({ _ == alias})) {
       return DataModifier(aliasUsed: alias)
     }
   }
