@@ -27,19 +27,4 @@ data class extends ParserBase {
   override public generateNode(ParseContext context, TokenMatch match) -> ForLoopNode {
     return ForLoopNode()
   }
-
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("condition")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: FunctionParser().childParsers
-        )
-      })
-    )
-  }
 }
