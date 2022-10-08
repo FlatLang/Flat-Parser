@@ -31,8 +31,8 @@ class {
 
   var Bool parsingChildren = false
   var Int lastLineNumber = 0
-  visible var EngineContext context = EngineContext()
-  Stack<EngineContext> snapshots = Stack()
+  visible var ParseContext context = ParseContext()
+  Stack<ParseContext> snapshots = Stack()
 
   public construct(
     private FileNode fileNode,
@@ -95,7 +95,7 @@ class {
     ParseEngine.log.debugFunc({"Parsers: [#{context.currentParsers.map(p => p.class.name).join(", ")}]"})
 
     context.currentParsers.forEach((parser) => {
-      if (let match = parser.match(token, context.parseContext)) {
+      if (let match = parser.match(token, context)) {
         ParseEngine.log.debugFunc({"Matched: #{parser.class.name}"})
       } else if (parser.matcher.partial) {
         ParseEngine.log.debugFunc({"Partial match: #{parser.class.name}"})
@@ -147,7 +147,7 @@ class {
         if (parser.class.isOfType(AnnotationParser.class)) {
           ParseEngine.log.debugFunc({"Generating annotation"})
           if (let annotation = generateAnnotation(parser)) {
-            context.parseContext.annotations.add(annotation)
+            context.annotations.add(annotation)
             clearTokensAfterParse(parser)
           }
         } else {
@@ -217,6 +217,8 @@ class {
     } else {
       let shouldPop = (
         context.currentNode.class.isOfType(FunctionNode.class) ||
+        context.currentNode.class.isOfType(WhileLoopNode.class) ||
+        context.currentNode.class.isOfType(ForLoopNode.class) ||
         context.currentNode.class.isOfType(FieldNode.class)
       )
 
@@ -228,7 +230,7 @@ class {
 
   public generateNode(ParserBase parser) -> Node {
     ParseEngine.log.debugFunc({"Generating node for parser: #{parser.class.name}"})
-    let node = parser.generateNode(context.parseContext, parser.lastMatch)
+    let node = parser.generateNode(context, parser.lastMatch)
 
     if (node) {
       stream.emit("data", node)$
@@ -240,10 +242,11 @@ class {
   }
 
   public parseChildNodes(ParserBase parser) {
-    if (let requests = parser.getChildParseRequests(context.parseContext, parser.lastMatch).requests) {
-      parsingChildren = true
+    if (let requests = parser.getChildParseRequests(context, parser.lastMatch).requests) {
       requests.forEach((request) => {
-        snapshopEngineContext()
+        snapshopContext()
+        reset()
+        parsingChildren = true
 
         context.setChildParsers(context.currentParser, context.currentNode, request.parsers)
         context.tokens = Token[]
@@ -256,15 +259,15 @@ class {
           tryGenerateNodeForRemainingTokens()
         }
 
-        restoreSnapshopEngineContext()
+        restoreSnapshopContext()
+        parsingChildren = false
       })
-      parsingChildren = false
     }
   }
 
   public generateAnnotation(AnnotationParser parser) -> AnnotationNode {
     ParseEngine.log.debugFunc({"Generating annotation for parser: #{parser.class.name}"})
-    let node = parser.generateNode(context.parseContext, parser.lastMatch)
+    let node = parser.generateNode(context, parser.lastMatch)
 
     if (!node) {
       throw Exception("Failed to parse annotation for parser: #{parser}")
@@ -273,7 +276,7 @@ class {
     return node
   }
 
-  public snapshopEngineContext() {
+  public snapshopContext() {
     ParseEngine.log.debugFunc({"Snapshotting engine context"})
     snapshots.push(context)
     context = context.copy(
@@ -282,13 +285,12 @@ class {
       parsersStack: Stack(context.parsersStack.toArray().map({ _.map({ _.copy() }) })),
       currentParsers: context.currentParsers.map({ _.copy() }),
       tokens: context.tokens.copy(),
-      parseContext: context.parseContext.copy(),
       currentNode: context.currentNode.copy(),
       currentParser: context.currentParser.copy()
     )
   }
 
-  public restoreSnapshopEngineContext() {
+  public restoreSnapshopContext() {
     ParseEngine.log.debugFunc({"Restoring snapshotted engine context"})
     context = snapshots.pop()
   }
@@ -343,7 +345,7 @@ class {
   }
 
   public isStatementEnd(Token token) => false {
-    return !context.currentParser.checkStatementContinuation(context.parseContext, token)
+    return !context.currentParser.checkStatementContinuation(context, token)
   }
 
   var Bool attemptingResilientParse = false
@@ -356,7 +358,7 @@ class {
 
     context.resetCurrentScope()
 
-    snapshopEngineContext()
+    snapshopContext()
     reset()
 
     var matched = false
@@ -381,7 +383,7 @@ class {
         mainStream.emit("data", _)$
       })$
     } else {
-      restoreSnapshopEngineContext()
+      restoreSnapshopContext()
       reset()
       context.tokens = Token[]
     }
@@ -401,6 +403,7 @@ class {
       } else {
         ParseEngine.log.errorFunc({"Could not parse tokens [#{tokens.map(t => "'" + t.value + "'").join(", ")}] at #{tokens.first.location.lineNumber}:#{tokens.first.location.column}-#{tokens.last.endLineNumber}:#{tokens.last.endColumn}"})
       }
+      System.exit(1)
     }
   }
 }

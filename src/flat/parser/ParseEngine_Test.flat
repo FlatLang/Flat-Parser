@@ -343,12 +343,12 @@ testable class {
 
     stream.on<Node>("data", { node = _ })$
 
-    expect(engine.context.parseContext.annotations.isEmpty).toBe(true)
+    expect(engine.context.annotations.isEmpty).toBe(true)
 
     engine.consume(Token(value: "let", type: Token.Type.IDENTIFIER))
 
     expect(node).toBe(null)
-    expect(engine.context.parseContext.annotations).toBe([
+    expect(engine.context.annotations).toBe([
       LetModifier(aliasUsed: "let")
     ])
   }
