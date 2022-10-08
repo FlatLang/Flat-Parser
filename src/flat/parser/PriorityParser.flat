@@ -34,7 +34,9 @@ data class extends ParserBase {
       requests: tokens.map({
         return ParseRequestData(
           tokens: _,
-          parsers: childParsers
+          parsers: Array()
+            :addAll(childParsers)
+            :add(CastParser())
         )
       })
     )
