@@ -19,6 +19,7 @@ data class extends ParserBase {
     WhileLoopParser(),
     ForLoopParser(),
     FallthroughParser(),
+    BreakParser(),
     LocalDeclarationParser(),
     FunctionCallParser(),
     IdentifierParser(),
