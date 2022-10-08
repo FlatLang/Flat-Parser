@@ -193,19 +193,30 @@ class {
       "{" => return
     }
 
-    let shouldPop = (
-      context.currentNode.class.isOfType(FunctionNode.class) ||
-      context.currentNode.class.isOfType(ClassNode.class) ||
-      context.currentNode.class.isOfType(MatchNode.class) ||
-      context.currentNode.class.isOfType(WhileLoopNode.class) ||
-      context.currentNode.class.isOfType(ForLoopNode.class) ||
-      context.currentNode.class.isOfType(FieldNode.class) ||
-      context.currentNode.class.isOfType(FieldAccessorFunctionNode.class) ||
-      context.currentNode.class.isOfType(FieldMutatorFunctionNode.class)
-    )
+    if (token.value == "}") {
+      let shouldPop = (
+        context.currentNode.class.isOfType(FunctionNode.class) ||
+        context.currentNode.class.isOfType(ClassNode.class) ||
+        context.currentNode.class.isOfType(MatchNode.class) ||
+        context.currentNode.class.isOfType(WhileLoopNode.class) ||
+        context.currentNode.class.isOfType(ForLoopNode.class) ||
+        context.currentNode.class.isOfType(FieldNode.class) ||
+        context.currentNode.class.isOfType(FieldAccessorFunctionNode.class) ||
+        context.currentNode.class.isOfType(FieldMutatorFunctionNode.class)
+      )
 
-    if (shouldPop) {
-      context.popScope()
+      if (shouldPop) {
+        context.popScope()
+      }
+    } else {
+      let shouldPop = (
+        context.currentNode.class.isOfType(FunctionNode.class) ||
+        context.currentNode.class.isOfType(FieldNode.class)
+      )
+
+      if (shouldPop) {
+        context.popScope()
+      }
     }
   }
 
