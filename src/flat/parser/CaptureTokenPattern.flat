@@ -10,6 +10,7 @@ data class extends TokenPattern {
   visible Token start
   visible Token end
   visible Bool includeEndToken = true
+  visible Bool skipGenerics = true
   visible Int minimumTokenCount = 0
   visible Token[] allowedTokens
 

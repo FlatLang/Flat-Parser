@@ -18,6 +18,7 @@ data class extends ParserBase {
         label: "generic_arguments",
         start: Token(value: "<"),
         end: Token(value: ">"),
+        skipGenerics: false,
         allowedTokens: [
           Token(type: Token.Type.IDENTIFIER),
           Token(type: Token.Type.SYMBOL, value: "<"),
@@ -36,6 +37,7 @@ data class extends ParserBase {
         label: "generic_arguments",
         start: Token(value: "<"),
         end: Token(value: ">"),
+        skipGenerics: false,
         allowedTokens: [
           Token(type: Token.Type.IDENTIFIER),
           Token(type: Token.Type.SYMBOL, value: "<"),
@@ -53,6 +55,7 @@ data class extends ParserBase {
           label: "generic_arguments",
           start: Token(value: "<"),
           end: Token(value: ">"),
+          skipGenerics: false,
           allowedTokens: [
             Token(type: Token.Type.IDENTIFIER),
             Token(type: Token.Type.SYMBOL, value: "<"),
