@@ -14,7 +14,8 @@ testable class {
       Token(value: "if", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "flob", type: Token.Type.IDENTIFIER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL)
     ]).last
 
     let expected = [
@@ -38,7 +39,8 @@ testable class {
       Token(value: "count", type: Token.Type.IDENTIFIER),
       Token(value: "<", type: Token.Type.SYMBOL),
       Token(value: "2", type: Token.Type.INTEGER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL)
     ]).last
 
     let expected = [
