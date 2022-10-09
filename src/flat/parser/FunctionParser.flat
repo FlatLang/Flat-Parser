@@ -38,6 +38,20 @@ data class extends ParserBase {
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "->"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      CaptureTokenPattern(
+        label: "generic_parameters",
+        start: Token(value: "<"),
+        end: Token(value: ">"),
+        allowedTokens: [
+          Token(type: Token.Type.IDENTIFIER),
+          Token(type: Token.Type.SYMBOL, value: "<"),
+          Token(type: Token.Type.SYMBOL, value: ">"),
+          Token(type: Token.Type.SYMBOL, value: "["),
+          Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: ",")
+        ],
+        optional: true
+      ),
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
         SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
