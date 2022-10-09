@@ -132,7 +132,9 @@ class {
         }
       } else if (!checkScopeEnd()) {
         ParseEngine.log.debugFunc({"No completed matches"})
-        invalidTokens()
+        if (!tryParseAgainstScope()) {
+          invalidTokens()
+        }
       }
     } else {
       ParseEngine.log.debugFunc({"Has partial matches"})
@@ -348,9 +350,52 @@ class {
     return !context.currentParser.checkStatementContinuation(context, token)
   }
 
+  public tryParseAgainstScope() => false {
+    if (attemptingResilientParse) return false
+    if (context.currentNode.class.isOfType(ScopeNode.class)) return false
+    if (context.tokens.isEmpty) return false
+    attemptingResilientParse = true
+    encounteredError = false
+
+    snapshopContext()
+    context.resetCurrentScope()
+
+    let shouldPop = (
+      context.currentNode.class.isOfType(FunctionNode.class) ||
+      context.currentNode.class.isOfType(WhileLoopNode.class) ||
+      context.currentNode.class.isOfType(ForLoopNode.class) ||
+      context.currentNode.class.isOfType(FieldNode.class)
+    )
+
+    if (shouldPop) {
+      context.popScope()
+    }
+
+    ParseEngine.log.debugFunc({"Attempting to parse tokens on scope. tokens: [#{context.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]"})
+    let tokens = context.tokens
+    context.tokens = Token[]
+    tokens.forEach({ consume(_) })
+
+    let success = !encounteredError
+
+    if (encounteredError) {
+      ParseEngine.log.debugFunc({"Encountered error"})
+      restoreSnapshopContext()
+    } else {
+      ParseEngine.log.debugFunc({"Successfully matched"})
+    }
+
+    encounteredError = false
+    attemptingResilientParse = false
+
+    return success
+  }
+
   var Bool attemptingResilientParse = false
+  var Bool encounteredError = false
 
   public invalidTokens() {
+    encounteredError = true
     if (attemptingResilientParse) return
     attemptingResilientParse = true
 
@@ -391,6 +436,7 @@ class {
     stream = mainStream
 
     attemptingResilientParse = false
+    encounteredError = false
   }
 
   public invalidTokensError(Token[] tokens) {
