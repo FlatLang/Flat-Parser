@@ -12,13 +12,14 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.SYMBOL, "["),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "Target"),
     GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
         SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
       ], optional: true),
       SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
-    ], repeat: true),
+    ], repeat: true, greedy: false),
     SingleTokenPattern(Token.Type.SYMBOL, "]")
   ], label: "target_annotation")
 
