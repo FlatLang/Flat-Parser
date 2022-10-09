@@ -9,7 +9,7 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name"),
       CaptureTokenPattern(
