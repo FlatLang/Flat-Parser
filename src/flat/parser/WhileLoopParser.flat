@@ -15,8 +15,8 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.IDENTIFIER, "while"),
     CaptureTokenPattern(
       label: "condition",
-      end: Token(value: "{"),
-      includeEndToken: false
+      start: Token(value: "("),
+      end: Token(value: ")")
     )
   ])
 
