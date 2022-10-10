@@ -8,7 +8,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse a basic parameter`() {
+  test `can parse a basic parameter`() {
     let matcher = ParameterParser().matcher
     let result = matcher.matchAll([
       Token(value: "String", type: Token.Type.IDENTIFIER),
@@ -23,7 +23,7 @@ testable class {
     expect(result?.getValue("name")).toBe("test")
   }
 
-  async test `can parse a basic parameter with array brackets`() {
+  test `can parse a basic parameter with array brackets`() {
     let matcher = ParameterParser().matcher
     let result = matcher.matchAll([
       Token(value: "String", type: Token.Type.IDENTIFIER),

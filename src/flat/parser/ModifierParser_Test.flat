@@ -15,7 +15,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse visible modifier`() {
+  test `can parse visible modifier`() {
     let parser = ModifierParser()
 
     let match = GroupTokenMatch(tokenMatches: [

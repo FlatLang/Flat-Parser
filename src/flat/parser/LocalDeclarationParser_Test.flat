@@ -8,7 +8,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse a basic local declaration with let modifier and without an explicit type`() {
+  test `can parse a basic local declaration with let modifier and without an explicit type`() {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
@@ -28,7 +28,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `can parse a basic local declaration with let modifier and an explicit type`() {
+  test `can parse a basic local declaration with let modifier and an explicit type`() {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
@@ -51,7 +51,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can parse a basic local declaration with let modifier and an explicit type with array brackets`() {
+  test `can parse a basic local declaration with let modifier and an explicit type with array brackets`() {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
@@ -79,7 +79,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can parse a basic local declaration without let modifier and an explicit type`() {
+  test `can parse a basic local declaration without let modifier and an explicit type`() {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext()
@@ -100,7 +100,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can parse a basic local declaration without let modifier and an explicit type with array brackets`() {
+  test `can parse a basic local declaration without let modifier and an explicit type with array brackets`() {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext()

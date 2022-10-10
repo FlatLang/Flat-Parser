@@ -14,7 +14,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can match package matcher group`() {
+  test `can match package matcher group`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
@@ -31,7 +31,7 @@ testable class {
     expect(result?.getValues("package_location_component")).toBe(["test"])
   }
 
-  async test `does not return value after second time matching`() {
+  test `does not return value after second time matching`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
@@ -53,7 +53,7 @@ testable class {
     expect(result).toBe(null)
   }
 
-  async test `does return value after second time matching if the matcher is reset`() {
+  test `does return value after second time matching if the matcher is reset`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component")
@@ -76,7 +76,7 @@ testable class {
     expect(result?.getValues("package_location_component")).toBe(["test2"])
   }
 
-  async test `can match package matcher group with unmatched optional repeating package_location_component`() {
+  test `can match package matcher group with unmatched optional repeating package_location_component`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
@@ -97,7 +97,7 @@ testable class {
     expect(result?.getValues("package_location_component")).toBe(["test"])
   }
 
-  async test `can match package matcher group with matched optional repeating package_location_component`() {
+  test `can match package matcher group with matched optional repeating package_location_component`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
@@ -122,7 +122,7 @@ testable class {
     expect(result?.getValues("package_location_component")).toBe(["test", "/", "thing", "/", "thing2"])
   }
 
-  async test `can match multiple nested matcher groups with matched optional repeating values`() {
+  test `can match multiple nested matcher groups with matched optional repeating values`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
@@ -160,7 +160,7 @@ testable class {
     expect(result?.getValues("implements_class_name")).toBe(["I1", "I2", "I3"])
   }
 
-  async test `can match multiple nested matcher groups with matched optional repeating values where the non-greedy value is matched`() {
+  test `can match multiple nested matcher groups with matched optional repeating values where the non-greedy value is matched`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
@@ -199,7 +199,7 @@ testable class {
     expect(result?.getValues("implements_class_name")).toBe(["I1", "I2", "I3"])
   }
 
-  async test `can match against matcher with multiple values`() {
+  test `can match against matcher with multiple values`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "alias", values: Array():addAll([
           "test1", "test2", "test3", "test4"
@@ -217,7 +217,7 @@ testable class {
     expect(result?.getValues("alias")).toBe(["test3"])
   }
 
-  async test `can match partially against matcher when too few tokens given`() {
+  test `can match partially against matcher when too few tokens given`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "package"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "package_location_component"),
@@ -239,7 +239,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `doesnt match partially against matcher when too few and incorrect tokens given`() {
+  test `doesnt match partially against matcher when too few and incorrect tokens given`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "import"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
@@ -261,7 +261,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `doesnt match partially against matcher when too many tokens that dont match are given`() {
+  test `doesnt match partially against matcher when too many tokens that dont match are given`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
@@ -300,7 +300,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `matches against just first identifier if all others are optional`() {
+  test `matches against just first identifier if all others are optional`() {
     let groupPattern = GroupTokenPattern([
       SingleTokenPattern(Token.Type.IDENTIFIER, "class"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name", optional: true, greedy: false),
@@ -327,7 +327,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `matches completely against multiple entry options`() {
+  test `matches completely against multiple entry options`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.SYMBOL, "["),
@@ -356,7 +356,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `doesnt match complete single array bracket in annotation matcher`() {
+  test `doesnt match complete single array bracket in annotation matcher`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.SYMBOL, "["),
@@ -385,7 +385,7 @@ testable class {
     expect(matcher.partial).toBe(true)
   }
 
-  async test `doesnt match ending part of annotation`() {
+  test `doesnt match ending part of annotation`() {
     let groupPattern = GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.SYMBOL, "["),
@@ -414,7 +414,7 @@ testable class {
     expect(result).toBe(null)
   }
 
-  async test `can match complete multiple captures with nested contents`() {
+  test `can match complete multiple captures with nested contents`() {
     let groupPattern = GroupTokenPattern([
       CaptureTokenPattern(
         start: Token(value: "<"),
@@ -449,7 +449,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can match partial multiple captures with nested contents`() {
+  test `can match partial multiple captures with nested contents`() {
     let groupPattern = GroupTokenPattern([
       CaptureTokenPattern(
         start: Token(value: "<"),

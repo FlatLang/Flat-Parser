@@ -8,7 +8,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `can parse a basic array access`() {
+  test `can parse a basic array access`() {
     let parser = ArrayAccessParser()
     let matcher = parser.matcher
     let result = matcher.matchAll([
@@ -29,7 +29,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can parse a basic array access with integer index`() {
+  test `can parse a basic array access with integer index`() {
     let parser = ArrayAccessParser()
     let matcher = parser.matcher
     let result = matcher.matchAll([
@@ -50,7 +50,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  async test `can get child parse requests`() {
+  test `can get child parse requests`() {
     let parser = ArrayAccessParser()
     let matcher = parser.matcher
     let result = matcher.matchAll([

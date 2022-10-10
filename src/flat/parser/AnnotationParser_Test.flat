@@ -8,7 +8,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  async test `does not parse invalid annotation`() {
+  test `does not parse invalid annotation`() {
     let matcher = AnnotationParser().matcher
     let result = matcher.match(Token(value: "package", type: Token.Type.IDENTIFIER))
 
