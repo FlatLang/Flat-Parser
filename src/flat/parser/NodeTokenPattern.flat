@@ -8,7 +8,7 @@ data class extends TokenPattern {
   static Logger log = Logger(NodeTokenPattern.class)
 
   public construct(
-    visible ParserBase[] parsers,
+    visible var ParserBase[] parsers,
     this String: label = null,
     this Bool optional = false,
     this Bool repeat = false,
