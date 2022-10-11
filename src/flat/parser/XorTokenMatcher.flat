@@ -59,6 +59,7 @@ data class extends TokenMatcher {
       }
 
       complete = true
+      valid = true
 
       return XorTokenMatch(
         tokens: pattern.includeTokens ? match.tokens : Token[],
