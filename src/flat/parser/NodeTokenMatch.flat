@@ -6,8 +6,10 @@ import flat/compiler/models/Token
 data class extends TokenMatch {
   visible ParserBase parser
 
-  override public getValues(String label) -> String[] {
-    return parser?.lastMatch.getValues(label) ?: Array()
+  override public getValues(String label) => String[] {
+    if (parser) {
+      return parser.lastMatch.getValues(label)
+    }
   }
 
   override public getMatches<Type extends TokenMatch>(String label, Bool addSelf = true) -> Type[] {
