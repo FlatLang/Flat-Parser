@@ -9,7 +9,7 @@ abstract data class {
   visible lazy TokenPattern pattern => null
   visible lazy TokenMatcher matcher => pattern.getMatcher()
 
-  public var TokenMatch lastMatch
+  public var TokenMatch lastMatch <=> lastMatch
 
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
 
