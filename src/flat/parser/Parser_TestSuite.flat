@@ -59,9 +59,11 @@ class {
         symmetrical: true
       )
 
-      unsuccessful.forEach({
-        Console.log("#_")
-      })
+      if (unsuccessful.count > 1 || results.last.success) {
+        unsuccessful.forEach({
+          Console.log("#_")
+        })
+      }
     } else {
       fancy.writeHeader(
         "All #results.count Successful",
