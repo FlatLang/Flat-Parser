@@ -10,7 +10,7 @@ import flat/log/Logger
 import static flat/colorizer/Colorizer
 
 data class extends TokenMatcher {
-  let static Logger log = Logger(GroupTokenMatcher.class)
+  static Logger log = Logger(GroupTokenMatcher.class)
 
   GroupTokenPattern pattern
 

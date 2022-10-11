@@ -5,7 +5,7 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  let static Logger log = Logger(ElseParser.class)
+  static Logger log = Logger(ElseParser.class)
 
   override ParserBase[] childParsers => Array()
     :addAll([LocalScopeParser()])

@@ -5,7 +5,7 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 abstract data class {
-  let static Logger log = Logger(TokenPattern.class)
+  static Logger log = Logger(TokenPattern.class)
 
   lazy Int requiredTokenCount => optional ? 0 : 1
 

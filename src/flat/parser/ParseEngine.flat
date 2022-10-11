@@ -27,7 +27,7 @@ import flat/stream/Stream
 import static flat/colorizer/Colorizer
 
 class {
-  let static Logger log = Logger(ParseEngine.class)
+  static Logger log = Logger(ParseEngine.class)
 
   var Bool parsingChildren = false
   var Int lastLineNumber = 0

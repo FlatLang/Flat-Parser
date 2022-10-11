@@ -6,7 +6,7 @@ import flat/compiler/models/SyntaxTokenFunctions
 import flat/log/Logger
 
 data class extends TokenMatcher {
-  let static Logger log = Logger(CaptureTokenMatcher.class)
+  static Logger log = Logger(CaptureTokenMatcher.class)
 
   CaptureTokenPattern pattern
 

@@ -6,7 +6,7 @@ import flat/ast/AnnotationNode
 import flat/log/Logger
 
 data class extends TokenPattern {
-  let static Logger log = Logger(PreconditionTokenPattern.class)
+  static Logger log = Logger(PreconditionTokenPattern.class)
 
   public construct(
     visible Array<Class<AnnotationNode>> annotations = null,

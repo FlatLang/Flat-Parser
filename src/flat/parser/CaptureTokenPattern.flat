@@ -5,7 +5,7 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends TokenPattern {
-  let static Logger log = Logger(CaptureTokenPattern.class)
+  static Logger log = Logger(CaptureTokenPattern.class)
 
   visible Token start
   visible Token end
