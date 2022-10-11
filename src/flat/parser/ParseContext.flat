@@ -24,6 +24,8 @@ import flat/log/Logger
 import flat/stream/Stream
 
 data class {
+  static Logger log = Logger(ParseContext.class)
+
   visible Stack<Node> parentStack = Stack()
   visible Stack<ParserBase> parserStack = Stack()
   visible Stack<Array<ParserBase>> parsersStack = Stack()
@@ -37,28 +39,45 @@ data class {
   visible FileNode fileNode => parentStack.toArray().firstWhere({ _.class.isOfType(FileNode.class) })
 
   public resetCurrentScope() {
-    ParseEngine.log.debugFunc({"Resetting current scope"})
     currentNode = parentStack.peek()
     currentParser = parserStack.peek()
     currentParsers = parsersStack.peek()
     statementParentStack = parentStack.copy()
     annotations = Annotation[]
+    ParseContext.log.debugFunc({"|
+      Reset current scope
+        currentNode: #{currentNode.class.name}
+        currentParser: #{currentParser.class.name}
+        currentParsers: [#{currentParsers.map(p => p.class.name).join(", ")}]
+      |"})
   }
 
   public pushScope(ParserBase parser, Node node) {
-    ParseEngine.log.debugFunc({"Pushing node to parent stack: #{node} (parser: #{parser.class.name})"})
     currentNode = parentStack.push(node)
     currentParser = parserStack.push(parser)
     currentParsers = parsersStack.push(parser.childParsers)
+    ParseContext.log.debugFunc({"|
+      Pushed node to parent stack
+        parser: #{parser.class.name}
+        currentNode: #{currentNode.class.name}
+        currentParser: #{currentParser.class.name}
+        currentParsers: [#{currentParsers.map(p => p.class.name).join(", ")}]
+      |"})
   }
 
   public popScope(Token token = null) {
     if (parentStack.count > 1) {
       let popped = parentStack.peek()
-      ParseEngine.log.debugFunc({"Popping node from parent stack: #{popped}"})
       currentNode = parentStack:pop().peek()
       currentParser = parserStack:pop().peek()
       currentParsers = parsersStack:pop().peek()
+      ParseContext.log.debugFunc({"|
+        Popped node from parent stack
+          popped: #{popped.class.name}
+          currentNode: #{currentNode.class.name}
+          currentParser: #{currentParser.class.name}
+          currentParsers: [#{currentParsers.map(p => p.class.name).join(", ")}]
+        |"})
 
       let shouldPop = (
         currentNode.class.isOfType(FunctionNode.class) ||
@@ -75,9 +94,9 @@ data class {
         popScope(token)
       }
     } else if (token) {
-      ParseEngine.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
+      ParseContext.log.errorFunc({"Unexpected '}' at #{token.location.lineNumber}:#{token.location.column}"})
     } else {
-      ParseEngine.log.errorFunc({"Unexpected end of scope"})
+      ParseContext.log.errorFunc({"Unexpected end of scope"})
     }
   }
 
@@ -109,7 +128,12 @@ data class {
   }
 
   public setChildParsers(ParserBase parser, Node node, ParserBase[] childParsers) {
-    ParseEngine.log.debugFunc({"Setting child parsers to: [#{childParsers.map(p => p.class.name).join(", ")}]"})
+    ParseContext.log.debugFunc({"|
+      Setting child parsers
+        parser: #{parser.class.name}
+        node: #{node.class.name}
+        childParsers: [#{childParsers.map(p => p.class.name).join(", ")}]
+      |"})
     currentNode = node
     currentParser = parser
     currentParsers = childParsers
