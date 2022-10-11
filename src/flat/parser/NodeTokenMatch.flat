@@ -10,8 +10,12 @@ data class extends TokenMatch {
     return parser?.lastMatch.getValues(label) ?: Array()
   }
 
-  override public getMatches<Type extends TokenMatch>(String label) -> Type[] {
+  override public getMatches<Type extends TokenMatch>(String label, Bool addSelf = true) -> Type[] {
     let array = Type[]
+
+    if (addSelf && this.label == label) {
+      array.add(this)
+    }
 
     if (let subMatches = parser?.lastMatch.getMatches(label)) {
       array.addAll(subMatches)

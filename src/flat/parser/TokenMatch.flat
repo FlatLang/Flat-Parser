@@ -27,10 +27,10 @@ abstract data class {
     return matches.first
   }
 
-  public getMatches<Type extends TokenMatch>(String label) -> Type[] {
+  public getMatches<Type extends TokenMatch>(String label, Bool addSelf = true) -> Type[] {
     let array = Type[]
 
-    if (this.label == label) {
+    if (addSelf && this.label == label) {
       array.add(this)
     }
 
