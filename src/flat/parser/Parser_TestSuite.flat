@@ -38,13 +38,15 @@ class {
   public static async main(String args[]) {
     let test = Parser_TestSuite()
 
-    Timer timer = Timer().start()
-
     let results = new TestResult[]
+
+    Timer timer = Timer().start()
 
     test.runTests({
       results.add(_)
     })
+
+    timer.stop()
 
     let fancy = FancyOutputStream(headerPattern: "/\\")
 
@@ -68,7 +70,6 @@ class {
       )
     }
 
-    timer.stop()
 
     Console.writeLine("Took #{timer.duration}ms")
 
