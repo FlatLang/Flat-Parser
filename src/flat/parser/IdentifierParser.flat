@@ -24,10 +24,8 @@ data class extends ParserBase {
   }
 
   override public generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
-    let name = match.getValue("name")
-
     return IdentifierNode(
-      name: name
+      name: match.getValue("name")
     )
   }
 }
