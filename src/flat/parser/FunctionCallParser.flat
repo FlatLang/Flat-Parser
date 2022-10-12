@@ -8,6 +8,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     DotAccessParser(),
     ColonAccessParser(),
+    AssignmentParser(),
     ArrayAccessParser(),
     BinaryOperationParser(),
     UnaryOperationParser(),
@@ -31,12 +32,29 @@ data class extends ParserBase {
       ],
       optional: true
     ),
-    CaptureTokenPattern(
-      label: "arguments",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    GroupTokenPattern([
+      NodeTokenPattern(argumentParsers, label: "argument"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        NodeTokenPattern(argumentParsers, label: "argument")
+      ], optional: true, repeat: true)
+    ], label: "arguments", optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ")")
   ])
+
+  ParserBase[] argumentParsers => [
+    NamedArgumentParser(),
+    AnnotationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    LambdaParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
     match token.value {
@@ -50,30 +68,9 @@ data class extends ParserBase {
     )
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
-      match.getMatch<CaptureTokenMatch>("arguments").capture,
-      Token(type: Token.Type.SYMBOL, value: ",")
-    )
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            NamedArgumentParser(),
-            AnnotationParser(),
-            FunctionCallParser(),
-            IdentifierParser(),
-            LiteralParser(),
-            RegexPatternParser(),
-            LambdaParser(),
-            ArrayInitializerParser(),
-            UnaryOperationParser(),
-            CastParser()
-          ]
-        )
-      })
-    )
+   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let args = match.getMatch<GroupTokenMatch>("arguments")) {
+      return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "argument" })
+    }
   }
 }

@@ -61,4 +61,28 @@ testable class {
 
     expect(match).toBe(null)
   }
+
+  test `can match function call with multiple arguments`() {
+    let matcher = FunctionCallParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "arg1", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL),
+      Token(value: "arg2", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]).last
+
+    let expected = [
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "arg1", type: Token.Type.IDENTIFIER),
+      Token(value: ",", type: Token.Type.SYMBOL),
+      Token(value: "arg2", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(false)
+  }
 }
