@@ -32,7 +32,8 @@ import flat/parser/Parser
   LocalDeclarationParser_Test,
   MatchParser_Test,
   MatchCaseParser_Test,
-  IfParser_Test
+  IfParser_Test,
+  LambdaParser_Test
 ]]
 class {
   public static async main(String args[]) {
