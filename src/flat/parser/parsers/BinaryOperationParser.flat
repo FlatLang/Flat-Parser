@@ -1,0 +1,35 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/BinaryOperationNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    LiteralParser(),
+    PriorityParser(),
+    RegexPatternParser(),
+    FunctionCallParser(),
+    UnaryOperationParser()
+  ])
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, values: [
+    "+", "-", "*", "/", "%",
+    "+=", "-=", "*=", "/=", "%=",
+    "!=", "==", "&&", "&", "||", "|",
+    "<", ">", "<=", ">=",
+    "?:"
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> BinaryOperationNode {
+    return BinaryOperationNode(
+      operator: match.tokens.first.value
+    )
+  }
+}

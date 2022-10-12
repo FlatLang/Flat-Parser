@@ -1,0 +1,31 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/ImportNode
+import flat/compiler/models/Token
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "import"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "static", optional: true, label: "static"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component"),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "/", label: "import_location_component"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "import_location_component")
+    ], repeat: true, optional: true)
+  ])
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ImportNode {
+    let components = match.getValues("import_location_component")
+
+    return ImportNode(
+      location: components.join(),
+      staticImport: match.getValues("static").isNotEmpty
+    )
+  }
+}

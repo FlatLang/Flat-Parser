@@ -1,0 +1,34 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/annotations/TargetAnnotation
+import flat/compiler/models/Token
+import flat/ast/AnnotationNode
+import flat/ast/Node
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, "["),
+    SingleTokenPattern(Token.Type.IDENTIFIER, "Target"),
+    GroupTokenPattern([
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+      ], optional: true),
+      SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+    ], repeat: true, greedy: false),
+    SingleTokenPattern(Token.Type.SYMBOL, "]")
+  ], label: "target_annotation")
+
+  override public generateNode(ParseContext context, TokenMatch match) -> TargetAnnotation => null {
+    return TargetAnnotation(
+      includes: match.getValues("include"),
+      excludes: match.getValues("exclude")
+    )
+  }
+}

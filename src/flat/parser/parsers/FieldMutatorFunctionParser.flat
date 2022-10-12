@@ -1,0 +1,47 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/FieldMutatorFunctionNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(FieldMutatorFunctionParser.class)
+
+  override ParserBase[] childParsers => [LocalScopeParser()]
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "set"),
+    CaptureTokenPattern(
+      label: "parameters",
+      start: Token(value: "("),
+      end: Token(value: ")"),
+      optional: true
+    )
+  ])
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> FieldMutatorFunctionNode {
+    return FieldMutatorFunctionNode()
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest() {
+    if (let parameters = match.getMatch<CaptureTokenMatch>("parameters")) {
+      return ParseRequest(
+        requests: [
+          ParseRequestData(
+            tokens: parameters.capture,
+            parsers: [
+              AnnotationParser(),
+              ParameterParser()
+            ]
+          )
+        ]
+      )
+    }
+  }
+}

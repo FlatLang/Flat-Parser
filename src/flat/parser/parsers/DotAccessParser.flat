@@ -1,0 +1,21 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/DotAccessNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    IdentifierParser(),
+    FunctionCallParser()
+  ])
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: ".")
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> DotAccessNode {
+    return DotAccessNode()
+  }
+}

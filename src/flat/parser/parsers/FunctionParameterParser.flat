@@ -1,0 +1,80 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/FunctionParameterNode
+import flat/compiler/models/Token
+import flat/compiler/models/SyntaxTokenFunctions
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(FunctionParameterParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([LocalScopeParser()])
+    :addAll(LocalScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    CaptureTokenPattern(
+      label: "generic_parameters",
+      start: Token(value: "<"),
+      end: Token(value: ">"),
+      allowedTokens: [
+        Token(type: Token.Type.IDENTIFIER),
+        Token(type: Token.Type.SYMBOL, value: "<"),
+        Token(type: Token.Type.SYMBOL, value: ">"),
+        Token(type: Token.Type.SYMBOL, value: "["),
+        Token(type: Token.Type.SYMBOL, value: "]"),
+        Token(type: Token.Type.SYMBOL, value: ",")
+      ],
+      optional: true
+    ),
+    CaptureTokenPattern(
+      label: "parameters",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    ),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "->"),
+      SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
+        SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+      ], repeat: true, optional: true)
+    ], optional: true)
+  ])
+
+  override public generateNode(ParseContext context, TokenMatch match) -> FunctionParameterNode {
+    let type = match.getValue("type")
+    let name = match.getValue("name")
+    let bracketCount = match.getValues("bracket_start").count
+
+    return FunctionParameterNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount
+    )
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
+      match.getMatch<CaptureTokenMatch>("parameters").capture,
+      Token(type: Token.Type.SYMBOL, value: ",")
+    )
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: [
+            AnnotationParser(),
+            IdentifierParser()
+          ]
+        )
+      })
+    )
+  }
+}

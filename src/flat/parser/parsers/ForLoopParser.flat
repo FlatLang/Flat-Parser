@@ -1,0 +1,32 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/ForLoopNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(ForLoopParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([LocalScopeParser()])
+    :addAll(LocalScopeParser().childParsers)
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "for"),
+    CaptureTokenPattern(
+      label: "condition",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    )
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ForLoopNode {
+    return ForLoopNode()
+  }
+}

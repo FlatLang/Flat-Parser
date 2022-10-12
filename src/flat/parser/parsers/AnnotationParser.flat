@@ -1,0 +1,21 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/AnnotationNode
+import flat/compiler/models/Token
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  lazy ParserBase[] annotationParsers = Array().addAll([
+    ModifierParser(),
+    TargetAnnotationParser()
+  ])
+
+  override lazy TokenPattern pattern => XorTokenPattern(annotationParsers.map({ _.pattern }))
+
+  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+    return annotationParsers.firstNonNull({ _.generateNode(context, match) })
+  }
+}

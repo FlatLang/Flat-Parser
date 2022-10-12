@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/parsers
 import flat/parser/matchers
 import flat/annotations/LetModifier
 import flat/compiler/models/Token

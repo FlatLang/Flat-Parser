@@ -1,0 +1,75 @@
+package flat/parser/parsers
+
+import flat/parser
+import flat/parser/matchers
+import flat/annotations/VisibleModifier
+import flat/annotations/PublicModifier
+import flat/annotations/PrivateModifier
+import flat/annotations/LetModifier
+import flat/annotations/VarModifier
+import flat/annotations/StaticModifier
+import flat/annotations/AsyncModifier
+import flat/annotations/DataModifier
+import flat/annotations/LazyModifier
+import flat/annotations/NativeModifier
+import flat/annotations/Modifier
+import flat/compiler/models/Token
+import flat/ast/AnnotationNode
+import flat/ast/Node
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => SingleTokenPattern(
+    Token.Type.IDENTIFIER,
+    label: "alias",
+    values: Array()
+      :addAll(VisibleModifier.aliases)
+      :addAll(PublicModifier.aliases)
+      :addAll(PrivateModifier.aliases)
+      :addAll(LetModifier.aliases)
+      :addAll(VarModifier.aliases)
+      :addAll(StaticModifier.aliases)
+      :addAll(AsyncModifier.aliases)
+      :addAll(DataModifier.aliases)
+      :addAll(LazyModifier.aliases)
+      :addAll(NativeModifier.aliases)
+  )
+
+  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode => null {
+    let alias = match.getValue("alias")
+
+    if (VisibleModifier.aliases.any({ _ == alias})) {
+      return VisibleModifier(aliasUsed: alias)
+    }
+    if (PublicModifier.aliases.any({ _ == alias})) {
+      return PublicModifier(aliasUsed: alias)
+    }
+    if (PrivateModifier.aliases.any({ _ == alias})) {
+      return PrivateModifier(aliasUsed: alias)
+    }
+    if (LetModifier.aliases.any({ _ == alias})) {
+      return LetModifier(aliasUsed: alias)
+    }
+    if (VarModifier.aliases.any({ _ == alias})) {
+      return VarModifier(aliasUsed: alias)
+    }
+    if (StaticModifier.aliases.any({ _ == alias})) {
+      return StaticModifier(aliasUsed: alias)
+    }
+    if (AsyncModifier.aliases.any({ _ == alias})) {
+      return AsyncModifier(aliasUsed: alias)
+    }
+    if (DataModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
+    }
+    if (LazyModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
+    }
+    if (NativeModifier.aliases.any({ _ == alias})) {
+      return DataModifier(aliasUsed: alias)
+    }
+  }
+}
