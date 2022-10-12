@@ -190,7 +190,6 @@ data class extends TokenMatcher {
       if (let childParsers = matchParser.childParsers) {
         log.traceFunc({"Contains possible child matchers. Continuing with childParsers: [#{childParsers.map(p => green(p.class.name)).join(", ")}]"})
         currentParsers = childParsers
-        // return null
       } else {
         log.traceFunc({"No child matchers. Returning last match"})
       }
