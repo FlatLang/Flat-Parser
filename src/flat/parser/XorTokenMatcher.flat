@@ -46,11 +46,11 @@ data class extends TokenMatcher {
       let match = matcher.tokenMatches.last
 
       if (anyPartial) {
-        if (matcher.complete) {
-          log.traceFunc({"Contains a single complete match, but still has some partial matchers. Returning match"})
+        if (matcher.valid) {
+          log.traceFunc({"Contains a single valid match, but still has some partial matchers. Returning match"})
           log.traceFunc({"Partial matchers:\n  #{matchers.filter(m => m.partial).map(m => magenta(m.pattern.toPatternString())).join("\n  ")}"})
         } else {
-          log.traceFunc({"Contains a single incomplete match, but still has some partial matchers. Returning null"})
+          log.traceFunc({"Contains a single invalid match, but still has some partial matchers. Returning null"})
           return null
         }
       } else {
