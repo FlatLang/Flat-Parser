@@ -267,7 +267,7 @@ class {
     }
     if (let nodeMatches = parser.getChildNodeTokenMatches(context, parser.lastMatch)) {
       nodeMatches.forEach((nodeMatch) => {
-        ParseEngine.log.debugFunc({"Parsing child nodes for match: #{nodeMatch.parser.class.name} with children [#{nodeMatch.childMatches.map(m => m.parser.class.name).join(", ")}]"})
+        ParseEngine.log.debugFunc({"Parsing child nodes for match: [#{nodeMatch.childMatches.map(m => m.parser.class.name).join(", ")}]"})
         snapshotContext()
         nodeMatch.generateNodes(context).forEach((node) => {
           ParseEngine.log.debugFunc({"Parsed child node: #{node.class.name}"})

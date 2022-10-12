@@ -7,13 +7,10 @@ import flat/compiler/models/Token
 import flat/ast/Node
 
 data class extends TokenMatch {
-  visible ParserBase parser
-  visible NodeTokenMatch[] childMatches = NodeTokenMatch[]
+  visible NodeTokenMatchChild[] childMatches = NodeTokenMatchChild[]
 
   override public getValues(String label) => String[] {
-    if (parser) {
-      return parser.lastMatch.getValues(label)
-    }
+    return childMatches.flatMap({ _.getValues(label) })
   }
 
   override public getMatches<Type extends TokenMatch>(String label, Bool addSelf = true) -> Type[] {
@@ -23,28 +20,20 @@ data class extends TokenMatch {
       array.add(this)
     }
 
-    if (let subMatches = parser?.lastMatch.getMatches(label)) {
-      array.addAll(subMatches)
-    }
-
-    childMatches.forEach({ array.addAll(_.getMatches(label)) })
-
-    return array.unique()
+    return array:addAll(childMatches.flatMap({ _.getMatches(label, addSelf) }))
   }
 
   public generateNode(ParseContext context) =>
-    parser.generateNode(context, this)
+    childMatches.first.generateNode(context)
 
   public generateNodes(var ParseContext context) -> Node[] {
     context = context.copy()
-    let node = generateNode(context)
-    var current = node
+    var current = context.currentNode
 
-    let nodes = Array<Node>():add(node)
+    let nodes = Node[]
 
     childMatches.forEach((match) => {
       current = match.generateNode((context:updateScopeForNode(match.parser, current)))
-
       nodes.add(current)
 
       if (let childNodeMatches = match.parser.getChildNodeTokenMatches(context, match)) {

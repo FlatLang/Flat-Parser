@@ -14,7 +14,7 @@ data class extends TokenMatcher {
   NodeTokenPattern pattern
 
   var NodeTokenMatch lastMatch
-  var NodeTokenMatch[] childMatches = NodeTokenMatch[]
+  var NodeTokenMatchChild[] childMatches = NodeTokenMatchChild[]
   var ParserBase[] currentParsers
 
   override public match(Token token, ParseContext context = null) -> NodeTokenMatch {
@@ -56,8 +56,8 @@ data class extends TokenMatcher {
         |"})
     }
 
-    if (allParsersDisqualified() && lastMatch) {
-      let lastParser = childMatches.last?.parser ?: lastMatch.parser
+    if (allParsersDisqualified() && childMatches.isNotEmpty) {
+      let lastParser = childMatches.last.parser
 
       if (let childParsers = lastParser.childParsers) {
         currentParsers = childParsers
@@ -150,29 +150,22 @@ data class extends TokenMatcher {
         |"})
       complete = matchParser.matcher.complete && currentParsers.none({ _.matcher.partial })
 
-      if (lastMatch) {
-        let childTokens = pattern.includeTokens ?
-          tokens.skip(lastMatch.tokens.count) :
-          Token[]
+      let childTokens = pattern.includeTokens ?
+        tokens.skip(lastMatch ? lastMatch.tokens.count : 0) :
+        Token[]
 
-        childMatches.add(
-          NodeTokenMatch(
-            tokens: childTokens,
-            parser: matchParser
-          )
+      childMatches.add(
+        NodeTokenMatchChild(
+          tokens: childTokens,
+          parser: matchParser
         )
+      )
 
-        lastMatch = lastMatch.copy(
-          tokens: pattern.includeTokens ? tokens.copy() : Token[]
-        )
-      } else {
-        lastMatch = NodeTokenMatch(
-          tokens: pattern.includeTokens ? tokens.copy() : Token[],
-          label: pattern.label,
-          parser: matchParser,
-          childMatches: childMatches
-        )
-      }
+      lastMatch = NodeTokenMatch(
+        tokens: pattern.includeTokens ? tokens.copy() : Token[],
+        label: pattern.label,
+        childMatches: childMatches.copy()
+      )
 
       if (matchParser.acceptImmediately()) {
         log.traceFunc({"Contains exact match"})
@@ -199,20 +192,20 @@ data class extends TokenMatcher {
           log.traceFunc({"Contains partial matches. Continuing"})
           return null
         } else {
+          let lastParser = childMatches.last.parser
+
           if (!pattern.parseChildren) {
             log.traceFunc({"Child parsing is disabled for pattern. Disqualified. Returning last match"})
-            complete = lastMatch.parser.matcher.complete
+            complete = lastParser.matcher.complete
             disqualified = true
           } else {
-            let lastParser = childMatches.last?.parser ?: lastMatch.parser
-
             if (let childParsers = lastParser.childParsers) {
-              log.traceFunc({"Matching child parsers for parser #{green(lastMatch.parser.class.name)}"})
+              log.traceFunc({"Matching child parsers for parser #{green(lastParser.class.name)}"})
               currentParsers = childParsers
               return doMatch(token, context, false)
             } else {
               log.traceFunc({"No more partial matches and no child parsers. Disqualified. Returning last match"})
-              complete = lastMatch.parser.matcher.complete
+              complete = lastParser.matcher.complete
               disqualified = true
             }
           }

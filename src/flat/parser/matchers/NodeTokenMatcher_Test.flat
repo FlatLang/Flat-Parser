@@ -57,7 +57,8 @@ testable class {
       :match(Token(value: "import", type: Token.Type.IDENTIFIER))
       .match(Token(value: "test", type: Token.Type.IDENTIFIER))
 
-    expect(result?.parser).toBe(ImportParser())
+    expect(result?.childMatches.count).toBe(1)
+    expect(result.childMatches.first.parser).toBe(ImportParser())
   }
 
   test `can match correctly in a group token pattern`() {
@@ -86,8 +87,15 @@ testable class {
               Token(value: "String", type: Token.Type.IDENTIFIER),
               Token(value: "test", type: Token.Type.IDENTIFIER)
             ],
-            parser: ParameterParser(),
-            childMatches: Array(),
+            childMatches: [
+              NodeTokenMatchChild(
+                tokens: [
+                  Token(value: "String", type: Token.Type.IDENTIFIER),
+                  Token(value: "test", type: Token.Type.IDENTIFIER)
+                ],
+                parser: ParameterParser()
+              )
+            ],
             label: "node_match"
           ),
           SingleTokenMatch(tokens: [Token(value: ",", type: Token.Type.SYMBOL)])
@@ -208,13 +216,16 @@ testable class {
           Token(value: ".", type: Token.Type.SYMBOL),
           Token(value: "otherThing", type: Token.Type.IDENTIFIER)
         ],
-        parser: IdentifierParser(),
         childMatches: [
-          NodeTokenMatch(
+          NodeTokenMatchChild(
+            tokens: [Token(value: "thing", type: Token.Type.IDENTIFIER)],
+            parser: IdentifierParser()
+          ),
+          NodeTokenMatchChild(
             tokens: [Token(value: ".", type: Token.Type.SYMBOL)],
             parser: DotAccessParser()
           ),
-          NodeTokenMatch(
+          NodeTokenMatchChild(
             tokens: [Token(value: "otherThing", type: Token.Type.IDENTIFIER)],
             parser: IdentifierParser()
           )
