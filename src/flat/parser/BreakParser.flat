@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/ast/BreakNode
 import flat/compiler/models/Token
 import flat/log/Logger

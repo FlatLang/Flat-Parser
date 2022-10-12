@@ -1,5 +1,6 @@
-package flat/parser
+package flat/parser/matchers
 
+import flat/parser
 import flat/datastruct/HashMap
 import flat/compiler/models/Token
 

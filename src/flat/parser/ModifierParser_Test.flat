@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/datastruct/HashMap
 import flat/parser/Parser
 import flat/annotations/VisibleModifier

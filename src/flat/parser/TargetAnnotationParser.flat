@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/annotations/TargetAnnotation
 import flat/compiler/models/Token
 import flat/ast/AnnotationNode

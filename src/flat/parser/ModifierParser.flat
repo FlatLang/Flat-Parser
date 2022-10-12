@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/annotations/VisibleModifier
 import flat/annotations/PublicModifier
 import flat/annotations/PrivateModifier

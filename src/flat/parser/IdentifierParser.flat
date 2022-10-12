@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/ast/IdentifierNode
 import flat/compiler/models/Token
 

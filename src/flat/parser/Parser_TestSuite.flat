@@ -1,10 +1,17 @@
 package flat/parser
 
+import flat/parser/matchers
 import novex/nest/TestResult
 
 import flat/time/Timer
 import flat/io/FancyOutputStream
 import flat/parser/Parser
+import flat/parser/matchers/SingleTokenMatcher_Test
+import flat/parser/matchers/GroupTokenMatcher_Test
+import flat/parser/matchers/CaptureTokenMatcher_Test
+import flat/parser/matchers/NodeTokenMatcher_Test
+import flat/parser/matchers/PreconditionTokenMatcher_Test
+import flat/parser/matchers/XorTokenMatcher_Test
 
 [TestSuite [
   Parser_Test,

@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/ast/ArrowExpressionNode
 import flat/compiler/models/Token
 

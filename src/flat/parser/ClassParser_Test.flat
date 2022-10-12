@@ -1,5 +1,6 @@
 package flat/parser
 
+import flat/parser/matchers
 import flat/datastruct/HashMap
 import flat/datastruct/list/Stack
 import flat/parser/Parser
