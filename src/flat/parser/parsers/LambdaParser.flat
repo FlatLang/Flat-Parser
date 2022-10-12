@@ -7,7 +7,6 @@ import flat/compiler/models/Token
 
 data class extends ParserBase {
   override ParserBase[] childParsers => Array()
-    :add(LocalScopeParser())
     :addAll(LocalScopeParser().childParsers)
 
   override lazy TokenPattern pattern => XorTokenPattern([

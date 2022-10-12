@@ -10,7 +10,6 @@ data class extends ParserBase {
   static Logger log = Logger(IfParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll([LocalScopeParser()])
     :addAll(LocalScopeParser().childParsers)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
