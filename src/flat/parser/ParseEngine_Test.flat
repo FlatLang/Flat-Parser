@@ -14,6 +14,7 @@ import flat/ast/FunctionCallNode
 import flat/ast/PackageNode
 import flat/ast/IdentifierNode
 import flat/ast/DotAccessNode
+import flat/ast/UnaryOperationNode
 import flat/stream/Stream
 import flat/io/File
 
@@ -274,7 +275,7 @@ testable class {
     engine.consume(Token(value: "$", type: Token.Type.SYMBOL))
     engine.consume(Token(value: ")", type: Token.Type.SYMBOL))
 
-    expect(node).toBe(null)
+    expect(node).toBe(UnaryOperationNode(operator: "$"))
 
     engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -312,6 +313,7 @@ testable class {
 
     expect(nodes).toBe([
       FunctionCallNode(name: "test"),
+      IdentifierNode(name: "File"),
       FunctionCallNode(name: "File"),
       IdentifierNode(name: "args")
     ])
@@ -323,6 +325,7 @@ testable class {
 
     expect(nodes).toBe([
       FunctionCallNode(name: "test"),
+      IdentifierNode(name: "File"),
       FunctionCallNode(name: "File"),
       IdentifierNode(name: "args"),
       FunctionCallNode(name: "log")

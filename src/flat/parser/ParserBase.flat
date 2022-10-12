@@ -14,6 +14,7 @@ abstract data class {
   public abstract generateNode(ParseContext context, TokenMatch match) -> Node
 
   public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest()
+  public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[]
 
   public checkStatementContinuation(ParseContext context, Token token) => false
   public acceptImmediately() => false

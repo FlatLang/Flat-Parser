@@ -2,9 +2,11 @@ package flat/parser
 
 import flat/datastruct/HashMap
 import flat/compiler/models/Token
+import flat/ast/Node
 
 data class extends TokenMatch {
   visible ParserBase parser
+  visible NodeTokenMatch[] childMatches = NodeTokenMatch[]
 
   override public getValues(String label) => String[] {
     if (parser) {
@@ -23,6 +25,35 @@ data class extends TokenMatch {
       array.addAll(subMatches)
     }
 
-    return array
+    childMatches.forEach({ array.addAll(_.getMatches(label)) })
+
+    return array.unique()
+  }
+
+  public generateNode(ParseContext context) =>
+    parser.generateNode(context, this)
+
+  public generateNodes(var ParseContext context) -> Node[] {
+    context = context.copy()
+    let node = generateNode(context)
+    var current = node
+
+    let nodes = Array<Node>():add(node)
+
+    childMatches.forEach((match) => {
+      current = match.generateNode((context:updateScopeForNode(match.parser, current)))
+
+      nodes.add(current)
+
+      if (let childNodeMatches = match.parser.getChildNodeTokenMatches(context, match)) {
+        if (childNodeMatches.isNotEmpty) {
+          childNodeMatches.forEach((childMatch) => {
+            nodes.addAll(childMatch.generateNodes(context))
+          })
+        }
+      }
+    })
+
+    return nodes
   }
 }
