@@ -7,7 +7,7 @@ import flat/compiler/models/Token
 import flat/compiler/models/SyntaxTokenFunctions
 import flat/log/Logger
 
-data class extends ParserBase {
+data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
   override ParserBase[] childParsers => Array()

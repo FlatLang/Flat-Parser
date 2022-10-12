@@ -6,7 +6,7 @@ import flat/ast/ForLoopNode
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class extends ParserBase {
+data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(ForLoopParser.class)
 
   override ParserBase[] childParsers => Array()

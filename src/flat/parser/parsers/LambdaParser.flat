@@ -5,7 +5,7 @@ import flat/parser/matchers
 import flat/ast/LambdaNode
 import flat/compiler/models/Token
 
-data class extends ParserBase {
+data class extends ParserBase implements ScopeableParser {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().childParsers)
 

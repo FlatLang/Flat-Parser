@@ -9,7 +9,7 @@ import flat/extensions/SyntaxStringFunctions
 
 import flat/ast/Node
 
-data class extends ParserBase {
+data class extends ParserBase implements ScopeableParser {
   override ParserBase[] childParsers => Array():addAll([
     FieldScopeParser(),
     AssignmentParser(),
