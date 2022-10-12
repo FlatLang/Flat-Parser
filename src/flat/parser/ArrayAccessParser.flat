@@ -2,8 +2,11 @@ package flat/parser
 
 import flat/ast/ArrayAccessNode
 import flat/compiler/models/Token
+import flat/log/Logger
 
 data class extends ParserBase {
+  static Logger log = Logger(ArrayAccessParser.class)
+
   override ParserBase[] childParsers => Array():addAll([
     DotAccessParser(),
     ColonAccessParser(),
@@ -15,11 +18,21 @@ data class extends ParserBase {
     MatchCaseParser()
   ])
 
-  override lazy TokenPattern pattern => CaptureTokenPattern(
-    start: Token(value: "["),
-    end: Token(value: "]"),
-    label: "index"
-  )
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, "["),
+    NodeTokenPattern(indexParsers, label: "index"),
+    SingleTokenPattern(Token.Type.SYMBOL, "]")
+  ], label: "array_access")
+
+  ParserBase[] indexParsers => [
+    AnnotationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    LiteralParser(),
+    RegexPatternParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
     match token.value {
@@ -31,26 +44,9 @@ data class extends ParserBase {
     return ArrayAccessNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("index")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            AnnotationParser(),
-            FunctionCallParser(),
-            IdentifierParser(),
-            ArrayInstantiationParser(),
-            ArrayInitializerParser(),
-            LiteralParser(),
-            RegexPatternParser()
-          ]
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let args = match.getMatch<GroupTokenMatch>("array_access")) {
+      return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "index" })
+    }
   }
 }

@@ -23,7 +23,7 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    expect(result?.getMatch<CaptureTokenMatch>("index")?.capture).toBe([
+    expect(result?.getMatch<NodeTokenMatch>("index")?.tokens).toBe([
       Token(value: "test", type: Token.Type.IDENTIFIER)
     ])
     expect(matcher.partial).toBe(false)
@@ -44,13 +44,13 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    expect(result?.getMatch<CaptureTokenMatch>("index")?.capture).toBe([
+    expect(result?.getMatch<NodeTokenMatch>("index")?.tokens).toBe([
       Token(value: "1", type: Token.Type.INTEGER)
     ])
     expect(matcher.partial).toBe(false)
   }
 
-  test `can get child parse requests`() {
+  test `can get child node matches`() {
     let parser = ArrayAccessParser()
     let matcher = parser.matcher
     let result = matcher.matchAll([
@@ -65,10 +65,10 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    let childRequests = parser.getChildParseRequests(null, result)
+    let childMatches = parser.getChildNodeTokenMatches(ParseContext(), result)
 
-    expect(childRequests.requests.count).toBe(1)
-    expect(childRequests.requests.first.tokens).toBe([
+    expect(childMatches.count).toBe(1)
+    expect(childMatches.first.tokens).toBe([
       Token(value: "1", type: Token.Type.INTEGER)
     ])
   }
