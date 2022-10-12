@@ -2,19 +2,10 @@ package flat/parser/matchers
 
 import flat/parser
 import flat/parser/parsers
+import flat/ast
+import flat/annotations
+import flat/compiler/models
 import flat/datastruct/HashMap
-import flat/parser/Parser
-import flat/annotations/VisibleModifier
-import flat/annotations/PublicModifier
-import flat/annotations/PrivateModifier
-import flat/annotations/LetModifier
-import flat/annotations/VarModifier
-import flat/ast/FileNode
-import flat/ast/PackageNode
-import flat/ast/IdentifierNode
-import flat/ast/DotAccessNode
-import flat/ast/ArrayAccessNode
-import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
