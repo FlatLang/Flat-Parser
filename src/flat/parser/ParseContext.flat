@@ -96,22 +96,22 @@ data class {
       ScopeNode.class => pushScope(parser, node)
       default => {
         if (let childParsers = parser.childParsers) {
-          setChildParsers(parser, node, childParsers)
+          setCurrentParsers(parser, node, childParsers)
         }
       }
     }
   }
 
-  public setChildParsers(ParserBase parser, Node node, ParserBase[] childParsers) {
+  public setCurrentParsers(ParserBase parser, Node node, ParserBase[] parsers) {
     ParseContext.log.debugFunc({"|
-      Setting child parsers
+      Setting current parsers
         parser: #{parser.class.name}
         node: #{node.class.name}
-        childParsers: [#{childParsers.map(p => p.class.name).join(", ")}]
+        parsers: [#{parsers.map(p => p.class.name).join(", ")}]
       |"})
     currentNode = node
     currentParser = parser
-    currentParsers = childParsers
+    currentParsers = parsers
     statementParentStack = statementParentStack.copy():push(currentNode)
   }
 

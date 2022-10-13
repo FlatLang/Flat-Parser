@@ -239,7 +239,7 @@ class {
         reset()
         parsingChildren = true
 
-        context.setChildParsers(context.currentParser, context.currentNode, request.parsers)
+        context.setCurrentParsers(context.currentParser, context.currentNode, request.parsers)
         context.tokens = Token[]
 
         ParseEngine.log.debugFunc({"Parsing child node with tokens: [#{request.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]"})
