@@ -87,4 +87,26 @@ testable class {
     expect(result?.tokens).toBe(expected)
     expect(matcher.partial).toBe(false)
   }
+
+  ignore test `can match function call with lambda argument`() {
+    let matcher = FunctionCallParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ], ParseContext()).last
+
+    let expected = [
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+      Token(value: ")", type: Token.Type.SYMBOL)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(false)
+  }
 }
