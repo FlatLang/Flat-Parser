@@ -314,10 +314,8 @@ testable class {
     engine.consume(Token(value: "log", type: Token.Type.IDENTIFIER))
 
     expect(nodes).toBe([
-      FunctionCallNode(name: "test"),
-      IdentifierNode(name: "File"),
-      FunctionCallNode(name: "File"),
-      IdentifierNode(name: "args")
+      IdentifierNode(name: "test"),
+      IdentifierNode(name: "File")
     ])
 
     engine.consume(Token(value: "(", type: Token.Type.SYMBOL))
@@ -326,10 +324,8 @@ testable class {
     engine.consume(Token(value: "}", type: Token.Type.SYMBOL))
 
     expect(nodes).toBe([
-      FunctionCallNode(name: "test"),
+      IdentifierNode(name: "test"),
       IdentifierNode(name: "File"),
-      FunctionCallNode(name: "File"),
-      IdentifierNode(name: "args"),
       FunctionCallNode(name: "log")
     ])
   }
