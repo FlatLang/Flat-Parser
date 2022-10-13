@@ -162,8 +162,8 @@ class {
   }
 
   public reset() {
-    ParseEngine.log.debugFunc({"Resetting parsers"})
-    context.currentParsers.forEach({ _.reset() })
+    ParseEngine.log.debugFunc({"Resetting context"})
+    context.reset()
   }
 
   public clearTokensAfterParse(ParserBase parser) {

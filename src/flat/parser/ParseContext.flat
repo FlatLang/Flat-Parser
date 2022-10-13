@@ -114,4 +114,8 @@ data class {
     currentParsers = childParsers
     statementParentStack = statementParentStack.copy():push(currentNode)
   }
+
+  public reset() {
+    currentParsers.forEach({ _.reset() })
+  }
 }
