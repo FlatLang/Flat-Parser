@@ -159,7 +159,7 @@ data class extends TokenMatcher {
       }
     }
 
-    complete = iterator.allNextInclusive.all({ _.pattern.optional })
+    complete = complete || iterator.allNextInclusive.all({ _.pattern.optional })
     disqualified = true
     log.traceFunc({"|
       Did not match the required matcher
@@ -259,10 +259,12 @@ data class extends TokenMatcher {
     } else if (matcher.valid) {
       log.traceFunc({"Matcher is valid, but not disqualified"})
       if (!iterator.hasNext) {
-        log.traceFunc({"No other matchers. Returning match. complete: #{complete}"})
         complete = matcher.complete
+        valid = true
+        log.traceFunc({"No other matchers. Returning match. complete: #{complete}"})
       } else if (iterator.allNext.all({ _.pattern.optional })) {
         log.traceFunc({"All remaining matchers are optional. Returning match"})
+        valid = true
       } else {
         log.traceFunc({"Contains future required matchers. Returning null"})
         return null
