@@ -104,10 +104,10 @@ class {
       }
     })
 
-    checkMatches(token)
+    checkMatches()
   }
 
-  checkMatches(Token token) {
+  checkMatches() {
     if (containsExactMatches()) {
       ParseEngine.log.debugFunc({"Contains exact matches"})
       let exactMatches = getExactMatches()
