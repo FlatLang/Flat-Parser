@@ -44,23 +44,32 @@ data class extends TokenMatcher {
       log.traceFunc({"Successful match with current matcher"})
       if (currentMatcher.disqualified) {
         log.traceFunc({"Current matcher is disqualified. Returning match and switching to new current matcher"})
-
-        if (addedCurrentMatch) {
-          childMatches.replaceLast(match)
-        } else {
-          childMatches.add(match)
-        }
+        currentParsers = pattern.parsers
+        currentMatcher = NodeTokenPattern(currentParsers).getMatcher()
       } else {
         log.traceFunc({"Current matcher is partial. Returning match and continuing"})
-        childMatches.add(match)
-        addedCurrentMatch = true
       }
 
-      return groupMatch = NodeGroupTokenMatch(
-        tokens: pattern.includeTokens ? tokens.copy() : Token[],
-        label: pattern.label,
-        childMatches: childMatches.copy()
-      )
+      if (addedCurrentMatch) {
+        childMatches.replaceLast(match)
+      } else {
+        childMatches.add(match)
+      }
+
+      addedCurrentMatch = true
+
+      if (groupMatch) {
+        return groupMatch = groupMatch.copy(
+          tokens: pattern.includeTokens ? tokens.copy() : Token[],
+          childMatches: childMatches.copy()
+        )
+      } else {
+        return groupMatch = NodeGroupTokenMatch(
+          tokens: pattern.includeTokens ? tokens.copy() : Token[],
+          label: pattern.label,
+          childMatches: childMatches.copy()
+        )
+      }
     } else if (currentMatcher.partial) {
       log.traceFunc({"Partial match. Continuing"})
     } else if (groupMatch && !attemptingBacktrackMatch) {
@@ -134,9 +143,8 @@ data class extends TokenMatcher {
       )
     )
 
-    return groupMatch = NodeGroupTokenMatch(
+    return groupMatch = groupMatch.copy(
       tokens: pattern.includeTokens ? tokens.copy() : Token[],
-      label: pattern.label,
       childMatches: childMatches.copy()
     )
   }
@@ -158,12 +166,12 @@ data class extends TokenMatcher {
   }
 
   handleScopeEnd() -> NodeGroupTokenMatch {
-    currentMatcher.reset()
+    currentParsers = pattern.parsers
+    currentMatcher = NodeTokenPattern(currentParsers).getMatcher()
     addedCurrentMatch = false
 
-    return groupMatch = NodeGroupTokenMatch(
+    return groupMatch = groupMatch.copy(
       tokens: pattern.includeTokens ? tokens.copy() : Token[],
-      label: pattern.label,
       childMatches: childMatches.copy()
     )
   }
