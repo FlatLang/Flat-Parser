@@ -35,7 +35,7 @@ abstract data class {
   public reset() {
     lastMatch = null
 
-    if (matcher) {
+    if (pattern) {
       matcher.reset()
     }
   }
