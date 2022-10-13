@@ -65,18 +65,7 @@ data class {
           currentParsers: [#{currentParsers.map(p => p.class.name).join(", ")}]
         |"})
 
-      let shouldPop = (
-        currentNode.class.isOfType(FunctionNode.class) ||
-        currentNode.class.isOfType(ClassNode.class) ||
-        currentNode.class.isOfType(MatchNode.class) ||
-        currentNode.class.isOfType(WhileLoopNode.class) ||
-        currentNode.class.isOfType(ForLoopNode.class) ||
-        currentNode.class.isOfType(FieldNode.class) ||
-        currentNode.class.isOfType(FieldAccessorFunctionNode.class) ||
-        currentNode.class.isOfType(FieldMutatorFunctionNode.class)
-      )
-
-      if (shouldPop) {
+      if (currentParser.class.isOfType(ScopeableParser.class)) {
         popScope(token)
       }
     } else if (token) {
