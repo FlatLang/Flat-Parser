@@ -18,6 +18,7 @@ data class extends TokenMatcher {
   var ParserBase[] currentParsers
   var NodeTokenMatcher currentMatcher
   var Bool addedCurrentMatch = false
+  var Bool attemptingBacktrackMatch = false
 
   override public match(Token token, ParseContext context = null) -> NodeGroupTokenMatch {
     if (!currentParsers) {
@@ -32,7 +33,10 @@ data class extends TokenMatcher {
 
   doMatch(Token token, ParseContext context) -> NodeGroupTokenMatch => null {
     if (disqualified) return null
-    log.traceFunc({"Matching token '#{green(token.value)}'"})
+    log.traceFunc({"|
+      Matching token '#{green(token.value)}':
+        tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+      |"})
 
     tokens.add(token)
 
@@ -57,23 +61,35 @@ data class extends TokenMatcher {
         label: pattern.label,
         childMatches: childMatches.copy()
       )
-    } else if (!currentMatcher.partial) {
-      if (groupMatch) {
-        log.traceFunc({"Attempting match"})
-        let tokensToMatch = tokens.skip(groupMatch.tokens.count)
-        tokens = groupMatch.tokens.copy()
-        currentMatcher.reset()
-        addedCurrentMatch = false
+    } else if (currentMatcher.partial) {
+      log.traceFunc({"Partial match. Continuing"})
+    } else if (groupMatch && !attemptingBacktrackMatch) {
+      let tokensToMatch = tokens.skip(groupMatch.tokens.count)
+      tokens = groupMatch.tokens.copy()
+      currentMatcher.reset()
+      addedCurrentMatch = false
+      if (tokensToMatch.isNotEmpty) {
+        log.traceFunc({"|
+          Attempting backtrack match:
+            tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+            tokensToMatch: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
+            childMatches.last.tokens: [#{childMatches.last.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          |"})
 
-        return tokensToMatch.map({
+        attemptingBacktrackMatch = true
+        let value = tokensToMatch.map({
           return doMatch(_, context)
         }).last
+        attemptingBacktrackMatch = false
+
+        return value
       } else {
-        log.traceFunc({"Did not match. Disqualified"})
+        log.traceFunc({"No more tokens to match. Disqualified"})
         disqualified = true
       }
     } else {
-      log.traceFunc({"Partial match. Continuing"})
+      log.traceFunc({"Did not match. Disqualified"})
+      disqualified = true
     }
   }
 
@@ -87,5 +103,6 @@ data class extends TokenMatcher {
     currentParsers = pattern.parsers
     currentMatcher = null
     addedCurrentMatch = false
+    attemptingBacktrackMatch = false
   }
 }
