@@ -14,6 +14,7 @@ import flat/parser/matchers
   GroupTokenMatcher_Test,
   CaptureTokenMatcher_Test,
   NodeTokenMatcher_Test,
+  NodeGroupTokenMatcher_Test,
   PreconditionTokenMatcher_Test,
   XorTokenMatcher_Test,
   PackageParser_Test,
