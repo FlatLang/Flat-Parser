@@ -9,6 +9,8 @@ import flat/ast/Node
 data class extends TokenMatch {
   visible NodeTokenMatchChild[] childMatches = NodeTokenMatchChild[]
 
+  visible ParserBase parser => childMatches.last.parser
+
   override public getValues(String label) => String[] {
     return childMatches.flatMap({ _.getValues(label) })
   }
