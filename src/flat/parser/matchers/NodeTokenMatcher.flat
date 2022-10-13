@@ -59,10 +59,6 @@ data class extends TokenMatcher {
     if (allParsersDisqualified() && childMatches.isNotEmpty) {
       let lastParser = childMatches.last.parser
 
-      if (let scopeResult = checkScopeEnd(token, addToken)) {
-        return scopeResult
-      }
-
       if (let childParsers = lastParser.childParsers) {
         currentParsers = childParsers
         complete = true
@@ -228,27 +224,6 @@ data class extends TokenMatcher {
     }
 
     return lastMatch
-  }
-
-  checkScopeEnd(Token token, Bool addToken) -> NodeTokenMatch => null {
-    match token.value {
-      "}" => {
-        log.traceFunc({"Encountered ending brace"})
-
-        if (let closestScope = childMatches.lastWhere({ _.parser.class.isOfType(ScopeableParser.class) })) {
-          log.traceFunc({"Successful scope pop. parser: #{green(closestScope.class.name)}"})
-
-          if (addToken) {
-            tokens.add(token)
-          }
-          return lastMatch = lastMatch.copy(
-            tokens: pattern.includeTokens ? tokens.copy() : Token[]
-          )
-        } else {
-          log.traceFunc({"Not a scope. Not popping"})
-        }
-      }
-    }
   }
 
   allParsersDisqualified() => currentParsers.all(p => !p.matcher.complete && p.matcher.disqualified)
