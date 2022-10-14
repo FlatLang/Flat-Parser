@@ -70,7 +70,7 @@ data class extends ParserBase {
     )
   }
 
-   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
     if (let args = match.getMatch<GroupTokenMatch>("arguments")) {
       return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "argument" })
     }
