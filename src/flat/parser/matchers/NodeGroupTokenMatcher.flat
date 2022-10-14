@@ -121,7 +121,7 @@ data class extends TokenMatcher {
     } else if (groupMatch && !attemptingBacktrackMatch) {
       let tokensToMatch = tokens.skip(groupMatch.tokens.count)
       tokens = groupMatch.tokens.copy()
-      currentMatcher.reset()
+      currentMatcher = NodeTokenPattern(currentParsers).getMatcher()
       addedCurrentMatch = false
       if (tokensToMatch.isNotEmpty) {
         log.traceFunc({"|

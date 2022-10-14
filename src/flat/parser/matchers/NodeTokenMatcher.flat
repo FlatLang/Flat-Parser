@@ -36,7 +36,8 @@ data class extends TokenMatcher {
     let matchParsers = ParserBase[]
     let matches = TokenMatch[]
 
-    for (parser in currentParsers.filter({ !_.matcher.disqualified })) {
+    for (parser in currentParsers) {
+      if (parser.matcher.disqualified) continue
       log.traceFunc({"|
         Matching token '#{green(token.value)}' against parser: #{green(parser.class.name)}
           tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
@@ -265,7 +266,6 @@ data class extends TokenMatcher {
     log.traceFunc({"Resetting matcher"})
     super.reset()
 
-    pattern.parsers.forEach({ _.reset() })
     childMatches = NodeTokenMatch[]
     lastMatch = null
     currentParsers = pattern.parsers

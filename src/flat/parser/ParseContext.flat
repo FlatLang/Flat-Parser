@@ -65,7 +65,7 @@ data class {
           currentParsers: [#{currentParsers.map(p => p.class.name).join(", ")}]
         |"})
 
-      if (currentParser.class.isOfType(ScopeableParser.class)) {
+      if (currentParser.class != LocalScopeParser.class && currentParser.class.isOfType(ScopeableParser.class)) {
         popScope(token)
       }
     } else if (token) {
@@ -116,6 +116,6 @@ data class {
   }
 
   public reset() {
-    currentParsers.forEach({ _.reset() })
+    currentParsers = currentParsers.map({ _.copy() })
   }
 }

@@ -485,4 +485,115 @@ testable class {
       )
     )
   }
+
+  test `can match inside a group token pattern`() {
+    let pattern = GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
+      NodeGroupTokenPattern(LocalScopeParser().childParsers, optional: true),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "}")
+    ])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ], ParseContext()).last
+
+    expect(result).toBe(
+      GroupTokenMatch(
+        tokens: [
+          Token(value: "{", type: Token.Type.SYMBOL),
+          Token(value: "x", type: Token.Type.IDENTIFIER),
+          Token(value: "}", type: Token.Type.SYMBOL)
+        ],
+        tokenMatches: [
+          SingleTokenMatch(
+            tokens: [Token(value: "{", type: Token.Type.SYMBOL)]
+          ),
+          NodeGroupTokenMatch(
+            tokens: [Token(value: "x", type: Token.Type.IDENTIFIER)],
+            childMatches: [
+              NodeTokenMatch(
+                tokens: [Token(value: "x", type: Token.Type.IDENTIFIER)],
+                childMatches: [
+                  NodeTokenMatchChild(
+                    tokens: [Token(value: "x", type: Token.Type.IDENTIFIER)],
+                    parser: IdentifierParser()
+                  )
+                ]
+              )
+            ]
+          ),
+          SingleTokenMatch(
+            tokens: [Token(value: "}", type: Token.Type.SYMBOL)]
+          )
+        ]
+      )
+    )
+  }
+
+  test `can match inside a node token pattern`() {
+    let pattern = NodeTokenPattern([LambdaParser()])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ], ParseContext()).last
+
+    expect(result).toBe(
+      NodeTokenMatch(
+        tokens: [
+          Token(value: "{", type: Token.Type.SYMBOL),
+          Token(value: "x", type: Token.Type.IDENTIFIER),
+          Token(value: "}", type: Token.Type.SYMBOL)
+        ],
+        childMatches: [
+          NodeTokenMatchChild(
+            tokens: [
+              Token(value: "{", type: Token.Type.SYMBOL),
+              Token(value: "x", type: Token.Type.IDENTIFIER),
+              Token(value: "}", type: Token.Type.SYMBOL)
+            ],
+            parser: LambdaParser()
+          )
+        ]
+      )
+    )
+  }
+
+  test `can access node group token match from match inside a node token pattern`() {
+    let pattern = NodeTokenPattern([LambdaParser()])
+
+    let matcher = pattern.getMatcher()
+    let result = matcher.matchAll([
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ], ParseContext()).last
+
+    let bodyContentsMatch = result.getMatch("lambda_body_contents")
+
+    expect(bodyContentsMatch).toBe(
+      NodeGroupTokenMatch(
+        label: "lambda_body_contents",
+        tokens: [
+          Token(value: "x", type: Token.Type.IDENTIFIER)
+        ],
+        childMatches: [
+          NodeTokenMatch(
+            tokens: [Token(value: "x", type: Token.Type.IDENTIFIER)],
+            childMatches: [
+              NodeTokenMatchChild(
+                tokens: [Token(value: "x", type: Token.Type.IDENTIFIER)],
+                parser: IdentifierParser()
+              )
+            ]
+          )
+        ]
+      )
+    )
+  }
 }
