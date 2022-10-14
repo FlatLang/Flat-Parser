@@ -7,7 +7,25 @@ import flat/compiler/models/Token
 import flat/ast/Node
 
 data class extends TokenMatch {
-  visible NodeTokenMatch[] childMatches = NodeTokenMatch[]
+  visible TokenMatch[] childMatches = TokenMatch[]
+
+  visible ParserBase parser {
+    get {
+      var ParserBase lastParser
+
+      if (childMatches.last.class == NodeTokenMatch.class) {
+        let obj = (Object)childMatches.last
+        let matcher = (NodeTokenMatch)obj
+        lastParser = matcher.parser
+      } else {
+        let obj = (Object)childMatches.last
+        let matcher = (NodeGroupTokenMatch)obj
+        lastParser = matcher.parser
+      }
+
+      return lastParser
+    }
+  }
 
   override public getValues(String label) => String[] {
     return childMatches.flatMap({ _.getValues(label) })
