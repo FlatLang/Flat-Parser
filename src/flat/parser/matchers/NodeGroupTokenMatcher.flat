@@ -85,6 +85,10 @@ data class extends TokenMatcher {
     }
 
     if (let match = currentMatcher.match(token, context)) {
+      if (match.childMatches.isEmpty) {
+        log.traceFunc({"Partial match for current matcher"})
+        return null
+      }
       log.traceFunc({"Successful match with current matcher. Parser: #{match.parser.class.name}"})
       if (currentMatcher.disqualified) {
         log.traceFunc({"Current matcher is disqualified. Returning match and switching to new current matcher"})
@@ -218,7 +222,7 @@ data class extends TokenMatcher {
           lastParser = matcher.parser
         }
 
-        if (lastParser.class.isOfType(ScopeableParser.class)) {
+        if (subMatcher) {
           log.traceFunc({"Successful scope pop. parser: #{green(lastParser.class.name)}"})
 
           return true
@@ -230,13 +234,7 @@ data class extends TokenMatcher {
   }
 
   handleScopeEnd() -> NodeGroupTokenMatch {
-    if (!subMatcher) {
-      log.traceFunc({"No sub-matcher. Disqualified. tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]"})
-      disqualified = true
-      return null
-    } else {
-      subMatcher = null
-    }
+    subMatcher = null
 
     currentParsers = pattern.parsers
     currentMatcher = NodeTokenPattern(currentParsers).getMatcher()

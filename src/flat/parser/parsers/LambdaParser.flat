@@ -63,7 +63,7 @@ data class extends ParserBase implements ScopeableParser {
 
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
     if (let body = match.getMatch<NodeGroupTokenMatch>("lambda_body_contents")) {
-      return body.childMatches
+      return body.getChildNodeMatches()
     }
   }
 }

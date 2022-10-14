@@ -40,4 +40,24 @@ data class extends TokenMatch {
 
     return array:addAll(childMatches.flatMap({ _.getMatches(label, addSelf) }))
   }
+
+  tokenMatchToNodeTokenMatches(TokenMatch childMatch) -> NodeTokenMatch[] {
+    if (childMatch.class.isOfType(NodeGroupTokenMatch.class)) {
+      let groupMatch = (NodeGroupTokenMatch)childMatch
+      return groupMatch.getChildNodeMatches()
+    } else if (childMatch.class.isOfType(NodeTokenMatch.class)) {
+      let nodeMatch = (NodeTokenMatch)childMatch
+      return Array<NodeTokenMatch>():add(nodeMatch)
+    } else {
+      throw Exception("Invalid child match type: #{childMatch.class.name}")
+    }
+
+    return null
+  }
+
+  public getChildNodeMatches() -> NodeTokenMatch[] {
+    return childMatches.flatMap((childMatch) => {
+      return tokenMatchToNodeTokenMatches(childMatch)
+    })
+  }
 }

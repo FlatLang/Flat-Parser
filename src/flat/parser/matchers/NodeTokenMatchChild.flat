@@ -10,7 +10,7 @@ data class extends TokenMatch {
   visible ParserBase parser
 
   override public getValues(String label) => String[] {
-    if (parser) {
+    if (parser?.lastMatch) {
       return parser.lastMatch.getValues(label)
     }
   }
@@ -22,7 +22,7 @@ data class extends TokenMatch {
       array.add(this)
     }
 
-    if (let subMatches = parser?.lastMatch.getMatches(label)) {
+    if (let subMatches = parser?.lastMatch?.getMatches(label)) {
       array.addAll(subMatches)
     }
 

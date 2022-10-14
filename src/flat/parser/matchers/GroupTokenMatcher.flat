@@ -249,8 +249,8 @@ data class extends TokenMatcher {
         complete = matcher.complete
         log.traceFunc({"|
           No more matchers. Returning match.
-            Disqualified: #{disqualified}.
-            Complete: #{complete}
+            disqualified: #{disqualified}
+            complete: #{complete}
             valid: #{valid}
             tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
             matcher: #{magenta(matcher.pattern.toPatternString())}
