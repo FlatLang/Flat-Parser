@@ -249,6 +249,8 @@ data class extends TokenMatcher {
   }
 
   override public reset() {
+    if (!dirty) return
+
     log.traceFunc({"Resetting matcher"})
     super.reset()
 

@@ -28,11 +28,15 @@ abstract data class {
   var Bool _complete = false
   visible var Bool complete <=> _complete
 
+  visible Bool dirty => _tokenMatches.isNotEmpty
+
   public matchAll(Token[] tokens, ParseContext context = null) -> TokenMatch[] => tokens.map({ this.match(_, context) })
 
   public abstract match(Token token, ParseContext context = null) -> TokenMatch
 
   public reset() {
+    if (!dirty) return
+
     _tokens = Array()
     _tokenMatches = Array()
     _disqualified = false

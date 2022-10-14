@@ -260,6 +260,8 @@ data class extends TokenMatcher {
   allParsersDisqualified() => currentParsers.all(p => !p.matcher.complete && p.matcher.disqualified)
 
   override public reset() {
+    if (!dirty) return
+
     log.traceFunc({"Resetting matcher"})
     super.reset()
 
