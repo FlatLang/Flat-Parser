@@ -76,6 +76,14 @@ data class extends TokenMatcher {
       }
     }
 
+    if (groupMatch) {
+      if (checkScopeStart(token)) {
+        return handleScopeStart()
+      } else if (checkScopeEnd(token)) {
+        return handleScopeEnd()
+      }
+    }
+
     if (let match = currentMatcher.match(token, context)) {
       log.traceFunc({"Successful match with current matcher. Parser: #{match.parser.class.name}"})
       if (currentMatcher.disqualified) {
@@ -111,34 +119,28 @@ data class extends TokenMatcher {
     } else if (currentMatcher.partial) {
       log.traceFunc({"Partial match. Continuing"})
     } else if (groupMatch && !attemptingBacktrackMatch) {
-      if (checkScopeStart(token)) {
-        return handleScopeStart()
-      } else if (checkScopeEnd(token)) {
-        return handleScopeEnd()
+      let tokensToMatch = tokens.skip(groupMatch.tokens.count)
+      tokens = groupMatch.tokens.copy()
+      currentMatcher.reset()
+      addedCurrentMatch = false
+      if (tokensToMatch.isNotEmpty) {
+        log.traceFunc({"|
+          Attempting backtrack match:
+            tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+            tokensToMatch: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
+            childMatches.last.tokens: [#{childMatches.last.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
+          |"})
+
+        attemptingBacktrackMatch = true
+        let value = tokensToMatch.map({
+          return doMatch(_, context)
+        }).last
+        attemptingBacktrackMatch = false
+
+        return value
       } else {
-        let tokensToMatch = tokens.skip(groupMatch.tokens.count)
-        tokens = groupMatch.tokens.copy()
-        currentMatcher.reset()
-        addedCurrentMatch = false
-        if (tokensToMatch.isNotEmpty) {
-          log.traceFunc({"|
-            Attempting backtrack match:
-              tokens: [#{tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-              tokensToMatch: [#{tokensToMatch.map(t => "'" + green(t.value) + "'").join(", ")}]
-              childMatches.last.tokens: [#{childMatches.last.tokens.map(t => "'" + green(t.value) + "'").join(", ")}]
-            |"})
-
-          attemptingBacktrackMatch = true
-          let value = tokensToMatch.map({
-            return doMatch(_, context)
-          }).last
-          attemptingBacktrackMatch = false
-
-          return value
-        } else {
-          log.traceFunc({"No more tokens to match. Disqualified"})
-          disqualified = true
-        }
+        log.traceFunc({"No more tokens to match. Disqualified"})
+        disqualified = true
       }
     } else {
       log.traceFunc({"Did not match. Disqualified"})
