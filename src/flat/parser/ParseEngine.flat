@@ -204,6 +204,7 @@ class {
     if (token.value == "}") {
       if (context.currentParser.class.isOfType(ScopeableParser.class)) {
         context.popScope()
+        context.tokens.shift()
       }
     } else {
       let shouldPop = (
