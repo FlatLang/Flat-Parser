@@ -255,12 +255,15 @@ data class extends TokenMatcher {
             return matchFromAnnotation
           }
 
-          let lastParser = childMatches.last.parser
+          let lastParser = childMatches.last?.parser
 
           if (!pattern.parseChildren) {
             log.traceFunc({"Child parsing is disabled for pattern. Disqualified. Returning last match"})
             complete = lastParser.matcher.complete
             disqualified = true
+          } else if (!lastParser) {
+            log.traceFunc({"lastParser is null. Returning null"})
+            return null
           } else {
             if (let childParsers = lastParser.childParsers) {
               log.traceFunc({"Matching child parsers for parser #{green(lastParser.class.name)}"})
