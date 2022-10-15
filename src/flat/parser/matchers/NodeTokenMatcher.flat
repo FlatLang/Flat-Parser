@@ -218,7 +218,9 @@ data class extends TokenMatcher {
         childMatches: childMatches.copy()
       )
 
-      if (matchParser.acceptImmediately()) {
+      let acceptImmediately = matchParser.acceptImmediately()
+
+      if (acceptImmediately) {
         log.traceFunc({"Contains exact match"})
       } else if (remainingPartialMatches) {
         log.traceFunc({"Contains partial matches. Returning match and continuing"})
@@ -228,7 +230,7 @@ data class extends TokenMatcher {
 
       complete = true
 
-      if (!matchParser.matcher.partial && !remainingPartialMatches) {
+      if (acceptImmediately || !matchParser.matcher.partial && !remainingPartialMatches) {
         if (let childParsers = matchParser.childParsers) {
           log.traceFunc({"Contains possible child matchers. Continuing with childParsers: [#{childParsers.map(p => green(p.class.name)).join(", ")}]"})
           currentParsers = childParsers

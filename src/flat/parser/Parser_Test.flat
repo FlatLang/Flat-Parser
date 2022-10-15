@@ -89,4 +89,60 @@ testable class {
       IdentifierNode(name: "value")
     ])
   }
+
+  async test `can parse function call with if-else-if lambda`() {
+    let source = "|
+      class {
+        func() {
+          context.currentParsers.forEach((parser) => {
+            if (let match = parser.match(token, context)) {
+              ParseEngine.log.debugFunc({\"Matched: \#{parser.class.name}\"})
+            } else if (parser.matcher.partial) {
+              ParseEngine.log.debugFunc({\"Partial match: \#{parser.class.name}\"})
+            }
+          })
+        }
+      }
+      |"
+
+    let file = File("Test.flat")
+    let stream = Parser().parse(file, Lexer().lex(source))
+
+    let nodes = Node[]
+
+    stream.on<Node>("data", { nodes.add(_) })
+
+    expect(nodes).toBe([
+      FileNode(file: file),
+      ClassNode(name: "Test", implicitName: true),
+      ClassScopeNode(),
+      FunctionNode(name: "func"),
+      LocalScopeNode(),
+      IdentifierNode(name: "context"),
+      DotAccessNode(),
+      IdentifierNode(name: "currentParsers"),
+      DotAccessNode(),
+      FunctionCallNode(name: "forEach"),
+      LambdaNode(),
+      IfNode(),
+      LocalScopeNode(),
+      IdentifierNode(name: "ParseEngine"),
+      DotAccessNode(),
+      IdentifierNode(name: "log"),
+      DotAccessNode(),
+      FunctionCallNode(name: "debugFunc"),
+      LambdaNode(),
+      LiteralNode(value: "\"Matched: \#{parser.class.name}\"", literalType: LiteralNode.Type.STRING),
+      ElseNode(),
+      IfNode(),
+      LocalScopeNode(),
+      IdentifierNode(name: "ParseEngine"),
+      DotAccessNode(),
+      IdentifierNode(name: "log"),
+      DotAccessNode(),
+      FunctionCallNode(name: "debugFunc"),
+      LambdaNode(),
+      LiteralNode(value: "\"Partial match: \#{parser.class.name}\"", literalType: LiteralNode.Type.STRING)
+    ])
+  }
 }
