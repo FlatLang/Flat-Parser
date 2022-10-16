@@ -1,0 +1,20 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/CommentNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.COMMENT, label: "comment")
+
+  override public generateNode(ParseContext context, TokenMatch match) -> CommentNode {
+    let value = match.getValue("comment")
+
+    return CommentNode(
+      value: value
+    )
+  }
+}

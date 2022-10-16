@@ -1,0 +1,25 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/ElseNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase implements ScopeableParser {
+  static Logger log = Logger(ElseParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll(LocalScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "else")
+
+  override public acceptImmediately() => true
+  override public beginsScope() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ElseNode {
+    return ElseNode()
+  }
+}

@@ -1,0 +1,22 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/MatchCaseNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(MatchParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll(LocalScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=>")
+
+  override public generateNode(ParseContext context, TokenMatch match) -> MatchCaseNode {
+    return MatchCaseNode()
+  }
+}

@@ -1,0 +1,51 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/ParameterNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    AssignmentParser()
+  ])
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+    CaptureTokenPattern(
+      label: "generic_parameters",
+      start: Token(value: "<"),
+      end: Token(value: ">"),
+      allowedTokens: [
+        Token(type: Token.Type.IDENTIFIER),
+        Token(type: Token.Type.SYMBOL, value: "<"),
+        Token(type: Token.Type.SYMBOL, value: ">"),
+        Token(type: Token.Type.SYMBOL, value: "["),
+        Token(type: Token.Type.SYMBOL, value: "]"),
+        Token(type: Token.Type.SYMBOL, value: ",")
+      ],
+      optional: true
+    ),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
+      SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
+    ], repeat: true, optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ":", label: "require_name", optional: true),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
+  ], label: "parameter")
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ParameterNode {
+    let type = match.getValue("type")
+    let name = match.getValue("name")
+    let bracketCount = match.getValues("bracket_start").count
+
+    return ParameterNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount,
+      requireName: match.getValue("require_name") != null
+    )
+  }
+}

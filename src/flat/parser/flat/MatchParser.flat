@@ -1,0 +1,48 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/MatchNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase implements ScopeableParser {
+  static Logger log = Logger(MatchParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll([MatchScopeParser()])
+    :addAll(MatchScopeParser().childParsers)
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "match"),
+    CaptureTokenPattern(
+      label: "condition",
+      end: Token(value: "{"),
+      includeEndToken: false
+    )
+  ])
+
+  override public acceptImmediately() => true
+  override public beginsScope() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> MatchNode {
+    return MatchNode()
+  }
+
+  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
+    Token[][] tokens = match
+      .getMatches<CaptureTokenMatch>("condition")
+      .map({ _.capture })
+
+    return ParseRequest(
+      requests: tokens.map({
+        return ParseRequestData(
+          tokens: _,
+          parsers: FunctionParser().childParsers
+        )
+      })
+    )
+  }
+}

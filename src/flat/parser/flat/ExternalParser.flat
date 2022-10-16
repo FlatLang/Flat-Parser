@@ -1,0 +1,41 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/ExternalNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(ExternalParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll(LocalScopeParser().childParsers)
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+    GroupTokenPattern([
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+      ], optional: true),
+      SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+    ], repeat: true, optional: true),
+    CaptureTokenPattern(
+      label: "body",
+      start: Token(value: "{"),
+      end: Token(value: "}")
+    )
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> ExternalNode {
+    return ExternalNode(
+      includes: match.getValues("include"),
+      excludes: match.getValues("exclude")
+    )
+  }
+}

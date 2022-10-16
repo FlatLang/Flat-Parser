@@ -1,0 +1,28 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/AssignmentNode
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override ParserBase[] childParsers => Array():addAll([
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    FunctionCallParser(),
+    CastParser(),
+    PriorityParser(),
+    UnaryOperationParser()
+  ])
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=")
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
+    return AssignmentNode()
+  }
+}

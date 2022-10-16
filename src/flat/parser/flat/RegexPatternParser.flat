@@ -1,0 +1,34 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/RegexPatternNode
+import flat/compiler/models/Token
+import flat/log/Logger
+
+data class extends ParserBase {
+  static Logger log = Logger(RegexPatternParser.class)
+
+  override ParserBase[] childParsers => Array()
+    :addAll(LiteralParser().childParsers)
+
+  override lazy TokenPattern pattern => CaptureTokenPattern(
+    label: "pattern",
+    start: Token(value: "/"),
+    end: Token(value: "/")
+  )
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
+    match token.value {
+      "{" => return false
+    }
+  }
+
+  override public acceptImmediately() => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> RegexPatternNode {
+    return RegexPatternNode(
+      pattern: match.getMatch("pattern").tokens.map({ _.value }).join() // FIXME: doesnt handle whitespace. Need to upade lexer to handle regex patterns
+    )
+  }
+}

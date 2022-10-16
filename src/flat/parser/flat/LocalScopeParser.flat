@@ -1,0 +1,47 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/LocalScopeNode
+import flat/compiler/models/Token
+
+data class extends ParserBase implements ScopeableParser {
+  override ParserBase[] childParsers => Array():addAll([
+    AnnotationParser(),
+    ThrowParser(),
+    IfParser(),
+    TryParser(),
+    CatchParser(),
+    ElseParser(),
+    ExternalParser(),
+    ReturnParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    MatchParser(),
+    SwitchParser(),
+    WhileLoopParser(),
+    ForLoopParser(),
+    FallthroughParser(),
+    ContinueParser(),
+    BreakParser(),
+    LocalDeclarationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    PriorityParser(),
+    LocalScopeParser()
+  ])
+
+  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
+
+  override public acceptImmediately() => true
+  override public beginsScope() => true
+
+  override public checkStatementContinuation(ParseContext context, Token token) => true
+
+  override public generateNode(ParseContext context, TokenMatch match) -> LocalScopeNode {
+    return LocalScopeNode()
+  }
+}

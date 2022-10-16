@@ -1,9 +1,0 @@
-package flat/parser/matchers
-
-import flat/parser
-import flat/parser/parsers
-import flat/datastruct/HashMap
-import flat/compiler/models/Token
-
-data class extends TokenMatch {
-}

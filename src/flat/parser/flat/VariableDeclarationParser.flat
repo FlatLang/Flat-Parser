@@ -1,0 +1,35 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/ast/VariableDeclarationNode
+import flat/compiler/models/Token
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override lazy TokenMatcher matcher => pattern.getMatcher()
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_type"),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "["),
+      SingleTokenPattern(Token.Type.SYMBOL, "]")
+    ], repeat: true, optional: true, label: "brackets"),
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
+  ])
+
+  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
+
+  override public generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
+    let type = match.getValue("declaration_type")
+    let name = match.getValue("declaration_name")
+    let bracketCount = match.getMatches("brackets").count
+
+    return VariableDeclarationNode(
+      type: type,
+      name: name,
+      arrayDimensions: bracketCount
+    )
+  }
+}
