@@ -14,12 +14,10 @@ data class extends ParserBase {
     :add(BinaryOperationParser())
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    CaptureTokenPattern(
-      label: "value",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
-  ])
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    NodeTokenPattern(FunctionParser().childParsers, label: "value"),
+    SingleTokenPattern(Token.Type.SYMBOL, ")")
+  ], label: "priority")
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
@@ -27,20 +25,9 @@ data class extends ParserBase {
     return PriorityNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("value")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: Array()
-            :addAll(childParsers)
-            :add(CastParser())
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("priority")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "value" })
+    }
   }
 }
