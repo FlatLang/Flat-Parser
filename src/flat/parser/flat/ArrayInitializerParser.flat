@@ -14,11 +14,27 @@ data class extends ParserBase {
     ArrayAccessParser()
   ])
 
-  override lazy TokenPattern pattern => CaptureTokenPattern(
-    start: Token(type: Token.Type.SYMBOL, value: "["),
-    end: Token(type: Token.Type.SYMBOL, value: "]"),
-    label: "initializer"
-  )
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, "["),
+    GroupTokenPattern([
+      NodeTokenPattern(indexParsers, label: "initializer_value"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        NodeTokenPattern(indexParsers, label: "initializer_value")
+      ], optional: true, repeat: true)
+    ], label: "initializer_values"),
+    SingleTokenPattern(Token.Type.SYMBOL, "]")
+  ])
+
+  let ParserBase[] indexParsers => [
+    AnnotationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    LambdaParser(),
+    ArrayInitializerParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
     match token.value {
@@ -30,27 +46,9 @@ data class extends ParserBase {
     return ArrayInitializerNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
-      match.getMatch<CaptureTokenMatch>("initializer").capture,
-      Token(type: Token.Type.SYMBOL, value: ",")
-    )
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            AnnotationParser(),
-            FunctionCallParser(),
-            IdentifierParser(),
-            LiteralParser(),
-            RegexPatternParser(),
-            LambdaParser(),
-            ArrayInitializerParser()
-          ]
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let args = match.getMatch<GroupTokenMatch>("initializer_values")) {
+      return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "initializer_value" })
+    }
   }
 }
