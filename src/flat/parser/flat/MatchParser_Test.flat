@@ -16,15 +16,35 @@ testable class {
     let matcher = parser.matcher
     let result = matcher.matchAll([
       Token(value: "match", type: Token.Type.IDENTIFIER),
-      Token(value: "thing", type: Token.Type.IDENTIFIER),
-      Token(value: "{", type: Token.Type.SYMBOL)
-    ]).last
+      Token(value: "thing", type: Token.Type.IDENTIFIER)
+    ], FlatParseContext()).last
 
     expect(result?.tokens).toBe([
       Token(value: "match", type: Token.Type.IDENTIFIER),
       Token(value: "thing", type: Token.Type.IDENTIFIER)
     ])
 
-    expect(matcher.partial).toBe(false)
+    expect(matcher.partial).toBe(true)
+  }
+
+  test `can match basic match with dot access`() {
+    let parser = MatchParser()
+
+    let matcher = parser.matcher
+    let result = matcher.matchAll([
+      Token(value: "match", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: ".", type: Token.Type.SYMBOL),
+      Token(value: "value", type: Token.Type.IDENTIFIER)
+    ], FlatParseContext()).last
+
+    expect(result?.tokens).toBe([
+      Token(value: "match", type: Token.Type.IDENTIFIER),
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: ".", type: Token.Type.SYMBOL),
+      Token(value: "value", type: Token.Type.IDENTIFIER)
+    ])
+
+    expect(matcher.partial).toBe(true)
   }
 }
