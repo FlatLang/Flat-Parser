@@ -32,11 +32,15 @@ data class extends ParserBase implements ScopeableParser {
       ],
       optional: true
     ),
-    CaptureTokenPattern(
-      label: "parameters",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    ),
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    GroupTokenPattern([
+      NodeTokenPattern(parameterParsers, label: "parameter"),
+      GroupTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        NodeTokenPattern(parameterParsers, label: "parameter")
+      ], optional: true, repeat: true)
+    ], optional: true, label: "parameters"),
+    SingleTokenPattern(Token.Type.SYMBOL, ")"),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "->"),
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
@@ -62,6 +66,12 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(Token.Type.SYMBOL, "=>", optional: true)
   ])
 
+  let ParserBase[] parameterParsers => [
+    AnnotationParser(),
+    ParameterParser(),
+    FunctionParameterParser()
+  ]
+
   override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
@@ -74,23 +84,9 @@ data class extends ParserBase implements ScopeableParser {
     )
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
-      match.getMatch<CaptureTokenMatch>("parameters").capture,
-      Token(type: Token.Type.SYMBOL, value: ",")
-    )
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            AnnotationParser(),
-            ParameterParser(),
-            FunctionParameterParser()
-          ]
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("parameters")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
+    }
   }
 }

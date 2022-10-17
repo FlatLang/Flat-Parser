@@ -291,7 +291,7 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
-  test `can access parameters from capture match`() {
+  test `can access parameters from node token matches`() {
     let matcher = FunctionParser().matcher
     let match = matcher.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -303,13 +303,27 @@ testable class {
 
     expect(match).toNotBe(null, "Match is null")
 
-    let capture = match.getMatch<CaptureTokenMatch>("parameters")
+    let parameters = FunctionParser().getChildNodeTokenMatches(FlatParseContext(), match)
 
-    expect(capture).toNotBe(null, "Capture match is null")
+    expect(parameters).toNotBe(null, "Parameter matches are null")
 
-    expect(capture.capture).toBe([
-      Token(value: "Test", type: Token.Type.IDENTIFIER),
-      Token(value: "value", type: Token.Type.IDENTIFIER)
+    expect(parameters).toBe([
+      NodeTokenMatch(
+        tokens: [
+          Token(value: "Test", type: Token.Type.IDENTIFIER),
+          Token(value: "value", type: Token.Type.IDENTIFIER)
+        ],
+        label: "parameter",
+        childMatches: [
+          NodeTokenMatchChild(
+            tokens: [
+              Token(value: "Test", type: Token.Type.IDENTIFIER),
+              Token(value: "value", type: Token.Type.IDENTIFIER)
+            ],
+            parser: ParameterParser()
+          )
+        ]
+      )
     ])
   }
 
