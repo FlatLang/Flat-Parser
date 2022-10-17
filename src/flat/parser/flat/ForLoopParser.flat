@@ -14,12 +14,33 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "for"),
-    CaptureTokenPattern(
-      label: "condition",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    NodeTokenPattern(initializerParsers, label: "initializer", optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ";"),
+    NodeTokenPattern(conditionParsers, label: "condition", optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ";"),
+    NodeTokenPattern(incrementerParsers, label: "incrementer", optional: true),
+    SingleTokenPattern(Token.Type.SYMBOL, ")")
   ])
+
+  let ParserBase[] initializerParsers => [
+    IdentifierParser(),
+    LocalDeclarationParser()
+  ]
+
+  let ParserBase[] conditionParsers => [
+    IdentifierParser(),
+    LiteralParser(),
+    PriorityParser(),
+    FunctionCallParser()
+  ]
+
+  let ParserBase[] incrementerParsers => [
+    IdentifierParser(),
+    LiteralParser(),
+    PriorityParser(),
+    FunctionCallParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
