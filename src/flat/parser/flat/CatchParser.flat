@@ -14,12 +14,16 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "catch"),
-    CaptureTokenPattern(
-      label: "parameters",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
-  ])
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    NodeTokenPattern(parameterParsers, label: "parameter"),
+    SingleTokenPattern(Token.Type.SYMBOL, ")")
+  ], label: "parameters")
+
+  let ParserBase[] parameterParsers => [
+    AnnotationParser(),
+    ParameterParser(),
+    FunctionParameterParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
@@ -29,20 +33,9 @@ data class extends ParserBase {
     return CatchNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("parameters")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            ParameterParser()
-          ]
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("parameters")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
+    }
   }
 }
