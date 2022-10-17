@@ -15,13 +15,18 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "set"),
-    CaptureTokenPattern(
-      label: "parameters",
-      start: Token(value: "("),
-      end: Token(value: ")"),
-      optional: true
-    )
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      NodeTokenPattern(parameterParsers, label: "parameter"),
+      SingleTokenPattern(Token.Type.SYMBOL, ")")
+    ], optional: true)
   ])
+
+  let ParserBase[] parameterParsers => [
+    AnnotationParser(),
+    ParameterParser(),
+    FunctionParameterParser()
+  ]
 
   override public acceptImmediately() => true
   override public beginsScope() => true
@@ -30,19 +35,9 @@ data class extends ParserBase implements ScopeableParser {
     return FieldMutatorFunctionNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) => ParseRequest() {
-    if (let parameters = match.getMatch<CaptureTokenMatch>("parameters")) {
-      return ParseRequest(
-        requests: [
-          ParseRequestData(
-            tokens: parameters.capture,
-            parsers: [
-              AnnotationParser(),
-              ParameterParser()
-            ]
-          )
-        ]
-      )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("parameters")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
     }
   }
 }
