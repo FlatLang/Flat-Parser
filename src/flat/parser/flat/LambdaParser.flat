@@ -31,8 +31,7 @@ data class extends ParserBase implements ScopeableParser {
           LocalScopeParser().childParsers,
           optional: true,
           label: "lambda_body_contents",
-          scopeParser: LocalScopeParser(),
-          annotationParser: AnnotationParser()
+          scopeParser: LocalScopeParser()
         ),
         SingleTokenPattern(Token.Type.SYMBOL, value: "}")
       ], optional: true)
@@ -43,8 +42,7 @@ data class extends ParserBase implements ScopeableParser {
         LocalScopeParser().childParsers,
         optional: true,
         label: "lambda_body_contents",
-        scopeParser: LocalScopeParser(),
-        annotationParser: AnnotationParser()
+        scopeParser: LocalScopeParser()
       ),
       SingleTokenPattern(Token.Type.SYMBOL, value: "}")
     ])
