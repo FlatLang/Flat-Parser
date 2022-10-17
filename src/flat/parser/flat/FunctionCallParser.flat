@@ -55,7 +55,8 @@ data class extends ParserBase {
     LambdaParser(),
     ArrayInitializerParser(),
     UnaryOperationParser(),
-    CastParser()
+    CastParser(),
+    LocalDeclarationParser()
   ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
