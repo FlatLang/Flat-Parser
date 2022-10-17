@@ -46,8 +46,8 @@ data class extends ParserBase {
   ])
 
   ParserBase[] argumentParsers => [
-    NamedArgumentParser(),
     AnnotationParser(),
+    NamedArgumentParser(),
     FunctionCallParser(),
     IdentifierParser(),
     LiteralParser(),
