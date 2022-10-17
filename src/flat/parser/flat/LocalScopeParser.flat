@@ -21,6 +21,7 @@ data class extends ParserBase implements ScopeableParser {
     SwitchParser(),
     WhileLoopParser(),
     ForLoopParser(),
+    ForEachLoopParser(),
     FallthroughParser(),
     ContinueParser(),
     BreakParser(),
