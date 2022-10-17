@@ -14,12 +14,24 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "if"),
-    CaptureTokenPattern(
-      label: "condition",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
+    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    NodeTokenPattern(conditionParsers, label: "condition"),
+    SingleTokenPattern(Token.Type.SYMBOL, ")")
   ])
+
+  ParserBase[] conditionParsers => [
+    AnnotationParser(),
+    NamedArgumentParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    LambdaParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser(),
+    LocalDeclarationParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
@@ -30,18 +42,7 @@ data class extends ParserBase implements ScopeableParser {
     return IfNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("condition")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: FunctionParser().childParsers
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    return match.getMatches<NodeTokenMatch>("condition")
   }
 }
