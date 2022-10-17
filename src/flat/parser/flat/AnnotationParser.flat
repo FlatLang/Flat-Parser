@@ -8,6 +8,8 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
+  override visible Bool isMetadata => true
+
   lazy ParserBase[] annotationParsers = Array().addAll([
     ModifierParser(),
     TargetAnnotationParser()
