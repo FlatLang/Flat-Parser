@@ -17,6 +17,8 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => XorTokenPattern(annotationParsers.map({ _.pattern }))
 
+  override public acceptImmediately() => true
+
   override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
     return annotationParsers.firstNonNull({ _.generateNode(context, match) })
   }
