@@ -14,7 +14,7 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ]).last
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -35,7 +35,7 @@ testable class {
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ]).last
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -56,7 +56,7 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "value", type: Token.Type.IDENTIFIER)
-    ]).last
+    ], FlatParseContext()).last
 
     expect(match).toBe(null)
   }
@@ -70,7 +70,7 @@ testable class {
       Token(value: ",", type: Token.Type.SYMBOL),
       Token(value: "arg2", type: Token.Type.IDENTIFIER),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ]).last
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
