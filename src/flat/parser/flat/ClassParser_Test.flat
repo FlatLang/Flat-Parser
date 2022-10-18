@@ -34,8 +34,10 @@ testable class {
   test `inherits name from file name`() {
     let parser = ClassParser()
 
-    let context = ParseContext(
-      parentStack: Stack<Node>([FileNode(file: File("test.flat")), FileScopeNode()])
+    let file = File("test.flat")
+    let context = FlatParseContext(
+      file: file,
+      parentStack: Stack<Node>([FileNode(file: file)])
     )
 
     let match = SingleTokenMatch(tokens: Array())

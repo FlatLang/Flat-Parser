@@ -110,7 +110,7 @@ data class extends ParserBase implements ScopeableParser {
     let implementsClassNames = match.getMatches("extends_class").map({ _.getValue("name") })
 
     return ClassNode(
-      name: className ?: context.fileNode.file.rootName,
+      name: className ?: context.file?.rootName,
       implicitName: className == null
     )
   }

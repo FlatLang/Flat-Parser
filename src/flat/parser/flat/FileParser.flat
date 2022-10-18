@@ -6,9 +6,24 @@ import flat/compiler/models/Token
 import flat/ast/FileNode
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array()
+  override lazy TokenPattern pattern => NodeGroupTokenPattern([
+      AnnotationParser(),
+      ImportParser(),
+      PackageParser(),
+      ClassParser()
+    ],
+    label: "file_contents"
+  )
 
   override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
-    return null
+    return FileNode(
+      file: context.file
+    )
+  }
+
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let contents = match.getMatch<NodeGroupTokenMatch>("file_contents")) {
+      return contents.getChildNodeMatches()
+    }
   }
 }
