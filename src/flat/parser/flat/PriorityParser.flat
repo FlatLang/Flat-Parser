@@ -26,14 +26,12 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.SYMBOL, ")")
   ], label: "priority")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> PriorityNode {
+  override public generateNode() -> PriorityNode {
     return PriorityNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let priority = match.getMatch<GroupTokenMatch>("priority")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let priority = lastMatch.getMatch<GroupTokenMatch>("priority")) {
       return (NodeTokenMatch[])priority.tokenMatches.filter({ _.label == "value" })
     }
   }

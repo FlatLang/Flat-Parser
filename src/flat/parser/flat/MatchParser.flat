@@ -13,8 +13,6 @@ data class extends ParserBase implements ScopeableParser {
     :addAll([MatchScopeParser()])
     :addAll(MatchScopeParser().childParsers)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "match"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "match_condition"),
@@ -25,14 +23,12 @@ data class extends ParserBase implements ScopeableParser {
     ])
   ], label: "match")
 
-  override public beginsScope() => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> MatchNode {
+  override public generateNode() -> MatchNode {
     return MatchNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("match")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("match")) {
       return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "match_condition" })
     }
   }

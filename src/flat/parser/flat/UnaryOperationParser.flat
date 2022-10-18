@@ -28,17 +28,9 @@ data class extends ParserBase {
     ]
   )
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true {
-    match context.statementParentStack.peek(1).class {
-      IdentifierNode.class => return false
-      FunctionCallNode.class => return false
-      PriorityNode.class => return false
-    }
-  }
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> UnaryOperationNode {
+  override public generateNode() -> UnaryOperationNode {
     return UnaryOperationNode(
-      operator: match.tokens.first.value
+      operator: lastMatch.tokens.first.value
     )
   }
 }

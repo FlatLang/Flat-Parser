@@ -4,52 +4,51 @@ import flat/parser
 import flat/parser/matchers
 import flat/datastruct/HashMap
 import flat/datastruct/list/Stack
-import flat/parser/Parser
-import flat/ast/FileNode
-import flat/ast/FileScopeNode
-import flat/ast/ClassNode
-import flat/ast/Node
+import flat/ast
 import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
   test `can parse declaration`() {
     let parser = ClassParser()
+    parser.context = FlatParseContext()
 
-    let match = SingleTokenMatch(
-      tokens: [Token(value: "Bob", type: Token.Type.IDENTIFIER)],
-      label: "class_name"
+    parser.matchAll([
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "Bob", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+    ])
+
+    expect(parser.generateNode()).toBe(
+      ClassNode(
+        name: "Bob",
+        implicitName: false
+      )
     )
-
-    let result = parser.generateNode(null, match)
-
-    let expected = ClassNode(
-      name: "Bob",
-      implicitName: false
-    )
-
-    expect(result).toBe(expected)
   }
 
   test `inherits name from file name`() {
     let parser = ClassParser()
 
     let file = File("test.flat")
-    let context = FlatParseContext(
+    parser.context = FlatParseContext(
       file: file,
       parentStack: Stack<Node>([FileNode(file: file)])
     )
 
-    let match = SingleTokenMatch(tokens: Array())
+    parser.matchAll([
+      Token(value: "class", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+    ])
 
-    let result = parser.generateNode(context, match)
-
-    let expected = ClassNode(
-      name: "test",
-      implicitName: true
+    expect(parser.generateNode()).toBe(
+      ClassNode(
+        name: "test",
+        implicitName: true
+      )
     )
-
-    expect(result).toBe(expected)
   }
 
   test `can match implicit name with extension`() {

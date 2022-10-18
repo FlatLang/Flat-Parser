@@ -59,20 +59,14 @@ data class extends ParserBase {
     LocalDeclarationParser()
   ]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
-    match token.value {
-      "{" => return false
-    }
-  }
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionCallNode {
+  override public generateNode() -> FunctionCallNode {
     return FunctionCallNode(
-      name: match.getValue("name")
+      name: lastMatch.getValue("name")
     )
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let args = match.getMatch<GroupTokenMatch>("arguments")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let args = lastMatch.getMatch<GroupTokenMatch>("arguments")) {
       return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "argument" })
     }
   }

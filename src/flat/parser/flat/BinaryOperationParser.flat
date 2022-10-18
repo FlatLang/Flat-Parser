@@ -25,11 +25,9 @@ data class extends ParserBase {
     "?:"
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> BinaryOperationNode {
+  override public generateNode() -> BinaryOperationNode {
     return BinaryOperationNode(
-      operator: match.tokens.first.value
+      operator: lastMatch.tokens.first.value
     )
   }
 }

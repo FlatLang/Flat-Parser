@@ -13,8 +13,6 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
@@ -46,34 +44,15 @@ data class extends ParserBase {
     ], optional: true)
   ])
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionParameterNode {
-    let type = match.getValue("type")
-    let name = match.getValue("name")
-    let bracketCount = match.getValues("bracket_start").count
+  override public generateNode() -> FunctionParameterNode {
+    let type = lastMatch.getValue("type")
+    let name = lastMatch.getValue("name")
+    let bracketCount = lastMatch.getValues("bracket_start").count
 
     return FunctionParameterNode(
       type: type,
       name: name,
       arrayDimensions: bracketCount
-    )
-  }
-
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = SyntaxTokenFunctions.splitOnTopLevel(
-      match.getMatch<CaptureTokenMatch>("parameters").capture,
-      Token(type: Token.Type.SYMBOL, value: ",")
-    )
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: [
-            AnnotationParser(),
-            IdentifierParser()
-          ]
-        )
-      })
     )
   }
 }

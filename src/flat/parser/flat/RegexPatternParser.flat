@@ -18,17 +18,11 @@ data class extends ParserBase {
     end: Token(value: "/")
   )
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
-    match token.value {
-      "{" => return false
-    }
-  }
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> RegexPatternNode {
+  override public generateNode() -> RegexPatternNode {
     return RegexPatternNode(
-      pattern: match.getMatch("pattern").tokens.map({ _.value }).join() // FIXME: doesnt handle whitespace. Need to upade lexer to handle regex patterns
+      pattern: lastMatch.getMatch("pattern").tokens.map({ _.value }).join() // FIXME: doesnt handle whitespace. Need to upade lexer to handle regex patterns
     )
   }
 }

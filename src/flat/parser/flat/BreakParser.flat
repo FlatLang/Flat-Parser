@@ -13,7 +13,7 @@ data class extends ParserBase {
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> BreakNode {
+  override public generateNode() -> BreakNode {
     return BreakNode()
   }
 }

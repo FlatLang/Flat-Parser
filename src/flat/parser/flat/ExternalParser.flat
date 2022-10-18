@@ -28,14 +28,12 @@ data class extends ParserBase {
     )
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ExternalNode {
+  override public generateNode() -> ExternalNode {
     return ExternalNode(
-      includes: match.getValues("include"),
-      excludes: match.getValues("exclude")
+      includes: lastMatch.getValues("include"),
+      excludes: lastMatch.getValues("exclude")
     )
   }
 }

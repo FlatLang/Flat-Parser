@@ -30,16 +30,12 @@ data class extends ParserBase implements ScopeableParser {
     LocalDeclarationParser()
   ]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override public beginsScope() => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> IfNode {
+  override public generateNode() -> IfNode {
     return IfNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("if")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("if")) {
       return (NodeTokenMatch[])params.tokenMatches.filter(m => m.label == "condition" || m.label == "if_body")
     }
   }

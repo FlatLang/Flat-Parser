@@ -11,14 +11,11 @@ data class extends ParserBase implements ScopeableParser {
 
   override ParserBase[] childParsers => [LocalScopeParser()]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "get")
 
   override public acceptImmediately() => true
-  override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FieldAccessorFunctionNode {
+  override public generateNode() -> FieldAccessorFunctionNode {
     return FieldAccessorFunctionNode()
   }
 }

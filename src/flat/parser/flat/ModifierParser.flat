@@ -38,8 +38,8 @@ data class extends ParserBase {
       :addAll(NativeModifier.aliases)
   )
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> AnnotationNode => null {
-    let alias = match.getValue("alias")
+  override public generateNode() -> AnnotationNode => null {
+    let alias = lastMatch.getValue("alias")
 
     if (VisibleModifier.aliases.any({ _ == alias})) {
       return VisibleModifier(aliasUsed: alias)

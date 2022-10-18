@@ -19,15 +19,9 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
-    match token.value {
-      "{" => return false
-    }
-  }
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> IdentifierNode {
+  override public generateNode() -> IdentifierNode {
     return IdentifierNode(
-      name: match.getValue("name")
+      name: lastMatch.getValue("name")
     )
   }
 }

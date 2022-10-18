@@ -101,13 +101,10 @@ data class extends ParserBase implements ScopeableParser {
     AssignmentParser()
   ]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-  override public beginsScope() => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ClassNode {
-    let className = match.getValue("class_name")
-    let extendedClassName = match.getMatch("extends_class")?.getValue("name")
-    let implementsClassNames = match.getMatches("extends_class").map({ _.getValue("name") })
+  override public generateNode() -> ClassNode {
+    let className = lastMatch.getValue("class_name")
+    let extendedClassName = lastMatch.getMatch("extends_class")?.getValue("name")
+    let implementsClassNames = lastMatch.getMatches("extends_class").map({ _.getValue("name") })
 
     return ClassNode(
       name: className ?: context.file?.rootName,
@@ -115,8 +112,8 @@ data class extends ParserBase implements ScopeableParser {
     )
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let body = match.getMatch<NodeGroupTokenMatch>("class_body_contents")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let body = lastMatch.getMatch<NodeGroupTokenMatch>("class_body_contents")) {
       return body.getChildNodeMatches()
     }
   }

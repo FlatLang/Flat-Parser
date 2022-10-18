@@ -10,9 +10,6 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-  override public beginsScope() => true
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
@@ -77,10 +74,10 @@ data class extends ParserBase implements ScopeableParser {
     FunctionParameterParser()
   ]
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionNode {
-    let type = match.getValue("type")
-    let name = match.getValue("name")
-    let bracketCount = match.getValues("bracket_start").count
+  override public generateNode() -> FunctionNode {
+    let type = lastMatch.getValue("type")
+    let name = lastMatch.getValue("name")
+    let bracketCount = lastMatch.getValues("bracket_start").count
 
     return FunctionNode(
       type: type,
@@ -89,16 +86,16 @@ data class extends ParserBase implements ScopeableParser {
     )
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
     let matches = NodeTokenMatch[]
 
-    if (let params = match.getMatch<GroupTokenMatch>("function_parameters")) {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("function_parameters")) {
       matches.addAll(params.tokenMatches.filter({ _.label == "parameter" }))
     }
-    if (let arrowExpression = match.getMatch<NodeTokenMatch>("function_arrow_expression")) {
+    if (let arrowExpression = lastMatch.getMatch<NodeTokenMatch>("function_arrow_expression")) {
       matches.add(arrowExpression)
     }
-    if (let scope = match.getMatch<NodeGroupTokenMatch>("function_body_scope")) {
+    if (let scope = lastMatch.getMatch<NodeGroupTokenMatch>("function_body_scope")) {
       matches.addAll(scope.getChildNodeMatches())
     }
 

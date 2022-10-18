@@ -19,7 +19,6 @@ data class extends ParseContext {
   override public shouldPushScope(Node node) => false {
     match node.class {
       FileNode.class => fallthrough
-      FileScopeNode.class => fallthrough
       ClassNode.class => fallthrough
       ClassScopeNode.class => fallthrough
       FunctionNode.class => fallthrough

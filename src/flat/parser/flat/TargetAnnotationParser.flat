@@ -25,10 +25,10 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.SYMBOL, "]")
   ], label: "target_annotation")
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> TargetAnnotation => null {
+  override public generateNode() -> TargetAnnotation => null {
     return TargetAnnotation(
-      includes: match.getValues("include"),
-      excludes: match.getValues("exclude")
+      includes: lastMatch.getValues("include"),
+      excludes: lastMatch.getValues("exclude")
     )
   }
 }

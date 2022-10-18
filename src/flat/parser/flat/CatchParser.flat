@@ -25,16 +25,14 @@ data class extends ParserBase {
     FunctionParameterParser()
   ]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> CatchNode {
+  override public generateNode() -> CatchNode {
     return CatchNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("parameters")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("parameters")) {
       return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
     }
   }

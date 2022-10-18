@@ -36,18 +36,12 @@ data class extends ParserBase {
     ArrayInitializerParser()
   ]
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
-    match token.value {
-      "{" => return false
-    }
-  }
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ArrayInitializerNode {
+  override public generateNode() -> ArrayInitializerNode {
     return ArrayInitializerNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let args = match.getMatch<GroupTokenMatch>("initializer_values")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let args = lastMatch.getMatch<GroupTokenMatch>("initializer_values")) {
       return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "initializer_value" })
     }
   }

@@ -34,18 +34,16 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
   ], label: "parameter")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ParameterNode {
-    let type = match.getValue("type")
-    let name = match.getValue("name")
-    let bracketCount = match.getValues("bracket_start").count
+  override public generateNode() -> ParameterNode {
+    let type = lastMatch.getValue("type")
+    let name = lastMatch.getValue("name")
+    let bracketCount = lastMatch.getValues("bracket_start").count
 
     return ParameterNode(
       type: type,
       name: name,
       arrayDimensions: bracketCount,
-      requireName: match.getValue("require_name") != null
+      requireName: lastMatch.getValue("require_name") != null
     )
   }
 }

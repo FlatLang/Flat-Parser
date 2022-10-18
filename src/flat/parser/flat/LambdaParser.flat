@@ -26,14 +26,12 @@ data class extends ParserBase implements ScopeableParser {
     NodeTokenPattern([LocalScopeParser()], label: "lambda_contents"),
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> LambdaNode {
+  override public generateNode() -> LambdaNode {
     return LambdaNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let contents = match.getMatch<NodeTokenMatch>("lambda_contents")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let contents = lastMatch.getMatch<NodeTokenMatch>("lambda_contents")) {
       return [contents]
     }
   }

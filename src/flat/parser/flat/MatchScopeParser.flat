@@ -11,19 +11,9 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true {
-    match token.type {
-      Token.Type.SYMBOL => {
-        match token.value {
-          "{" => return false
-        }
-      }
-    }
-  }
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> MatchScopeNode {
+  override public generateNode() -> MatchScopeNode {
     return MatchScopeNode()
   }
 }

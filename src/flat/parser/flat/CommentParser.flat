@@ -10,8 +10,8 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.COMMENT, label: "comment")
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> CommentNode {
-    let value = match.getValue("comment")
+  override public generateNode() -> CommentNode {
+    let value = lastMatch.getValue("comment")
 
     return CommentNode(
       value: value

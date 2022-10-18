@@ -14,15 +14,12 @@ data class extends ParserBase implements ScopeableParser {
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "else_body"),
   ], label: "else")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-  override public beginsScope() => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ElseNode {
+  override public generateNode() -> ElseNode {
     return ElseNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("else")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("else")) {
       return (NodeTokenMatch[])params.tokenMatches.filter(m => m.label == "else_body")
     }
   }

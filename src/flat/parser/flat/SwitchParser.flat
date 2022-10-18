@@ -13,8 +13,6 @@ data class extends ParserBase implements ScopeableParser {
     :addAll([MatchScopeParser()])
     :addAll(MatchScopeParser().childParsers)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "switch"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "switch_condition"),
@@ -25,14 +23,12 @@ data class extends ParserBase implements ScopeableParser {
     ])
   ], label: "switch")
 
-  override public beginsScope() => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> SwitchNode {
+  override public generateNode() -> SwitchNode {
     return SwitchNode()
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("switch")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let params = lastMatch.getMatch<GroupTokenMatch>("switch")) {
       return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "switch_condition" })
     }
   }

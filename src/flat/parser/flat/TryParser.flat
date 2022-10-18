@@ -14,12 +14,9 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "try")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override public acceptImmediately() => true
-  override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> TryNode {
+  override public generateNode() -> TryNode {
     return TryNode()
   }
 }

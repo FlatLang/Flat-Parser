@@ -12,11 +12,9 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: ".")
-
-  override public checkStatementContinuation(ParseContext context, Token token) => true
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> DotAccessNode {
+  override public generateNode() -> DotAccessNode {
     return DotAccessNode()
   }
 }

@@ -20,26 +20,9 @@ data class extends ParserBase {
     )
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> TernaryNode {
+  override public generateNode() -> TernaryNode {
     return TernaryNode()
-  }
-
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = [
-      match.getMatch<CaptureTokenMatch>("true_value").capture
-    ]
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: childParsers
-        )
-      })
-    )
   }
 }

@@ -12,54 +12,48 @@ import flat/io/File
 testable class {
   test `can parse declaration`() {
     let parser = VariableDeclarationParser()
+    parser.context = FlatParseContext()
+    let result = parser.matchAll([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+    ]).last
 
-    let match = GroupTokenMatch(tokenMatches: [
-      SingleTokenMatch(
-        tokens: [Token(value: "String", type: Token.Type.IDENTIFIER)],
-        label: "declaration_type"
-      ),
-      SingleTokenMatch(
-        tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
-        label: "declaration_name"
-      )
+    expect(result?.tokens).toBe([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
     ])
 
-    let result = parser.generateNode(null, match)
-
-    let expected = VariableDeclarationNode(
-      type: "String",
-      name: "test"
+    expect(parser.generateNode()).toBe(
+      VariableDeclarationNode(
+        type: "String",
+        name: "test"
+      )
     )
-
-    expect(result).toBe(expected)
   }
 
   test `can parse declaration with array type`() {
     let parser = VariableDeclarationParser()
+    parser.context = FlatParseContext()
+    let result = parser.matchAll([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "]", type: Token.Type.SYMBOL),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
+    ]).last
 
-    let match = GroupTokenMatch(tokenMatches: [
-      SingleTokenMatch(
-        tokens: [Token(value: "String", type: Token.Type.IDENTIFIER)],
-        label: "declaration_type"
-      ),
-      SingleTokenMatch(
-        tokens: [Token(value: "test", type: Token.Type.IDENTIFIER)],
-        label: "declaration_name"
-      ),
-      GroupTokenMatch(tokenMatches: [
-        SingleTokenMatch(tokens: [Token(value: "[", type: Token.Type.SYMBOL)]),
-        SingleTokenMatch(tokens: [Token(value: "]", type: Token.Type.SYMBOL)])
-      ], label: "brackets")
+    expect(result?.tokens).toBe([
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "[", type: Token.Type.SYMBOL),
+      Token(value: "]", type: Token.Type.SYMBOL),
+      Token(value: "test", type: Token.Type.IDENTIFIER),
     ])
 
-    let result = parser.generateNode(null, match)
-
-    let expected = VariableDeclarationNode(
-      type: "String",
-      name: "test",
-      arrayDimensions: 1
+    expect(parser.generateNode()).toBe(
+      VariableDeclarationNode(
+        type: "String",
+        name: "test",
+        arrayDimensions: 1
+      )
     )
-
-    expect(result).toBe(expected)
   }
 }

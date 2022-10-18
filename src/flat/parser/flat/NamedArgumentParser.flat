@@ -21,11 +21,9 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.SYMBOL, ":"),
   ], label: "named_argument")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> NamedArgumentNode {
+  override public generateNode() -> NamedArgumentNode {
     return NamedArgumentNode(
-      name: match.getValue("name")
+      name: lastMatch.getValue("name")
     )
   }
 }

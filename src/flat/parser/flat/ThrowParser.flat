@@ -14,11 +14,9 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "throw")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ThrowNode {
+  override public generateNode() -> ThrowNode {
     return ThrowNode()
   }
 }

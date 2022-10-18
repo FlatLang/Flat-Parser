@@ -10,16 +10,20 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override visible Bool isMetadata => true
 
-  lazy ParserBase[] annotationParsers = Array().addAll([
+  lazy ParserBase[] annotationParsers => Array().addAll([
     ModifierParser(),
     TargetAnnotationParser()
   ])
 
-  override lazy TokenPattern pattern => XorTokenPattern(annotationParsers.map({ _.pattern }))
+  override lazy TokenPattern pattern => NodeTokenPattern([
+      ModifierParser(),
+      TargetAnnotationParser()
+    ], label: "annotation"
+  )
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> AnnotationNode {
-    return annotationParsers.firstNonNull({ _.generateNode(context, match) })
+  override public generateNode() -> AnnotationNode {
+    return lastMatch.getMatch<NodeTokenMatch>("annotation").generateNode()
   }
 }

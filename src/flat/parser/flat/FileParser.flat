@@ -15,20 +15,20 @@ data class extends ParserBase {
     label: "file_contents"
   )
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FileNode {
+  override public generateNode() -> FileNode {
     return FileNode(
       file: context.file
     )
   }
 
-  override public generateNodes(ParseContext context, TokenMatch match = lastMatch) -> Node[] {
+  override public generateNodes() -> Node[] {
     return Array()
-      :add(this.generateNode(context, match))
-      :addAll(this.getChildNodeTokenMatches(context, match).flatMap({ _.generateNodes(context) }))
+      :add(this.generateNode())
+      :addAll(this.getChildNodeTokenMatches().flatMap({ _.generateNodes() }))
   }
 
-  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let contents = match.getMatch<NodeGroupTokenMatch>("file_contents")) {
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let contents = lastMatch.getMatch<NodeGroupTokenMatch>("file_contents")) {
       return contents.getChildNodeMatches()
     }
   }

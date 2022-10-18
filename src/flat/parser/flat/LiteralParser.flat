@@ -22,16 +22,10 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.NULL)
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL {
-    match token.value {
-      "{" => return false
-    }
-  }
-
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> LiteralNode {
-    let token = match.tokens.first
+  override public generateNode() -> LiteralNode {
+    let token = lastMatch.tokens.first
 
     var Int literalType
 

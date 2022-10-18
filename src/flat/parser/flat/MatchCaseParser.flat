@@ -12,11 +12,9 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override public checkStatementContinuation(ParseContext context, Token token) => true
-
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=>")
 
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> MatchCaseNode {
+  override public generateNode() -> MatchCaseNode {
     return MatchCaseNode()
   }
 }

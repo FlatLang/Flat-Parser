@@ -54,13 +54,11 @@ data class extends ParserBase {
     ])
   ], label: "local_declaration")
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> LocalDeclarationNode {
+  override public generateNode() -> LocalDeclarationNode {
     return LocalDeclarationNode(
-      type: match.getValue("declaration_type"),
-      name: match.getValue("declaration_name"),
-      arrayDimensions: match.getMatches("brackets").count
+      type: lastMatch.getValue("declaration_type"),
+      name: lastMatch.getValue("declaration_name"),
+      arrayDimensions: lastMatch.getMatches("brackets").count
     )
   }
 }

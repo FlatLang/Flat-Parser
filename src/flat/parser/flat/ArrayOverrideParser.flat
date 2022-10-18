@@ -20,20 +20,7 @@ data class extends ParserBase {
     SingleTokenPattern(Token.Type.SYMBOL, value: "]")
   ])
 
-  override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
-
-  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ArrayOverrideNode {
+  override public generateNode() -> ArrayOverrideNode {
     return ArrayOverrideNode()
-  }
-
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    return ParseRequest(
-      requests: [
-        ParseRequestData(
-          tokens: match.getMatch("parameter").tokens,
-          parsers: [ParameterParser()]
-        )
-      ]
-    )
   }
 }
