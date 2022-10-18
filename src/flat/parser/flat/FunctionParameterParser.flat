@@ -46,7 +46,7 @@ data class extends ParserBase {
     ], optional: true)
   ])
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FunctionParameterNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionParameterNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count

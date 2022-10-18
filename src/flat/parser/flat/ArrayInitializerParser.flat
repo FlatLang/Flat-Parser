@@ -42,7 +42,7 @@ data class extends ParserBase {
     }
   }
 
-  override public generateNode(ParseContext context, TokenMatch match) -> ArrayInitializerNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ArrayInitializerNode {
     return ArrayInitializerNode()
   }
 

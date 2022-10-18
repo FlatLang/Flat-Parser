@@ -15,7 +15,7 @@ data class extends ParserBase {
     label: "file_contents"
   )
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FileNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FileNode {
     return FileNode(
       file: context.file
     )

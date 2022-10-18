@@ -16,7 +16,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, "=>")
 
-  override public generateNode(ParseContext context, TokenMatch match) -> MatchCaseNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> MatchCaseNode {
     return MatchCaseNode()
   }
 }

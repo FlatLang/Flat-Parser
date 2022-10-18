@@ -65,7 +65,7 @@ data class extends ParserBase {
     }
   }
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FunctionCallNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionCallNode {
     return FunctionCallNode(
       name: match.getValue("name")
     )

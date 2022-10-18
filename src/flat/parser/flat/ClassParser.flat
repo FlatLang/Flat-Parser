@@ -104,7 +104,7 @@ data class extends ParserBase implements ScopeableParser {
   override public checkStatementContinuation(ParseContext context, Token token) => true
   override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> ClassNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ClassNode {
     let className = match.getValue("class_name")
     let extendedClassName = match.getMatch("extends_class")?.getValue("name")
     let implementsClassNames = match.getMatches("extends_class").map({ _.getValue("name") })

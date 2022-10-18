@@ -27,7 +27,7 @@ data class extends ParserBase implements ScopeableParser {
 
   override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> MatchNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> MatchNode {
     return MatchNode()
   }
 

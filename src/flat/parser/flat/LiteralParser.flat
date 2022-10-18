@@ -30,7 +30,7 @@ data class extends ParserBase {
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> LiteralNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> LiteralNode {
     let token = match.tokens.first
 
     var Int literalType

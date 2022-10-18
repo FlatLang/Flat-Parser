@@ -34,7 +34,7 @@ data class extends ParserBase implements ScopeableParser {
 
   override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> WhileLoopNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> WhileLoopNode {
     return WhileLoopNode()
   }
 

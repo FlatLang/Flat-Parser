@@ -27,7 +27,7 @@ data class extends ParserBase {
     }
   }
 
-  override public generateNode(ParseContext context, TokenMatch match) -> ArrayInstantiationNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> ArrayInstantiationNode {
     return ArrayInstantiationNode(
       type: match.getValue("type"),
       arrayDimensions: match.getMatches("brackets").count

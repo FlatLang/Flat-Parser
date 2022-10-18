@@ -77,7 +77,7 @@ data class extends ParserBase implements ScopeableParser {
     FunctionParameterParser()
   ]
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FunctionNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FunctionNode {
     let type = match.getValue("type")
     let name = match.getValue("name")
     let bracketCount = match.getValues("bracket_start").count

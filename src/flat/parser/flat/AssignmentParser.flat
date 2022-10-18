@@ -23,7 +23,7 @@ data class extends ParserBase {
   override public checkStatementContinuation(ParseContext context, Token token) => true
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> AssignmentNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> AssignmentNode {
     return AssignmentNode()
   }
 }

@@ -21,7 +21,7 @@ data class extends ParserBase {
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
 
-  override public generateNode(ParseContext context, TokenMatch match) -> VariableDeclarationNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> VariableDeclarationNode {
     let type = match.getValue("declaration_type")
     let name = match.getValue("declaration_name")
     let bracketCount = match.getMatches("brackets").count

@@ -19,7 +19,7 @@ data class extends ParserBase {
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> AnnotationNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> AnnotationNode {
     return annotationParsers.firstNonNull({ _.generateNode(context, match) })
   }
 }

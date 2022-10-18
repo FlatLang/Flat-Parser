@@ -36,7 +36,7 @@ data class extends ParserBase {
     }
   }
 
-  override public generateNode(ParseContext context, TokenMatch match) -> UnaryOperationNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> UnaryOperationNode {
     return UnaryOperationNode(
       operator: match.tokens.first.value
     )

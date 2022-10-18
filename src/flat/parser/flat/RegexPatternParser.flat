@@ -26,7 +26,7 @@ data class extends ParserBase {
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> RegexPatternNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> RegexPatternNode {
     return RegexPatternNode(
       pattern: match.getMatch("pattern").tokens.map({ _.value }).join() // FIXME: doesnt handle whitespace. Need to upade lexer to handle regex patterns
     )

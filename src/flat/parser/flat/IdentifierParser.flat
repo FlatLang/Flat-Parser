@@ -25,7 +25,7 @@ data class extends ParserBase {
     }
   }
 
-  override public generateNode(ParseContext context, TokenMatch match) -> IdentifierNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> IdentifierNode {
     return IdentifierNode(
       name: match.getValue("name")
     )

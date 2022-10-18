@@ -19,7 +19,7 @@ data class extends ParserBase {
     ], repeat: true, optional: true)
   ])
 
-  override public generateNode(ParseContext context, TokenMatch match) -> PackageNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> PackageNode {
     let components = match.getValues("package_location_component")
 
     return PackageNode(

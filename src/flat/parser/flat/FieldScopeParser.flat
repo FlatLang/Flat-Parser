@@ -26,7 +26,7 @@ data class extends ParserBase {
 
   override public acceptImmediately() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FieldScopeNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FieldScopeNode {
     return FieldScopeNode()
   }
 }

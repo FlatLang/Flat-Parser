@@ -60,7 +60,7 @@ data class extends ParserBase implements ScopeableParser {
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
   override public beginsScope() => true
 
-  override public generateNode(ParseContext context, TokenMatch match) -> FieldNode {
+  override public generateNode(ParseContext context, TokenMatch match = lastMatch) -> FieldNode {
     let type = match.getValue("declaration_type")
     let name = match.getValue("declaration_name")
     let bracketCount = match.getValues("bracket_start").count
