@@ -10,7 +10,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  test `can parse a basic single line comment`() {
+  test `can match a basic single line comment`() {
     let matcher = CommentParser().matcher
     let result = matcher.match(Token(value: "// 9/11 was an inside job", type: Token.Type.COMMENT))
 

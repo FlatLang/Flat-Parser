@@ -10,7 +10,7 @@ import flat/compiler/models/Token
 import flat/io/File
 
 testable class {
-  test `can parse a basic array instantiation`() {
+  test `can match a basic array instantiation`() {
     let parser = ArrayInstantiationParser()
     let matcher = parser.matcher
     let result = matcher.matchAll([
