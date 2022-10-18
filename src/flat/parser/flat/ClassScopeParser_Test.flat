@@ -15,7 +15,7 @@ testable class {
     let result = matcher.matchAll([
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "let", type: Token.Type.IDENTIFIER)
-    ]).last
+    ], FlatParseContext()).last
 
     expect(result).toBe(null)
   }

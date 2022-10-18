@@ -67,7 +67,7 @@ testable class {
       Token(value: "bob", type: Token.Type.IDENTIFIER),
       Token(value: "/", type: Token.Type.SYMBOL),
       Token(value: "flob", type: Token.Type.IDENTIFIER)
-    ]).last
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "import", type: Token.Type.IDENTIFIER),
@@ -88,7 +88,7 @@ testable class {
       Token(value: "bob", type: Token.Type.IDENTIFIER),
       Token(value: "/", type: Token.Type.SYMBOL),
       Token(value: "flob", type: Token.Type.IDENTIFIER)
-    ]).last
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "import", type: Token.Type.IDENTIFIER),
