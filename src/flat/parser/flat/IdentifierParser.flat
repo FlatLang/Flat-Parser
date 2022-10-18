@@ -6,7 +6,7 @@ import flat/ast/IdentifierNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => [
     DotAccessParser(),
     ColonAccessParser(),
     AssignmentParser(),
@@ -15,7 +15,7 @@ data class extends ParserBase {
     UnaryOperationParser(),
     TernaryParser(),
     MatchCaseParser()
-  ])
+  ]
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
 

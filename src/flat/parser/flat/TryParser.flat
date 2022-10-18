@@ -10,7 +10,7 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(TryParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
+    :addAll(LocalScopeParser().valueParsers)
 
   override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "try")
 

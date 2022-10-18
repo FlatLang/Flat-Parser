@@ -9,13 +9,20 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(PriorityParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-    :add(BinaryOperationParser())
+  override ParserBase[] childParsers => [
+    DotAccessParser(),
+    ColonAccessParser(),
+    AssignmentParser(),
+    ArrayAccessParser(),
+    BinaryOperationParser(),
+    UnaryOperationParser(),
+    TernaryParser(),
+    MatchCaseParser()
+  ]
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.SYMBOL, "("),
-    NodeTokenPattern(FunctionParser().childParsers, label: "value"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "value"),
     SingleTokenPattern(Token.Type.SYMBOL, ")")
   ], label: "priority")
 
@@ -26,8 +33,8 @@ data class extends ParserBase {
   }
 
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("priority")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "value" })
+    if (let priority = match.getMatch<GroupTokenMatch>("priority")) {
+      return (NodeTokenMatch[])priority.tokenMatches.filter({ _.label == "value" })
     }
   }
 }

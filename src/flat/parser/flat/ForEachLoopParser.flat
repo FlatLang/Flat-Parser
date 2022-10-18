@@ -9,16 +9,14 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(ForEachLoopParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "for"),
     SingleTokenPattern(Token.Type.SYMBOL, "("),
     SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
     SingleTokenPattern(Token.Type.IDENTIFIER, "in"),
     NodeTokenPattern(iteratorParsers, label: "iterator"),
-    SingleTokenPattern(Token.Type.SYMBOL, ")")
+    SingleTokenPattern(Token.Type.SYMBOL, ")"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "for_each_loop_body"),
   ])
 
   let ParserBase[] iteratorParsers => [
@@ -30,7 +28,6 @@ data class extends ParserBase implements ScopeableParser {
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> ForEachLoopNode {

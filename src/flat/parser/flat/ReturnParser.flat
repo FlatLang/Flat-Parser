@@ -10,7 +10,7 @@ data class extends ParserBase {
   static Logger log = Logger(ReturnParser.class)
 
   override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
+    :addAll(LocalScopeParser().valueParsers)
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 

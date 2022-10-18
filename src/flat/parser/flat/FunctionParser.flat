@@ -10,9 +10,6 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override public checkStatementContinuation(ParseContext context, Token token) => true
   override public beginsScope() => true
 
@@ -39,7 +36,7 @@ data class extends ParserBase implements ScopeableParser {
         SingleTokenPattern(Token.Type.SYMBOL, ","),
         NodeTokenPattern(parameterParsers, label: "parameter")
       ], optional: true, repeat: true)
-    ], optional: true, label: "parameters"),
+    ], optional: true, label: "function_parameters"),
     SingleTokenPattern(Token.Type.SYMBOL, ")"),
     GroupTokenPattern([
       SingleTokenPattern(Token.Type.SYMBOL, "->"),
@@ -63,7 +60,15 @@ data class extends ParserBase implements ScopeableParser {
         SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true),
-    SingleTokenPattern(Token.Type.SYMBOL, "=>", optional: true)
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "=>"),
+      NodeTokenPattern(LocalScopeParser().valueParsers, label: "function_arrow_expression")
+    ], optional: true),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "{"),
+      NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "function_body_scope"),
+      SingleTokenPattern(Token.Type.SYMBOL, "}")
+    ], optional: true)
   ])
 
   let ParserBase[] parameterParsers => [
@@ -85,8 +90,18 @@ data class extends ParserBase implements ScopeableParser {
   }
 
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let params = match.getMatch<GroupTokenMatch>("parameters")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
+    let matches = NodeTokenMatch[]
+
+    if (let params = match.getMatch<GroupTokenMatch>("function_parameters")) {
+      matches.addAll(params.tokenMatches.filter({ _.label == "parameter" }))
     }
+    if (let arrowExpression = match.getMatch<NodeTokenMatch>("function_arrow_expression")) {
+      matches.add(arrowExpression)
+    }
+    if (let scope = match.getMatch<NodeGroupTokenMatch>("function_body_scope")) {
+      matches.addAll(scope.getChildNodeMatches())
+    }
+
+    return matches
   }
 }

@@ -6,75 +6,35 @@ import flat/ast/LambdaNode
 import flat/compiler/models/Token
 
 data class extends ParserBase implements ScopeableParser {
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override lazy TokenPattern pattern => XorTokenPattern([
-    GroupTokenPattern([
-      XorTokenPattern([
-        GroupTokenPattern([
-          CaptureTokenPattern(
-            label: "parameters",
-            start: Token(value: "("),
-            end: Token(value: ")")
-          ),
-          SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-        ]),
-        GroupTokenPattern([
-          SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
-          SingleTokenPattern(Token.Type.SYMBOL, value: "=>")
-        ])
+    XorTokenPattern([
+      GroupTokenPattern([
+        CaptureTokenPattern(
+          label: "parameters",
+          start: Token(value: "("),
+          end: Token(value: ")")
+        ),
+        SingleTokenPattern(Token.Type.SYMBOL, value: "=>"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, label: "lambda_contents"),
       ]),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
-        NodeGroupTokenPattern(
-          LocalScopeParser().childParsers,
-          optional: true,
-          label: "lambda_body_contents",
-          scopeParser: LocalScopeParser()
-        ),
-        SingleTokenPattern(Token.Type.SYMBOL, value: "}")
-      ], optional: true)
+        SingleTokenPattern(Token.Type.IDENTIFIER, label: "param_name"),
+        SingleTokenPattern(Token.Type.SYMBOL, value: "=>"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, label: "lambda_contents"),
+      ])
     ]),
-    GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
-      NodeGroupTokenPattern(
-        LocalScopeParser().childParsers,
-        optional: true,
-        label: "lambda_body_contents",
-        scopeParser: LocalScopeParser()
-      ),
-      SingleTokenPattern(Token.Type.SYMBOL, value: "}")
-    ])
+    NodeTokenPattern([LocalScopeParser()], label: "lambda_contents"),
   ])
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
-  override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> LambdaNode {
     return LambdaNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    if (let body = match.getMatch<CaptureTokenMatch>("body")) {
-      return ParseRequest(
-        requests: [
-          ParseRequestData(
-            tokens: body.capture,
-            parsers: Array()
-              :addAll(LocalScopeParser().childParsers)
-              :addAll([BinaryOperationParser()])
-          )
-        ]
-      )
-    } else {
-      return super.getChildParseRequests(context, match)
-    }
-  }
-
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    if (let body = match.getMatch<NodeGroupTokenMatch>("lambda_body_contents")) {
-      return body.getChildNodeMatches()
+    if (let contents = match.getMatch<NodeTokenMatch>("lambda_contents")) {
+      return [contents]
     }
   }
 }

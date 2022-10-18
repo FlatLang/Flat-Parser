@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(MatchParser.class)
 
-  override ParserBase[] childParsers => Array()
+  ParserBase[] matchChildParsers => Array()
     :addAll([MatchScopeParser()])
     :addAll(MatchScopeParser().childParsers)
 
@@ -17,7 +17,12 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "match"),
-    NodeTokenPattern(FunctionParser().childParsers, label: "condition")
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "match_condition"),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "{"),
+      NodeGroupTokenPattern(matchChildParsers),
+      SingleTokenPattern(Token.Type.SYMBOL, "}")
+    ])
   ], label: "match")
 
   override public beginsScope() => true
@@ -28,7 +33,7 @@ data class extends ParserBase implements ScopeableParser {
 
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
     if (let params = match.getMatch<GroupTokenMatch>("match")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "condition" })
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "match_condition" })
     }
   }
 }

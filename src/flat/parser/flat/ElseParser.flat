@@ -9,17 +9,21 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(ElseParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.IDENTIFIER, "else"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "else_body"),
+  ], label: "else")
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
-
-  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "else")
-
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> ElseNode {
     return ElseNode()
+  }
+
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("else")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter(m => m.label == "else_body")
+    }
   }
 }

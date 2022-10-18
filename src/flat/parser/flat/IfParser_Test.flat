@@ -16,14 +16,18 @@ testable class {
       Token(value: "if", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "flob", type: Token.Type.IDENTIFIER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ], FlatParseContext()).last
 
     let expected = [
       Token(value: "if", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "flob", type: Token.Type.IDENTIFIER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ]
 
     expect(result?.tokens).toBe(expected)
@@ -40,7 +44,9 @@ testable class {
       Token(value: "count", type: Token.Type.IDENTIFIER),
       Token(value: "<", type: Token.Type.SYMBOL),
       Token(value: "2", type: Token.Type.INTEGER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ], FlatParseContext()).last
 
     let expected = [
@@ -51,7 +57,9 @@ testable class {
       Token(value: "count", type: Token.Type.IDENTIFIER),
       Token(value: "<", type: Token.Type.SYMBOL),
       Token(value: "2", type: Token.Type.INTEGER),
-      Token(value: ")", type: Token.Type.SYMBOL)
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ]
 
     expect(result?.tokens).toBe(expected)

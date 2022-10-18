@@ -16,15 +16,25 @@ testable class {
     let matcher = parser.matcher
     let result = matcher.matchAll([
       Token(value: "match", type: Token.Type.IDENTIFIER),
-      Token(value: "thing", type: Token.Type.IDENTIFIER)
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "y", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ], FlatParseContext()).last
 
     expect(result?.tokens).toBe([
       Token(value: "match", type: Token.Type.IDENTIFIER),
-      Token(value: "thing", type: Token.Type.IDENTIFIER)
+      Token(value: "thing", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "y", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ])
 
-    expect(matcher.partial).toBe(true)
+    expect(matcher.partial).toBe(false)
   }
 
   test `can match basic match with dot access`() {
@@ -35,16 +45,26 @@ testable class {
       Token(value: "match", type: Token.Type.IDENTIFIER),
       Token(value: "thing", type: Token.Type.IDENTIFIER),
       Token(value: ".", type: Token.Type.SYMBOL),
-      Token(value: "value", type: Token.Type.IDENTIFIER)
+      Token(value: "value", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "y", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ], FlatParseContext()).last
 
     expect(result?.tokens).toBe([
       Token(value: "match", type: Token.Type.IDENTIFIER),
       Token(value: "thing", type: Token.Type.IDENTIFIER),
       Token(value: ".", type: Token.Type.SYMBOL),
-      Token(value: "value", type: Token.Type.IDENTIFIER)
+      Token(value: "value", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "y", type: Token.Type.IDENTIFIER),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ])
 
-    expect(matcher.partial).toBe(true)
+    expect(matcher.partial).toBe(false)
   }
 }

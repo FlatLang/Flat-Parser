@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(SwitchParser.class)
 
-  override ParserBase[] childParsers => Array()
+  ParserBase[] switchChildParsers => Array()
     :addAll([MatchScopeParser()])
     :addAll(MatchScopeParser().childParsers)
 
@@ -17,32 +17,23 @@ data class extends ParserBase implements ScopeableParser {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "switch"),
-    CaptureTokenPattern(
-      label: "condition",
-      end: Token(value: "{"),
-      includeEndToken: false
-    )
-  ])
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "switch_condition"),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "{"),
+      NodeGroupTokenPattern(switchChildParsers),
+      SingleTokenPattern(Token.Type.SYMBOL, "}")
+    ])
+  ], label: "switch")
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> SwitchNode {
     return SwitchNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("condition")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: FunctionParser().childParsers
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let params = match.getMatch<GroupTokenMatch>("switch")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "switch_condition" })
+    }
   }
 }

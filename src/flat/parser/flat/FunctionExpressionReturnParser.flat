@@ -31,7 +31,7 @@ data class extends ParserBase {
       requests: [
         ParseRequestData(
           tokens: tokens,
-          parsers: LocalScopeParser().childParsers
+          parsers: LocalScopeParser().valueParsers
         )
       ]
     )

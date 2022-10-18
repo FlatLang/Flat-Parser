@@ -37,8 +37,25 @@ data class extends ParserBase implements ScopeableParser {
       SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
       SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
     ], repeat: true, optional: true),
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
+    SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name"),
+    GroupTokenPattern([
+      XorTokenPattern([
+        SingleTokenPattern(Token.Type.SYMBOL, "=>"),
+        SingleTokenPattern(Token.Type.SYMBOL, "<=>")
+      ]),
+      NodeTokenPattern(LocalScopeParser().valueParsers)
+    ], optional: true),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, "{"),
+      NodeGroupTokenPattern(fieldScopeParsers),
+      SingleTokenPattern(Token.Type.SYMBOL, "}")
+    ], optional: true)
   ])
+
+  ParserBase[] fieldScopeParsers => [
+    FieldAccessorFunctionParser(),
+    FieldMutatorFunctionParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => token.type == Token.Type.SYMBOL
   override public beginsScope() => true

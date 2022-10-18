@@ -118,6 +118,8 @@ testable class {
       Token(value: ")", type: Token.Type.SYMBOL)
     ], FlatParseContext()).last
 
+    expect(result).toNotBe(null)
+
     let node = parser.generateNode(FlatParseContext(), result)
 
     expect(node).toBe(
@@ -135,6 +137,8 @@ testable class {
       Token(value: "}", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
     ], FlatParseContext()).last
+
+    expect(result).toNotBe(null)
 
     let matches = parser.getChildNodeTokenMatches(FlatParseContext(), result)
 
@@ -169,11 +173,13 @@ testable class {
       Token(value: ")", type: Token.Type.SYMBOL)
     ], FlatParseContext()).last
 
+    expect(result).toNotBe(null)
+
     let matches = parser.getChildNodeTokenMatches(FlatParseContext(), result)
 
     let nodes = matches.flatMap({ _.generateNodes(FlatParseContext()) })
 
-    expect(nodes).toBe([LambdaNode()])
+    expect(nodes).toBe([LambdaNode(), LocalScopeNode()])
   }
 
   test `can match function call with simple lambda argument`() {
@@ -212,12 +218,15 @@ testable class {
       Token(value: ")", type: Token.Type.SYMBOL)
     ], FlatParseContext()).last
 
+    expect(result).toNotBe(null)
+
     let matches = parser.getChildNodeTokenMatches(FlatParseContext(), result)
 
     let nodes = matches.flatMap({ _.generateNodes(FlatParseContext()) })
 
     expect(nodes).toBe([
       LambdaNode(),
+      LocalScopeNode(),
       IdentifierNode(name: "x")
     ])
   }

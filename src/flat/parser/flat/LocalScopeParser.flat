@@ -6,7 +6,7 @@ import flat/ast/LocalScopeNode
 import flat/compiler/models/Token
 
 data class extends ParserBase implements ScopeableParser {
-  override ParserBase[] childParsers => Array():addAll([
+  visible ParserBase[] valueParsers => [
     AnnotationParser(),
     ThrowParser(),
     IfParser(),
@@ -33,16 +33,25 @@ data class extends ParserBase implements ScopeableParser {
     UnaryOperationParser(),
     PriorityParser(),
     LocalScopeParser()
-  ])
+  ]
 
-  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
+    NodeGroupTokenPattern(valueParsers, optional: true, label: "scope_body_contents"),
+    SingleTokenPattern(Token.Type.SYMBOL, value: "}")
+  ], label: "local_scope")
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> LocalScopeNode {
     return LocalScopeNode()
+  }
+
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let body = match.getMatch<NodeGroupTokenMatch>("scope_body_contents")) {
+      return body.getChildNodeMatches()
+    }
   }
 }

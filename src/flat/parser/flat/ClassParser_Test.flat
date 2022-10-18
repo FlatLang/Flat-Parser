@@ -55,17 +55,21 @@ testable class {
     let result = matcher.matchAll([
       Token(value: "class", type: Token.Type.IDENTIFIER),
       Token(value: "extends", type: Token.Type.IDENTIFIER),
-      Token(value: "Test", type: Token.Type.IDENTIFIER)
-    ]).last
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),
       Token(value: "extends", type: Token.Type.IDENTIFIER),
-      Token(value: "Test", type: Token.Type.IDENTIFIER)
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ]
 
     expect(result?.tokens).toBe(expected)
-    expect(matcher.partial).toBe(true)
+    expect(matcher.partial).toBe(false)
   }
 
   test `can match implicit name with implements`() {
@@ -73,17 +77,21 @@ testable class {
     let result = matcher.matchAll([
       Token(value: "class", type: Token.Type.IDENTIFIER),
       Token(value: "implements", type: Token.Type.IDENTIFIER),
-      Token(value: "Test", type: Token.Type.IDENTIFIER)
-    ]).last
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),
       Token(value: "implements", type: Token.Type.IDENTIFIER),
-      Token(value: "Test", type: Token.Type.IDENTIFIER)
+      Token(value: "Test", type: Token.Type.IDENTIFIER),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ]
 
     expect(result?.tokens).toBe(expected)
-    expect(matcher.partial).toBe(true)
+    expect(matcher.partial).toBe(false)
   }
 
   test `can match with many implementations`() {
@@ -109,8 +117,10 @@ testable class {
       Token(value: "Int", type: Token.Type.IDENTIFIER),
       Token(value: ",", type: Token.Type.SYMBOL),
       Token(value: "String", type: Token.Type.IDENTIFIER),
-      Token(value: ">", type: Token.Type.SYMBOL)
-    ]).last
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),
@@ -133,10 +143,12 @@ testable class {
       Token(value: "Int", type: Token.Type.IDENTIFIER),
       Token(value: ",", type: Token.Type.SYMBOL),
       Token(value: "String", type: Token.Type.IDENTIFIER),
-      Token(value: ">", type: Token.Type.SYMBOL)
+      Token(value: ">", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL),
     ]
 
     expect(result?.tokens).toBe(expected)
-    expect(matcher.partial).toBe(true)
+    expect(matcher.partial).toBe(false)
   }
 }

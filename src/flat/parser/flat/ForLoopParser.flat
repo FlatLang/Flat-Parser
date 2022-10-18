@@ -9,9 +9,6 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(ForLoopParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "for"),
     SingleTokenPattern(Token.Type.SYMBOL, "("),
@@ -20,15 +17,18 @@ data class extends ParserBase implements ScopeableParser {
     NodeTokenPattern(conditionParsers, label: "condition", optional: true),
     SingleTokenPattern(Token.Type.SYMBOL, ";"),
     NodeTokenPattern(incrementerParsers, label: "incrementer", optional: true),
-    SingleTokenPattern(Token.Type.SYMBOL, ")")
+    SingleTokenPattern(Token.Type.SYMBOL, ")"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "for_loop_body"),
   ])
 
   let ParserBase[] initializerParsers => [
+    AnnotationParser(),
     IdentifierParser(),
     LocalDeclarationParser()
   ]
 
   let ParserBase[] conditionParsers => [
+    AnnotationParser(),
     IdentifierParser(),
     LiteralParser(),
     PriorityParser(),
@@ -36,15 +36,16 @@ data class extends ParserBase implements ScopeableParser {
   ]
 
   let ParserBase[] incrementerParsers => [
+    AnnotationParser(),
     IdentifierParser(),
     LiteralParser(),
     PriorityParser(),
-    FunctionCallParser()
+    FunctionCallParser(),
+    UnaryOperationParser()
   ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> ForLoopNode {

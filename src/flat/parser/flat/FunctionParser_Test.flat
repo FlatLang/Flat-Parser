@@ -277,18 +277,20 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),
-      Token(value: "=>", type: Token.Type.SYMBOL)
-    ]).last
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+    ], FlatParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),
-      Token(value: "=>", type: Token.Type.SYMBOL)
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
     ]
 
     expect(result?.tokens).toBe(expected)
-    expect(matcher.partial).toBe(false)
+    expect(matcher.partial).toBe(true)
   }
 
   test `can access parameters from node token matches`() {
@@ -324,24 +326,6 @@ testable class {
           )
         ]
       )
-    ])
-  }
-
-  test `can match function with expression return`() {
-    let matcher = FunctionParser().matcher
-    let match = matcher.matchAll([
-      Token(value: "test", type: Token.Type.IDENTIFIER),
-      Token(value: "(", type: Token.Type.SYMBOL),
-      Token(value: ")", type: Token.Type.SYMBOL),
-      Token(value: "=>", type: Token.Type.SYMBOL)
-    ]).last
-
-    expect(match).toNotBe(null)
-    expect(match.tokens).toBe([
-      Token(value: "test", type: Token.Type.IDENTIFIER),
-      Token(value: "(", type: Token.Type.SYMBOL),
-      Token(value: ")", type: Token.Type.SYMBOL),
-      Token(value: "=>", type: Token.Type.SYMBOL)
     ])
   }
 }

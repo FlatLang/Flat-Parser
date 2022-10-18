@@ -9,15 +9,11 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(IfParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "if"),
-    SingleTokenPattern(Token.Type.SYMBOL, "("),
     NodeTokenPattern(conditionParsers, label: "condition"),
-    SingleTokenPattern(Token.Type.SYMBOL, ")")
-  ])
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "if_body"),
+  ], label: "if")
 
   ParserBase[] conditionParsers => [
     AnnotationParser(),
@@ -30,12 +26,12 @@ data class extends ParserBase implements ScopeableParser {
     ArrayInitializerParser(),
     UnaryOperationParser(),
     CastParser(),
+    PriorityParser(),
     LocalDeclarationParser()
   ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> IfNode {
@@ -43,6 +39,8 @@ data class extends ParserBase implements ScopeableParser {
   }
 
   override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
-    return match.getMatches<NodeTokenMatch>("condition")
+    if (let params = match.getMatch<GroupTokenMatch>("if")) {
+      return (NodeTokenMatch[])params.tokenMatches.filter(m => m.label == "condition" || m.label == "if_body")
+    }
   }
 }

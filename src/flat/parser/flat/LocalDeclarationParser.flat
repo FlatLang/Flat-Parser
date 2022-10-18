@@ -25,6 +25,10 @@ data class extends ParserBase {
       SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_name")
     ]),
     GroupTokenPattern([
+      XorTokenPattern([
+        PreconditionTokenPattern([LetModifier.class]),
+        PreconditionTokenPattern([VarModifier.class])
+      ], optional: true, label: "implicit_modifier"),
       GroupTokenPattern([
         SingleTokenPattern(Token.Type.IDENTIFIER, label: "declaration_type"),
         CaptureTokenPattern(

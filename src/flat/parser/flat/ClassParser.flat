@@ -85,8 +85,21 @@ data class extends ParserBase implements ScopeableParser {
           optional: true
         )
       ], repeat: true, optional: true, label: "implements_class")
-    ], optional: true)
+    ], optional: true),
+    GroupTokenPattern([
+      SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
+      NodeGroupTokenPattern(classBodyParsers, optional: true, label: "class_body_contents"),
+      SingleTokenPattern(Token.Type.SYMBOL, value: "}")
+    ], label: "class_body")
   ])
+
+  ParserBase[] classBodyParsers => [
+    AnnotationParser(),
+    FieldParser(),
+    ArrayOverrideParser(),
+    FunctionParser(),
+    AssignmentParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
   override public beginsScope() => true
@@ -100,5 +113,11 @@ data class extends ParserBase implements ScopeableParser {
       name: className ?: context.fileNode.file.rootName,
       implicitName: className == null
     )
+  }
+
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    if (let body = match.getMatch<NodeGroupTokenMatch>("class_body_contents")) {
+      return body.getChildNodeMatches()
+    }
   }
 }

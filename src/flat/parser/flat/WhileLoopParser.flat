@@ -9,39 +9,36 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(WhileLoopParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().childParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(Token.Type.IDENTIFIER, "while"),
-    CaptureTokenPattern(
-      label: "condition",
-      start: Token(value: "("),
-      end: Token(value: ")")
-    )
+    NodeTokenPattern(conditionParsers, label: "condition"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "while_body"),
   ])
+
+  ParserBase[] conditionParsers => [
+    AnnotationParser(),
+    NamedArgumentParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    LambdaParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser(),
+    PriorityParser(),
+    LocalDeclarationParser()
+  ]
 
   override public checkStatementContinuation(ParseContext context, Token token) => true
 
-  override public acceptImmediately() => true
   override public beginsScope() => true
 
   override public generateNode(ParseContext context, TokenMatch match) -> WhileLoopNode {
     return WhileLoopNode()
   }
 
-  override public getChildParseRequests(ParseContext context, TokenMatch match) -> ParseRequest {
-    Token[][] tokens = match
-      .getMatches<CaptureTokenMatch>("condition")
-      .map({ _.capture })
-
-    return ParseRequest(
-      requests: tokens.map({
-        return ParseRequestData(
-          tokens: _,
-          parsers: FunctionParser().childParsers
-        )
-      })
-    )
+  override public getChildNodeTokenMatches(ParseContext context, TokenMatch match) => NodeTokenMatch[] {
+    return match.getMatches<NodeTokenMatch>("condition")
   }
 }
