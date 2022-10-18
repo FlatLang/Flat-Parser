@@ -21,9 +21,9 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.SYMBOL, "["),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     NodeTokenPattern(indexParsers, label: "index"),
-    SingleTokenPattern(Token.Type.SYMBOL, "]")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ], label: "array_access")
 
   ParserBase[] indexParsers => [

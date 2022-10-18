@@ -36,9 +36,9 @@ data class extends ParserBase implements ScopeableParser {
   ]
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
     NodeGroupTokenPattern(valueParsers, optional: true, label: "scope_body_contents"),
-    SingleTokenPattern(Token.Type.SYMBOL, value: "}")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
   ], label: "local_scope")
 
   override public generateNode() -> LocalScopeNode {

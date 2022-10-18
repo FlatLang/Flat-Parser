@@ -11,9 +11,9 @@ data class extends ParserBase implements ScopeableParser {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "class_name"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "class_name"),
       CaptureTokenPattern(
         label: "generic_parameters",
         start: Token(value: "<"),
@@ -30,8 +30,8 @@ data class extends ParserBase implements ScopeableParser {
       )
     ], optional: true, greedy: false),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.IDENTIFIER, "extends"),
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
       CaptureTokenPattern(
         label: "generic_arguments",
         start: Token(value: "<"),
@@ -49,8 +49,8 @@ data class extends ParserBase implements ScopeableParser {
       )
     ], optional: true, label: "extends_class"),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.IDENTIFIER, "implements"),
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "implements_class_name"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "implements"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
       CaptureTokenPattern(
         label: "generic_arguments",
         start: Token(value: "<"),
@@ -67,8 +67,8 @@ data class extends ParserBase implements ScopeableParser {
         optional: true
       ),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, ","),
-        SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
         CaptureTokenPattern(
           label: "generic_arguments",
           start: Token(value: "<"),
@@ -87,9 +87,9 @@ data class extends ParserBase implements ScopeableParser {
       ], repeat: true, optional: true, label: "implements_class")
     ], optional: true),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, value: "{"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
       NodeGroupTokenPattern(classBodyParsers, optional: true, label: "class_body_contents"),
-      SingleTokenPattern(Token.Type.SYMBOL, value: "}")
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], label: "class_body")
   ])
 

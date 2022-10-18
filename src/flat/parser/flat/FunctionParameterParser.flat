@@ -14,7 +14,7 @@ data class extends ParserBase {
     :addAll(LocalScopeParser().valueParsers)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "generic_parameters",
       start: Token(value: "<"),
@@ -35,11 +35,11 @@ data class extends ParserBase {
       end: Token(value: ")")
     ),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "->"),
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
-        SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true)
   ])

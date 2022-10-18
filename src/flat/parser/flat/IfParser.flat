@@ -10,7 +10,7 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(IfParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "if"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "if"),
     NodeTokenPattern(conditionParsers, label: "condition"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "if_body"),
   ], label: "if")

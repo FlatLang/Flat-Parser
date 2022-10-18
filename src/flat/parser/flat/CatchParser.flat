@@ -13,10 +13,10 @@ data class extends ParserBase {
     :addAll(LocalScopeParser().valueParsers)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "catch"),
-    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "catch"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern(parameterParsers, label: "parameter"),
-    SingleTokenPattern(Token.Type.SYMBOL, ")")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
   ], label: "parameters")
 
   let ParserBase[] parameterParsers => [

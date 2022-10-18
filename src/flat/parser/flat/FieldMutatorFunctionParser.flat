@@ -12,11 +12,11 @@ data class extends ParserBase implements ScopeableParser {
   override ParserBase[] childParsers => [LocalScopeParser()]
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "set"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "set"),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "("),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
       NodeTokenPattern(parameterParsers, label: "parameter"),
-      SingleTokenPattern(Token.Type.SYMBOL, ")")
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
     ], optional: true)
   ])
 

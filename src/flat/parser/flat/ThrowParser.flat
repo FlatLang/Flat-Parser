@@ -12,7 +12,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "throw")
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "throw")
 
   override public acceptImmediately() => true
 

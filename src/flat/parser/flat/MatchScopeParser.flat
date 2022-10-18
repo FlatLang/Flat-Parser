@@ -9,7 +9,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.SYMBOL, value: "{")
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "{")
 
   override public acceptImmediately() => true
 

@@ -13,13 +13,13 @@ data class extends ParserBase {
     :addAll(LocalScopeParser().valueParsers)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "external"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "external"),
     GroupTokenPattern([
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
-        SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "exclude"),
       ], optional: true),
-      SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true, label: "include")
     ], repeat: true, optional: true),
     CaptureTokenPattern(
       label: "body",

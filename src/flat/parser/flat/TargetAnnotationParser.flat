@@ -13,16 +13,16 @@ data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.SYMBOL, "["),
-    SingleTokenPattern(Token.Type.IDENTIFIER, "Target"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "Target"),
     GroupTokenPattern([
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.IDENTIFIER, "not"),
-        SingleTokenPattern(Token.Type.IDENTIFIER, label: "exclude"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "exclude"),
       ], optional: true),
-      SingleTokenPattern(Token.Type.IDENTIFIER, optional: true, label: "include")
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true, label: "include")
     ], repeat: true, greedy: false),
-    SingleTokenPattern(Token.Type.SYMBOL, "]")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ], label: "target_annotation")
 
   override public generateNode() -> TargetAnnotation => null {

@@ -22,7 +22,7 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(
-    Token.Type.SYMBOL,
+    type: Token.Type.SYMBOL,
     values: [
       "++", "--", "!", "$", "-"
     ]

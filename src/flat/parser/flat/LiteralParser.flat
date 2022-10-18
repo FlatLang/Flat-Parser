@@ -15,11 +15,11 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => XorTokenPattern([
-    SingleTokenPattern(Token.Type.STRING),
-    SingleTokenPattern(Token.Type.CHAR),
-    SingleTokenPattern(Token.Type.INTEGER),
-    SingleTokenPattern(Token.Type.BOOL),
-    SingleTokenPattern(Token.Type.NULL)
+    SingleTokenPattern(type: Token.Type.STRING),
+    SingleTokenPattern(type: Token.Type.CHAR),
+    SingleTokenPattern(type: Token.Type.INTEGER),
+    SingleTokenPattern(type: Token.Type.BOOL),
+    SingleTokenPattern(type: Token.Type.NULL)
   ])
 
   override public acceptImmediately() => true

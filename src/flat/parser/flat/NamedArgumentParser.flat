@@ -17,8 +17,8 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
-    SingleTokenPattern(Token.Type.SYMBOL, ":"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
   ], label: "named_argument")
 
   override public generateNode() -> NamedArgumentNode {

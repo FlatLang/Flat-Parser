@@ -23,7 +23,7 @@ data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => SingleTokenPattern(
-    Token.Type.IDENTIFIER,
+    type: Token.Type.IDENTIFIER,
     label: "alias",
     values: Array()
       :addAll(VisibleModifier.aliases)

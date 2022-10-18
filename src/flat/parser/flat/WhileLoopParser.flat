@@ -10,7 +10,7 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(WhileLoopParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "while"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
     NodeTokenPattern(conditionParsers, label: "condition"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "while_body"),
   ])

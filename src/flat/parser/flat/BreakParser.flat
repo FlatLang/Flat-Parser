@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(BreakParser.class)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(Token.Type.IDENTIFIER, "break")
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "break")
 
   override public acceptImmediately() => true
 

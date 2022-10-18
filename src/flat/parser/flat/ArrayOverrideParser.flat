@@ -14,10 +14,10 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, "this"),
-    SingleTokenPattern(Token.Type.SYMBOL, value: "["),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "this"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     ParameterParser().pattern,
-    SingleTokenPattern(Token.Type.SYMBOL, value: "]")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ])
 
   override public generateNode() -> ArrayOverrideNode {

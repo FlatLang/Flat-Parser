@@ -11,7 +11,7 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
     CaptureTokenPattern(
       label: "generic_parameters",
       start: Token(value: "<"),
@@ -26,18 +26,18 @@ data class extends ParserBase implements ScopeableParser {
       ],
       optional: true
     ),
-    SingleTokenPattern(Token.Type.SYMBOL, "("),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
       NodeTokenPattern(parameterParsers, label: "parameter"),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         NodeTokenPattern(parameterParsers, label: "parameter")
       ], optional: true, repeat: true)
     ], optional: true, label: "function_parameters"),
-    SingleTokenPattern(Token.Type.SYMBOL, ")"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "->"),
-      SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
       CaptureTokenPattern(
         label: "generic_parameters",
         start: Token(value: "<"),
@@ -53,18 +53,18 @@ data class extends ParserBase implements ScopeableParser {
         optional: true
       ),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, "[", label: "type_bracket_start"),
-        SingleTokenPattern(Token.Type.SYMBOL, "]", label: "type_bracket_end")
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
       ], repeat: true, optional: true)
     ], optional: true),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "=>"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
       NodeTokenPattern(LocalScopeParser().valueParsers, label: "function_arrow_expression")
     ], optional: true),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "{"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
       NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "function_body_scope"),
-      SingleTokenPattern(Token.Type.SYMBOL, "}")
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], optional: true)
   ])
 

@@ -15,15 +15,15 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.SYMBOL, "["),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     GroupTokenPattern([
       NodeTokenPattern(indexParsers, label: "initializer_value"),
       GroupTokenPattern([
-        SingleTokenPattern(Token.Type.SYMBOL, ","),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         NodeTokenPattern(indexParsers, label: "initializer_value")
       ], optional: true, repeat: true)
     ], label: "initializer_values"),
-    SingleTokenPattern(Token.Type.SYMBOL, "]")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ])
 
   let ParserBase[] indexParsers => [

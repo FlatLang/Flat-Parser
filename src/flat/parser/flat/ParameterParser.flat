@@ -11,7 +11,7 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "type"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
     CaptureTokenPattern(
       label: "generic_parameters",
       start: Token(value: "<"),
@@ -27,11 +27,11 @@ data class extends ParserBase {
       optional: true
     ),
     GroupTokenPattern([
-      SingleTokenPattern(Token.Type.SYMBOL, "[", label: "bracket_start"),
-      SingleTokenPattern(Token.Type.SYMBOL, "]", label: "bracket_end")
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "bracket_start"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "bracket_end")
     ], repeat: true, optional: true),
-    SingleTokenPattern(Token.Type.SYMBOL, ":", label: "require_name", optional: true),
-    SingleTokenPattern(Token.Type.IDENTIFIER, label: "name")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ":", label: "require_name", optional: true),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name")
   ], label: "parameter")
 
   override public generateNode() -> ParameterNode {
