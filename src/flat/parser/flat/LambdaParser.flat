@@ -24,7 +24,7 @@ data class extends ParserBase implements ScopeableParser {
       ])
     ]),
     NodeTokenPattern([LocalScopeParser()], label: "lambda_contents"),
-  ])
+  ], label: "lambda")
 
   override public generateNode() -> LambdaNode {
     return LambdaNode()

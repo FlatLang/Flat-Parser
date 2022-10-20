@@ -13,7 +13,7 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
     NodeTokenPattern(conditionParsers, label: "condition"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "while_body"),
-  ])
+  ], label: "while_loop")
 
   ParserBase[] conditionParsers => [
     AnnotationParser(),

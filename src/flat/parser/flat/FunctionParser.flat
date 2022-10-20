@@ -66,7 +66,7 @@ data class extends ParserBase implements ScopeableParser {
       NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "function_body_scope"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], optional: true)
-  ])
+  ], label: "function")
 
   let ParserBase[] parameterParsers => [
     AnnotationParser(),
