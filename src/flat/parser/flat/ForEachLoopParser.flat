@@ -14,7 +14,7 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "in"),
-    NodeTokenPattern(iteratorParsers, label: "iterator"),
+    NodeTokenPattern(iteratorParsers, label: "iterator", greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "for_each_loop_body"),
   ])
