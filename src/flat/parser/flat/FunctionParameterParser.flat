@@ -10,8 +10,9 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(FunctionParameterParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
+  override ParserBase[] childParsers => Array():addAll([
+    AssignmentParser()
+  ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
