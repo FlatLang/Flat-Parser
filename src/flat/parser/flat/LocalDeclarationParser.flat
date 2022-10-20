@@ -19,15 +19,15 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern([LetModifier.class]),
-        PreconditionTokenPattern([VarModifier.class])
+        PreconditionTokenPattern(annotations: [LetModifier.class]),
+        PreconditionTokenPattern(annotations: [VarModifier.class])
       ], label: "implicit_modifier"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_name")
     ]),
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern([LetModifier.class]),
-        PreconditionTokenPattern([VarModifier.class])
+        PreconditionTokenPattern(annotations: [LetModifier.class]),
+        PreconditionTokenPattern(annotations: [VarModifier.class])
       ], optional: true, label: "implicit_modifier"),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_type"),

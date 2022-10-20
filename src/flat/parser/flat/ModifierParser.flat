@@ -11,23 +11,56 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => SingleTokenPattern(
-    type: Token.Type.IDENTIFIER,
-    label: "alias",
-    values: Array()
-      :addAll(VisibleModifier.aliases)
-      :addAll(PublicModifier.aliases)
-      :addAll(PrivateModifier.aliases)
-      :addAll(LetModifier.aliases)
-      :addAll(VarModifier.aliases)
-      :addAll(StaticModifier.aliases)
-      :addAll(AsyncModifier.aliases)
-      :addAll(DataModifier.aliases)
-      :addAll(LazyModifier.aliases)
-      :addAll(NativeModifier.aliases)
-      :addAll(TestableModifier.aliases)
-      :addAll(TestModifier.aliases)
-  )
+  override lazy TokenPattern pattern => XorTokenPattern([
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: VisibleModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VisibleModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: PublicModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PublicModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: PrivateModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PrivateModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: LetModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LetModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: VarModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VarModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: StaticModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: StaticModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: AsyncModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AsyncModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: DataModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: DataModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: LazyModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LazyModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: NativeModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: NativeModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: TestableModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestableModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: TestModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestModifier.aliases, label: "alias"),
+    ]),
+  ])
 
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")
