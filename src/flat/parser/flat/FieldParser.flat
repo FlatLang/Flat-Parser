@@ -10,13 +10,6 @@ import flat/extensions/SyntaxStringFunctions
 import flat/ast/Node
 
 data class extends ParserBase implements ScopeableParser {
-  override ParserBase[] childParsers => Array():addAll([
-    FieldScopeParser(),
-    AssignmentParser(),
-    ArrowExpressionParser(),
-    DoubleArrowExpressionParser()
-  ])
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_type"),
     CaptureTokenPattern(
