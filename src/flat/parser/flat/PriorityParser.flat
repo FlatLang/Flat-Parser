@@ -11,12 +11,12 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => [
     DotAccessParser(),
+    TernaryParser(),
     ColonAccessParser(),
     AssignmentParser(),
     ArrayAccessParser(),
     BinaryOperationParser(),
     UnaryOperationParser(),
-    TernaryParser(),
     MatchCaseParser()
   ]
 

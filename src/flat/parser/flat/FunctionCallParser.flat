@@ -9,12 +9,12 @@ import flat/compiler/models/SyntaxTokenFunctions
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll([
     DotAccessParser(),
+    TernaryParser(),
     ColonAccessParser(),
     AssignmentParser(),
     ArrayAccessParser(),
     BinaryOperationParser(),
     UnaryOperationParser(),
-    TernaryParser(),
     MatchCaseParser()
   ])
 

@@ -27,7 +27,8 @@ data class extends ParserBase implements ScopeableParser {
     UnaryOperationParser(),
     CastParser(),
     PriorityParser(),
-    LocalDeclarationParser()
+    LocalDeclarationParser(),
+    TernaryParser()
   ]
 
   override public generateNode() -> IfNode {

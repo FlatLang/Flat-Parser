@@ -9,20 +9,34 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(TernaryParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
-    CaptureTokenPattern(
-      label: "true_value",
-      start: Token(value: "?"),
-      end: Token(value: ":")
-    )
-  ])
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "?"),
+    NodeTokenPattern(conditionParsers, label: "true_value", greedy: false),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
+    NodeTokenPattern(conditionParsers, label: "false_value"),
+  ], label: "ternary")
 
-  override public acceptImmediately() => true
+  visible ParserBase[] conditionParsers => [
+    AnnotationParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    LocalDeclarationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    PriorityParser()
+  ]
 
   override public generateNode() -> TernaryNode {
     return TernaryNode()
+  }
+
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    return [
+      lastMatch.getMatch<NodeTokenMatch>("true_value"),
+      lastMatch.getMatch<NodeTokenMatch>("false_value"),
+    ]
   }
 }
