@@ -31,7 +31,7 @@ import flat/parser/matchers
   TestSuiteAnnotationParser_Test
 ]]
 class {
-  public static async main(String args[]) {
+  public static async main(String[] args) {
     let test = Parser_TestSuite()
 
     let results = TestResult[]
