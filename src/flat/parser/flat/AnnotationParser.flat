@@ -10,11 +10,6 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override visible Bool isMetadata => true
 
-  lazy ParserBase[] annotationParsers => Array().addAll([
-    ModifierParser(),
-    TargetAnnotationParser()
-  ])
-
   override lazy TokenPattern pattern => NodeTokenPattern([
     ModifierParser(),
     TargetAnnotationParser()
