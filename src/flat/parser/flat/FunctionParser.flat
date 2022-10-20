@@ -11,7 +11,14 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+    XorTokenPattern([
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+      CaptureTokenPattern(
+        start: Token(value: "`"),
+        end: Token(value: "`"),
+        label: "literal_name"
+      ),
+    ]),
     CaptureTokenPattern(
       label: "generic_parameters",
       start: Token(value: "<"),
