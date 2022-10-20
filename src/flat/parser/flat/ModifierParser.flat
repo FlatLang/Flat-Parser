@@ -66,10 +66,10 @@ data class extends ParserBase {
       return DataModifier(aliasUsed: alias)
     }
     if (LazyModifier.aliases.any({ _ == alias})) {
-      return DataModifier(aliasUsed: alias)
+      return LazyModifier(aliasUsed: alias)
     }
     if (NativeModifier.aliases.any({ _ == alias})) {
-      return DataModifier(aliasUsed: alias)
+      return NativeModifier(aliasUsed: alias)
     }
   }
 }
