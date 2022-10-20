@@ -11,44 +11,4 @@ import flat/stream/Stream
 
 data class extends ParseContext {
   static Logger log = Logger(FlatParseContext.class)
-
-  override public shouldContinuePopping(ParserBase currentParser) -> Bool {
-    return currentParser.class != LocalScopeParser.class && currentParser.class.isOfType(ScopeableParser.class)
-  }
-
-  override public shouldPushScope(Node node) => false {
-    match node.class {
-      FileNode.class => fallthrough
-      ClassNode.class => fallthrough
-      ClassScopeNode.class => fallthrough
-      FunctionNode.class => fallthrough
-      LocalScopeNode.class => fallthrough
-      MatchNode.class => fallthrough
-      MatchScopeNode.class => fallthrough
-      WhileLoopNode.class => fallthrough
-      ForLoopNode.class => fallthrough
-      FieldNode.class => fallthrough
-      FieldScopeNode.class => fallthrough
-      FieldAccessorFunctionNode.class => fallthrough
-      FieldMutatorFunctionNode.class => fallthrough
-      ScopeNode.class => return true
-    }
-  }
-
-  public setCurrentParsers(ParserBase parser, Node node, ParserBase[] parsers) {
-    ParseContext.log.debugFunc({"|
-      Setting current parsers
-        parser: #{parser.class.name}
-        node: #{node.class.name}
-        parsers: [#{parsers.map(p => p.class.name).join(", ")}]
-      |"})
-    currentNode = node
-    currentParser = parser
-    currentParsers = parsers
-    statementParentStack = statementParentStack.copy():push(currentNode)
-  }
-
-  public reset() {
-    currentParsers = currentParsers.map({ _.copy() })
-  }
 }
