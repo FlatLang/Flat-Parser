@@ -6,10 +6,6 @@ import flat/ast/ClassNode
 import flat/compiler/models/Token
 
 data class extends ParserBase implements ScopeableParser {
-  override ParserBase[] childParsers => Array():addAll([
-    ClassScopeParser()
-  ])
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
