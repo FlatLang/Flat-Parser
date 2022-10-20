@@ -80,7 +80,8 @@ data class extends ParserBase implements ScopeableParser {
           ],
           optional: true
         )
-      ], repeat: true, optional: true, label: "implements_class")
+      ], repeat: true, optional: true, label: "implements_class"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),

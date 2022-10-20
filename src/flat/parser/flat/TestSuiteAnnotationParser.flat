@@ -21,6 +21,7 @@ data class extends ParserBase {
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         testClassesPattern,
       ], repeat: true, optional: true),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], repeat: true, optional: true, greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ], label: "test_suite_annotation")
@@ -33,6 +34,7 @@ data class extends ParserBase {
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         SingleTokenPattern(type: Token.Type.IDENTIFIER),
       ], repeat: true, optional: true),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]"),
   ], repeat: true, optional: true, greedy: false)

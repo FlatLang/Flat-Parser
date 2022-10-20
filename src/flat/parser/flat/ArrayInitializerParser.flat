@@ -23,7 +23,8 @@ data class extends ParserBase {
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         NodeTokenPattern(indexParsers, label: "initializer_value")
-      ], optional: true, repeat: true)
+      ], optional: true, repeat: true),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], label: "initializer_values"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ])
