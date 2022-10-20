@@ -18,7 +18,8 @@ data class extends ParserBase {
     ArrayInitializerParser(),
     LiteralParser(),
     RegexPatternParser(),
-    FunctionCallParser()
+    FunctionCallParser(),
+    BinaryOperationParser(),
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(
