@@ -2,7 +2,7 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/annotations/TargetAnnotation
+import flat/annotations
 import flat/compiler/models/Token
 import flat/ast/AnnotationNode
 import flat/ast/Node
@@ -14,7 +14,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "Target"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: TargetAnnotation.identifier),
     XorTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
