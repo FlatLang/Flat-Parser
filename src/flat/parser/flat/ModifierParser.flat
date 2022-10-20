@@ -2,20 +2,9 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/annotations/VisibleModifier
-import flat/annotations/PublicModifier
-import flat/annotations/PrivateModifier
-import flat/annotations/LetModifier
-import flat/annotations/VarModifier
-import flat/annotations/StaticModifier
-import flat/annotations/AsyncModifier
-import flat/annotations/DataModifier
-import flat/annotations/LazyModifier
-import flat/annotations/NativeModifier
-import flat/annotations/Modifier
+import flat/annotations
+import flat/ast
 import flat/compiler/models/Token
-import flat/ast/AnnotationNode
-import flat/ast/Node
 
 import flat/extensions/SyntaxStringFunctions
 
@@ -36,6 +25,8 @@ data class extends ParserBase {
       :addAll(DataModifier.aliases)
       :addAll(LazyModifier.aliases)
       :addAll(NativeModifier.aliases)
+      :addAll(TestableModifier.aliases)
+      :addAll(TestModifier.aliases)
   )
 
   override public generateNode() -> AnnotationNode => null {
@@ -70,6 +61,12 @@ data class extends ParserBase {
     }
     if (NativeModifier.aliases.any({ _ == alias})) {
       return NativeModifier(aliasUsed: alias)
+    }
+    if (TestableModifier.aliases.any({ _ == alias})) {
+      return TestableModifier(aliasUsed: alias)
+    }
+    if (TestModifier.aliases.any({ _ == alias})) {
+      return TestModifier(aliasUsed: alias)
     }
   }
 }
