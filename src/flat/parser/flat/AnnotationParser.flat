@@ -12,7 +12,8 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => NodeTokenPattern([
     ModifierParser(),
-    TargetAnnotationParser()
+    TargetAnnotationParser(),
+    TestSuiteAnnotationParser(),
   ], label: "annotation")
 
   override public acceptImmediately() => true

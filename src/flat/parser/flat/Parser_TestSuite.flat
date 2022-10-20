@@ -27,7 +27,8 @@ import flat/parser/matchers
   MatchCaseParser_Test,
   IfParser_Test,
   LambdaParser_Test,
-  ForLoopParser_Test
+  ForLoopParser_Test,
+  TestSuiteAnnotationParser_Test
 ]]
 class {
   public static async main(String args[]) {
