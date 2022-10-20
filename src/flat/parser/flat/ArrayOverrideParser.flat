@@ -6,19 +6,29 @@ import flat/ast/ArrayOverrideNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
-    FieldScopeParser(),
-    AssignmentParser(),
-    ArrowExpressionParser(),
-    DoubleArrowExpressionParser()
-  ])
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "this"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     ParameterParser().pattern,
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-  ])
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]"),
+    GroupTokenPattern([
+      XorTokenPattern([
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "<=>")
+      ]),
+      NodeTokenPattern(LocalScopeParser().valueParsers, label: "array_override_arrow_value")
+    ], optional: true),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
+      NodeGroupTokenPattern(arrayOverrideScopeParsers, label: "array_override_scope"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
+    ], optional: true),
+  ], label: "array_override")
+
+  ParserBase[] arrayOverrideScopeParsers => [
+    FieldAccessorFunctionParser(),
+    FieldMutatorFunctionParser()
+  ]
 
   override public generateNode() -> ArrayOverrideNode {
     return ArrayOverrideNode()
