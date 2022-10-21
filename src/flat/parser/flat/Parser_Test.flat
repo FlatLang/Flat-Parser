@@ -31,11 +31,12 @@ testable class {
       |"
 
     let file = File("Test.flat")
-    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source))
+    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source):emit("start"))
 
     let nodes = Node[]
 
     stream.on<Node>("data", { nodes.add(_) })
+    stream.emit("start")
     stream.waitFor("close")
 
     expect(nodes).toBe([
@@ -84,11 +85,12 @@ testable class {
       |"
 
     let file = File("Test.flat")
-    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source))
+    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source):emit("start"))
 
     let nodes = Node[]
 
     stream.on<Node>("data", { nodes.add(_) })
+    stream.emit("start")
     stream.waitFor("close")
 
     expect(nodes).toBe([
