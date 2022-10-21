@@ -36,6 +36,7 @@ testable class {
     let nodes = Node[]
 
     stream.on<Node>("data", { nodes.add(_) })
+    stream.waitFor("close")
 
     expect(nodes).toBe([
       FileNode(file: file),
@@ -88,6 +89,7 @@ testable class {
     let nodes = Node[]
 
     stream.on<Node>("data", { nodes.add(_) })
+    stream.waitFor("close")
 
     expect(nodes).toBe([
       FileNode(file: file),
