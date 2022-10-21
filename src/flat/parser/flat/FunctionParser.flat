@@ -21,6 +21,7 @@ data class extends ParserBase implements ScopeableParser {
     ]),
     CaptureTokenPattern(
       label: "generic_parameters",
+      skipGenerics: false,
       start: Token(value: "<"),
       end: Token(value: ">"),
       allowedTokens: [
@@ -48,6 +49,7 @@ data class extends ParserBase implements ScopeableParser {
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
       CaptureTokenPattern(
         label: "generic_parameters",
+        skipGenerics: false,
         start: Token(value: "<"),
         end: Token(value: ">"),
         allowedTokens: [

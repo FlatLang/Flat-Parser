@@ -23,6 +23,7 @@ data class extends ParserBase {
     ], repeat: true, optional: true),
     CaptureTokenPattern(
       label: "body",
+      skipGenerics: false,
       start: Token(value: "{"),
       end: Token(value: "}")
     )

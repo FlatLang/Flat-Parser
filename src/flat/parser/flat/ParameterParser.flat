@@ -14,6 +14,7 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
     CaptureTokenPattern(
       label: "generic_parameters",
+      skipGenerics: false,
       start: Token(value: "<"),
       end: Token(value: ">"),
       allowedTokens: [
