@@ -63,6 +63,10 @@ data class extends ParserBase {
       PreconditionTokenPattern(parentTypes: OverrideModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: OverrideModifier.aliases, label: "alias"),
     ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: AbstractModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AbstractModifier.aliases, label: "alias"),
+    ]),
   ])
 
   override public generateNode() -> AnnotationNode => null {
@@ -106,6 +110,9 @@ data class extends ParserBase {
     }
     if (OverrideModifier.aliases.any({ _ == alias})) {
       return OverrideModifier(aliasUsed: alias)
+    }
+    if (AbstractModifier.aliases.any({ _ == alias})) {
+      return AbstractModifier(aliasUsed: alias)
     }
   }
 }
