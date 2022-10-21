@@ -1,0 +1,26 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/annotations
+import flat/ast
+import flat/compiler/models/Token
+
+import flat/extensions/SyntaxStringFunctions
+
+data class extends ParserBase {
+  override visible Bool isMetadata => true
+
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    PreconditionTokenPattern(parentTypes: ThisModifier.allowedNodeContexts),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias"),
+  ])
+
+  override public acceptImmediately() => true
+
+  override public generateNode() -> ThisModifier {
+    let alias = lastMatch.getValue("alias")
+
+    return ThisModifier(aliasUsed: alias)
+  }
+}

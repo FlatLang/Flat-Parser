@@ -79,6 +79,7 @@ data class extends ParserBase implements ScopeableParser {
   ], label: "function")
 
   let ParserBase[] parameterParsers => [
+    ThisModifierParser(),
     AnnotationParser(),
     ParameterParser(),
     FunctionParameterParser()
