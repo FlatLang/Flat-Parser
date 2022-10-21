@@ -70,6 +70,8 @@ data class extends ParserBase {
     ]),
   ])
 
+  override public acceptImmediately() => true
+
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")
 
