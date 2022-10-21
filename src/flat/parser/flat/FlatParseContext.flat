@@ -7,7 +7,7 @@ import flat/datastruct/list/Stack
 import flat/compiler/models/Token
 import flat/io/File
 import flat/log/Logger
-import flat/stream/Stream
+import flat/eventstream/EventStream
 
 data class extends ParseContext {
   static Logger log = Logger(FlatParseContext.class)
