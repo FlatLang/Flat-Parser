@@ -9,7 +9,6 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([

@@ -8,8 +8,6 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override visible Bool isMetadata => true
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.COMMENT, label: "comment")
 
   override public generateNode() -> CommentNode {

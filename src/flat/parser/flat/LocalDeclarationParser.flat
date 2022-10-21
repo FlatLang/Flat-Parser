@@ -14,8 +14,6 @@ data class extends ParserBase {
     AssignmentParser()
   ])
 
-  override lazy TokenMatcher matcher => pattern.getMatcher()
-
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
       XorTokenPattern([
