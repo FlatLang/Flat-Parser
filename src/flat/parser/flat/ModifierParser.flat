@@ -72,6 +72,10 @@ data class extends ParserBase {
       PreconditionTokenPattern(parentTypes: AbstractModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AbstractModifier.aliases, label: "alias"),
     ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: ExternalNameModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExternalNameModifier.aliases, label: "alias"),
+    ]),
   ])
 
   override public acceptImmediately() => true
@@ -123,6 +127,9 @@ data class extends ParserBase {
     }
     if (AbstractModifier.aliases.any({ _ == alias})) {
       return AbstractModifier(aliasUsed: alias)
+    }
+    if (ExternalNameModifier.aliases.any({ _ == alias})) {
+      return ExternalNameModifier(aliasUsed: alias)
     }
   }
 }
