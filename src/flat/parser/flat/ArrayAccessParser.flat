@@ -35,7 +35,9 @@ data class extends ParserBase {
     ArrayInstantiationParser(),
     ArrayInitializerParser(),
     LiteralParser(),
-    RegexPatternParser()
+    RegexPatternParser(),
+    CastParser(),
+    PriorityParser(),
   ]
 
   override public generateNode() -> ArrayAccessNode {
