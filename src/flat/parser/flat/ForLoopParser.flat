@@ -31,6 +31,7 @@ data class extends ParserBase implements ScopeableParser {
     AnnotationParser(),
     IdentifierParser(),
     LiteralParser(),
+    CastParser(),
     PriorityParser(),
     FunctionCallParser()
   ]
@@ -39,9 +40,10 @@ data class extends ParserBase implements ScopeableParser {
     AnnotationParser(),
     IdentifierParser(),
     LiteralParser(),
+    CastParser(),
     PriorityParser(),
     FunctionCallParser(),
-    UnaryOperationParser()
+    UnaryOperationParser(),
   ]
 
   override public generateNode() -> ForLoopNode {
