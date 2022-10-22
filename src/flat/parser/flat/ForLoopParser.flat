@@ -16,7 +16,7 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ";"),
     NodeTokenPattern(conditionParsers, label: "condition", optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ";"),
-    NodeTokenPattern(incrementerParsers, label: "incrementer", optional: true),
+    NodeTokenPattern(incrementorParsers, label: "incrementor", optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "for_loop_body"),
   ])
@@ -36,7 +36,7 @@ data class extends ParserBase implements ScopeableParser {
     FunctionCallParser()
   ]
 
-  let ParserBase[] incrementerParsers => [
+  let ParserBase[] incrementorParsers => [
     AnnotationParser(),
     IdentifierParser(),
     LiteralParser(),
