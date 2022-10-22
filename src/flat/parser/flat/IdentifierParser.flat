@@ -10,11 +10,11 @@ data class extends ParserBase {
     DotAccessParser(),
     SafeAccessParser(),
     IntRangeParser(),
+    BinaryOperationParser(),
     TernaryParser(),
     ColonAccessParser(),
     AssignmentParser(),
     ArrayAccessParser(),
-    BinaryOperationParser(),
     UnaryOperationParser(),
     MatchCaseParser()
   ]
