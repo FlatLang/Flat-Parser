@@ -11,10 +11,11 @@ data class extends ParserBase {
     ArrayInstantiationParser(),
     ArrayInitializerParser(),
     LiteralParser(),
+    CastParser(),
     PriorityParser(),
     RegexPatternParser(),
     FunctionCallParser(),
-    UnaryOperationParser()
+    UnaryOperationParser(),
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, values: [
