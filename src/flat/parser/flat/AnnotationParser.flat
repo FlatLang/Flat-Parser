@@ -13,6 +13,7 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => NodeTokenPattern([
     ModifierParser(),
     TargetAnnotationParser(),
+    TargetRuntimeAnnotationParser(),
     TestSuiteAnnotationParser(),
   ], label: "annotation")
 
