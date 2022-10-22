@@ -33,7 +33,8 @@ data class extends ParserBase implements ScopeableParser {
     LiteralParser(),
     CastParser(),
     PriorityParser(),
-    FunctionCallParser()
+    FunctionCallParser(),
+    UnaryOperationParser(),
   ]
 
   let ParserBase[] incrementorParsers => [
