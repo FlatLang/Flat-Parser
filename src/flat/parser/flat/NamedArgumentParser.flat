@@ -15,8 +15,8 @@ data class extends ParserBase {
     LambdaParser(),
     ArrayInitializerParser(),
     UnaryOperationParser(),
-    PriorityParser(),
     CastParser(),
+    PriorityParser(),
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern([
