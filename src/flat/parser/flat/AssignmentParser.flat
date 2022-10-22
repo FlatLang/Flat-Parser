@@ -15,7 +15,8 @@ data class extends ParserBase {
     FunctionCallParser(),
     CastParser(),
     PriorityParser(),
-    UnaryOperationParser()
+    UnaryOperationParser(),
+    LambdaParser(),
   ])
 
   override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "=")
