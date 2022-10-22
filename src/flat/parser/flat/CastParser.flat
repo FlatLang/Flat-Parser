@@ -31,6 +31,10 @@ data class extends ParserBase {
           Token(type: Token.Type.SYMBOL, value: ">"),
           Token(type: Token.Type.SYMBOL, value: "["),
           Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: "("),
+          Token(type: Token.Type.SYMBOL, value: ")"),
+          Token(type: Token.Type.SYMBOL, value: "->"),
+          Token(type: Token.Type.SYMBOL, value: "."),
           Token(type: Token.Type.SYMBOL, value: ",")
         ],
         optional: true

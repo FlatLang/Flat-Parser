@@ -21,6 +21,10 @@ data class extends ParserBase implements ScopeableParser {
           Token(type: Token.Type.SYMBOL, value: ">"),
           Token(type: Token.Type.SYMBOL, value: "["),
           Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: "("),
+          Token(type: Token.Type.SYMBOL, value: ")"),
+          Token(type: Token.Type.SYMBOL, value: "->"),
+          Token(type: Token.Type.SYMBOL, value: "."),
           Token(type: Token.Type.SYMBOL, value: ",")
         ],
         optional: true
@@ -40,6 +44,10 @@ data class extends ParserBase implements ScopeableParser {
           Token(type: Token.Type.SYMBOL, value: ">"),
           Token(type: Token.Type.SYMBOL, value: "["),
           Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: "("),
+          Token(type: Token.Type.SYMBOL, value: ")"),
+          Token(type: Token.Type.SYMBOL, value: "->"),
+          Token(type: Token.Type.SYMBOL, value: "."),
           Token(type: Token.Type.SYMBOL, value: ",")
         ],
         optional: true
@@ -59,6 +67,10 @@ data class extends ParserBase implements ScopeableParser {
           Token(type: Token.Type.SYMBOL, value: ">"),
           Token(type: Token.Type.SYMBOL, value: "["),
           Token(type: Token.Type.SYMBOL, value: "]"),
+          Token(type: Token.Type.SYMBOL, value: "("),
+          Token(type: Token.Type.SYMBOL, value: ")"),
+          Token(type: Token.Type.SYMBOL, value: "->"),
+          Token(type: Token.Type.SYMBOL, value: "."),
           Token(type: Token.Type.SYMBOL, value: ",")
         ],
         optional: true
@@ -77,6 +89,10 @@ data class extends ParserBase implements ScopeableParser {
             Token(type: Token.Type.SYMBOL, value: ">"),
             Token(type: Token.Type.SYMBOL, value: "["),
             Token(type: Token.Type.SYMBOL, value: "]"),
+            Token(type: Token.Type.SYMBOL, value: "("),
+            Token(type: Token.Type.SYMBOL, value: ")"),
+            Token(type: Token.Type.SYMBOL, value: "->"),
+            Token(type: Token.Type.SYMBOL, value: "."),
             Token(type: Token.Type.SYMBOL, value: ",")
           ],
           optional: true
