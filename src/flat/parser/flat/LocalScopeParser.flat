@@ -31,8 +31,9 @@ data class extends ParserBase implements ScopeableParser {
     ArrayInstantiationParser(),
     ArrayInitializerParser(),
     UnaryOperationParser(),
+    CastParser(),
     PriorityParser(),
-    LocalScopeParser()
+    LocalScopeParser(),
   ]
 
   override lazy TokenPattern pattern => GroupTokenPattern([
