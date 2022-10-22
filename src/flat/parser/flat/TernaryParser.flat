@@ -26,7 +26,8 @@ data class extends ParserBase {
     ArrayInstantiationParser(),
     ArrayInitializerParser(),
     UnaryOperationParser(),
-    PriorityParser()
+    CastParser(),
+    PriorityParser(),
   ]
 
   override public generateNode() -> TernaryNode {
