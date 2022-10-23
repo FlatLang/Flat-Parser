@@ -41,6 +41,10 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AsyncModifier.aliases, label: "alias"),
     ]),
     GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: AwaitModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AwaitModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
       PreconditionTokenPattern(parentTypes: DataModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: DataModifier.aliases, label: "alias"),
     ]),
@@ -98,6 +102,7 @@ data class extends ParserBase {
     if (VarModifier.aliases.any({ _ == alias})) return VarModifier(aliasUsed: alias)
     if (StaticModifier.aliases.any({ _ == alias})) return StaticModifier(aliasUsed: alias)
     if (AsyncModifier.aliases.any({ _ == alias})) return AsyncModifier(aliasUsed: alias)
+    if (AwaitModifier.aliases.any({ _ == alias})) return AwaitModifier(aliasUsed: alias)
     if (DataModifier.aliases.any({ _ == alias})) return DataModifier(aliasUsed: alias)
     if (ExtensionModifier.aliases.any({ _ == alias})) return ExtensionModifier(aliasUsed: alias)
     if (LazyModifier.aliases.any({ _ == alias})) return LazyModifier(aliasUsed: alias)
