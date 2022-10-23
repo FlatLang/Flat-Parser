@@ -47,6 +47,7 @@ data class extends ParserBase {
     ArrayInstantiationParser(),
     UnaryOperationParser(),
     CastParser(),
+    PriorityParser(),
     LocalDeclarationParser()
   ]
 
