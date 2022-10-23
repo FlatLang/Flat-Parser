@@ -10,9 +10,9 @@ import flat/annotations/VarModifier
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => [
     AssignmentParser()
-  ])
+  ]
 
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
@@ -20,7 +20,7 @@ data class extends ParserBase {
         PreconditionTokenPattern(annotations: [LetModifier.class]),
         PreconditionTokenPattern(annotations: [VarModifier.class])
       ], label: "implicit_modifier"),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_name")
+      IdentifierParser().pattern,
     ]),
     GroupTokenPattern([
       XorTokenPattern([
@@ -28,14 +28,14 @@ data class extends ParserBase {
         PreconditionTokenPattern(annotations: [VarModifier.class])
       ], optional: true, label: "implicit_modifier"),
       Patterns.valueType,
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_name")
+      IdentifierParser().pattern,
     ])
   ], label: "local_declaration")
 
   override public generateNode() -> LocalDeclarationNode {
     return LocalDeclarationNode(
       type: lastMatch.getValue("type_name"),
-      name: lastMatch.getValue("declaration_name"),
+      name: lastMatch.getValue("name"),
       arrayDimensions: lastMatch.getMatches("brackets").count
     )
   }

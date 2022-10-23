@@ -19,14 +19,7 @@ data class extends ParserBase {
     MatchCaseParser()
   ]
 
-  override lazy TokenPattern pattern => XorTokenPattern([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name", notValues: ["if"]),
-    CaptureTokenPattern(
-      start: Token(value: "`"),
-      end: Token(value: "`"),
-      label: "literal_name"
-    ),
-  ])
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name", notValues: ["if"])
 
   override public generateNode() -> IdentifierNode {
     return IdentifierNode(

@@ -26,7 +26,7 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER)
     ])
 
-    expect(result?.getValue("declaration_name")).toBe("test")
+    expect(result?.getValue("name")).toBe("test")
     expect(matcher.partial).toBe(true)
   }
 
@@ -49,7 +49,7 @@ testable class {
     ])
 
     expect(result?.getValue("type_name")).toBe("String")
-    expect(result?.getValue("declaration_name")).toBe("test")
+    expect(result?.getValue("name")).toBe("test")
     expect(matcher.partial).toBe(false)
   }
 
@@ -77,7 +77,7 @@ testable class {
 
     expect(result?.getValue("type_name")).toBe("String")
     expect(result?.getMatches("brackets").count).toBe(1)
-    expect(result?.getValue("declaration_name")).toBe("test")
+    expect(result?.getValue("name")).toBe("test")
     expect(matcher.partial).toBe(false)
   }
 
@@ -98,7 +98,7 @@ testable class {
     ])
 
     expect(result?.getValue("type_name")).toBe("String")
-    expect(result?.getValue("declaration_name")).toBe("test")
+    expect(result?.getValue("name")).toBe("test")
     expect(matcher.partial).toBe(false)
   }
 
@@ -124,7 +124,7 @@ testable class {
 
     expect(result?.getValue("type_name")).toBe("String")
     expect(result?.getMatches("brackets").count).toBe(1)
-    expect(result?.getValue("declaration_name")).toBe("test")
+    expect(result?.getValue("name")).toBe("test")
     expect(matcher.partial).toBe(false)
   }
 }
