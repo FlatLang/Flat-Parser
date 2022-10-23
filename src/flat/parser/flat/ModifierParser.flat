@@ -65,6 +65,14 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestModifier.aliases, label: "alias"),
     ]),
     GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: InitTestModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: InitTestModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
+      PreconditionTokenPattern(parentTypes: CleanTestModifier.allowedNodeContexts),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: CleanTestModifier.aliases, label: "alias"),
+    ]),
+    GroupTokenPattern([
       PreconditionTokenPattern(parentTypes: OverrideModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: OverrideModifier.aliases, label: "alias"),
     ]),
@@ -83,53 +91,23 @@ data class extends ParserBase {
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")
 
-    if (VisibleModifier.aliases.any({ _ == alias})) {
-      return VisibleModifier(aliasUsed: alias)
-    }
-    if (PublicModifier.aliases.any({ _ == alias})) {
-      return PublicModifier(aliasUsed: alias)
-    }
-    if (PrivateModifier.aliases.any({ _ == alias})) {
-      return PrivateModifier(aliasUsed: alias)
-    }
-    if (LetModifier.aliases.any({ _ == alias})) {
-      return LetModifier(aliasUsed: alias)
-    }
-    if (VarModifier.aliases.any({ _ == alias})) {
-      return VarModifier(aliasUsed: alias)
-    }
-    if (StaticModifier.aliases.any({ _ == alias})) {
-      return StaticModifier(aliasUsed: alias)
-    }
-    if (AsyncModifier.aliases.any({ _ == alias})) {
-      return AsyncModifier(aliasUsed: alias)
-    }
-    if (DataModifier.aliases.any({ _ == alias})) {
-      return DataModifier(aliasUsed: alias)
-    }
-    if (ExtensionModifier.aliases.any({ _ == alias})) {
-      return ExtensionModifier(aliasUsed: alias)
-    }
-    if (LazyModifier.aliases.any({ _ == alias})) {
-      return LazyModifier(aliasUsed: alias)
-    }
-    if (NativeModifier.aliases.any({ _ == alias})) {
-      return NativeModifier(aliasUsed: alias)
-    }
-    if (TestableModifier.aliases.any({ _ == alias})) {
-      return TestableModifier(aliasUsed: alias)
-    }
-    if (TestModifier.aliases.any({ _ == alias})) {
-      return TestModifier(aliasUsed: alias)
-    }
-    if (OverrideModifier.aliases.any({ _ == alias})) {
-      return OverrideModifier(aliasUsed: alias)
-    }
-    if (AbstractModifier.aliases.any({ _ == alias})) {
-      return AbstractModifier(aliasUsed: alias)
-    }
-    if (ExternalNameModifier.aliases.any({ _ == alias})) {
-      return ExternalNameModifier(aliasUsed: alias)
-    }
+    if (VisibleModifier.aliases.any({ _ == alias})) return VisibleModifier(aliasUsed: alias)
+    if (PublicModifier.aliases.any({ _ == alias})) return PublicModifier(aliasUsed: alias)
+    if (PrivateModifier.aliases.any({ _ == alias})) return PrivateModifier(aliasUsed: alias)
+    if (LetModifier.aliases.any({ _ == alias})) return LetModifier(aliasUsed: alias)
+    if (VarModifier.aliases.any({ _ == alias})) return VarModifier(aliasUsed: alias)
+    if (StaticModifier.aliases.any({ _ == alias})) return StaticModifier(aliasUsed: alias)
+    if (AsyncModifier.aliases.any({ _ == alias})) return AsyncModifier(aliasUsed: alias)
+    if (DataModifier.aliases.any({ _ == alias})) return DataModifier(aliasUsed: alias)
+    if (ExtensionModifier.aliases.any({ _ == alias})) return ExtensionModifier(aliasUsed: alias)
+    if (LazyModifier.aliases.any({ _ == alias})) return LazyModifier(aliasUsed: alias)
+    if (NativeModifier.aliases.any({ _ == alias})) return NativeModifier(aliasUsed: alias)
+    if (TestableModifier.aliases.any({ _ == alias})) return TestableModifier(aliasUsed: alias)
+    if (TestModifier.aliases.any({ _ == alias})) return TestModifier(aliasUsed: alias)
+    if (InitTestModifier.aliases.any({ _ == alias})) return InitTestModifier(aliasUsed: alias)
+    if (CleanTestModifier.aliases.any({ _ == alias})) return CleanTestModifier(aliasUsed: alias)
+    if (OverrideModifier.aliases.any({ _ == alias})) return OverrideModifier(aliasUsed: alias)
+    if (AbstractModifier.aliases.any({ _ == alias})) return AbstractModifier(aliasUsed: alias)
+    if (ExternalNameModifier.aliases.any({ _ == alias})) return ExternalNameModifier(aliasUsed: alias)
   }
 }
