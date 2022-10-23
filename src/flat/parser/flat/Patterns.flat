@@ -1,0 +1,87 @@
+package flat/parser/flat
+
+import flat/parser
+import flat/parser/matchers
+import flat/compiler/models/Token
+
+class {
+  visible static lazy TokenPattern genericParameters => CaptureTokenPattern(
+    label: "generic_parameters",
+    skipGenerics: false,
+    start: Token(value: "<"),
+    end: Token(value: ">"),
+    allowedTokens: [
+      Token(type: Token.Type.IDENTIFIER),
+      Token(type: Token.Type.SYMBOL, value: "<"),
+      Token(type: Token.Type.SYMBOL, value: ">"),
+      Token(type: Token.Type.SYMBOL, value: "["),
+      Token(type: Token.Type.SYMBOL, value: "]"),
+      Token(type: Token.Type.SYMBOL, value: "("),
+      Token(type: Token.Type.SYMBOL, value: ")"),
+      Token(type: Token.Type.SYMBOL, value: "->"),
+      Token(type: Token.Type.SYMBOL, value: "."),
+      Token(type: Token.Type.SYMBOL, value: ",")
+    ],
+    optional: true
+  )
+
+  visible static lazy TokenPattern genericArguments => CaptureTokenPattern(
+    label: "generic_arguments",
+    skipGenerics: false,
+    start: Token(value: "<"),
+    end: Token(value: ">"),
+    allowedTokens: [
+      Token(type: Token.Type.IDENTIFIER),
+      Token(type: Token.Type.SYMBOL, value: "<"),
+      Token(type: Token.Type.SYMBOL, value: ">"),
+      Token(type: Token.Type.SYMBOL, value: "["),
+      Token(type: Token.Type.SYMBOL, value: "]"),
+      Token(type: Token.Type.SYMBOL, value: "("),
+      Token(type: Token.Type.SYMBOL, value: ")"),
+      Token(type: Token.Type.SYMBOL, value: "->"),
+      Token(type: Token.Type.SYMBOL, value: "."),
+      Token(type: Token.Type.SYMBOL, value: ",")
+    ],
+    optional: true
+  )
+
+  visible static lazy XorTokenPattern type => XorTokenPattern(Array(), label: "type")
+
+  visible static lazy GroupTokenPattern valueType => GroupTokenPattern([
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type_name"),
+      genericParameters,
+    ]),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
+    ], repeat: true, optional: true, label: "brackets")
+  ], label: "type")
+
+  visible static lazy GroupTokenPattern functionType => GroupTokenPattern([
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type_name"),
+    genericParameters,
+    CaptureTokenPattern(
+      label: "parameters",
+      start: Token(value: "("),
+      end: Token(value: ")")
+    ),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
+      Patterns.type,
+    ], optional: true, label: "function_type"),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
+    ], repeat: true, optional: true, label: "brackets")
+  ])
+
+  static lazy TokenPattern[] typeContents => [
+    valueType,
+    functionType,
+  ]
+
+  static {
+    type.patterns.addAll(typeContents)
+  }
+}

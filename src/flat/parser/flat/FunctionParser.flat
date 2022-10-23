@@ -11,26 +11,8 @@ data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(FunctionParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
-    CaptureTokenPattern(
-      label: "generic_parameters",
-      skipGenerics: false,
-      start: Token(value: "<"),
-      end: Token(value: ">"),
-      allowedTokens: [
-        Token(type: Token.Type.IDENTIFIER),
-        Token(type: Token.Type.SYMBOL, value: "<"),
-        Token(type: Token.Type.SYMBOL, value: ">"),
-        Token(type: Token.Type.SYMBOL, value: "["),
-        Token(type: Token.Type.SYMBOL, value: "]"),
-        Token(type: Token.Type.SYMBOL, value: "("),
-        Token(type: Token.Type.SYMBOL, value: ")"),
-        Token(type: Token.Type.SYMBOL, value: "->"),
-        Token(type: Token.Type.SYMBOL, value: "."),
-        Token(type: Token.Type.SYMBOL, value: ",")
-      ],
-      optional: true
-    ),
     IdentifierParser().pattern,
+    Patterns.genericParameters,
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
       NodeTokenPattern(parameterParsers, label: "parameter"),
@@ -43,30 +25,7 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
-      CaptureTokenPattern(
-        label: "generic_parameters",
-        skipGenerics: false,
-        start: Token(value: "<"),
-        end: Token(value: ">"),
-        allowedTokens: [
-          Token(type: Token.Type.IDENTIFIER),
-          Token(type: Token.Type.SYMBOL, value: "<"),
-          Token(type: Token.Type.SYMBOL, value: ">"),
-          Token(type: Token.Type.SYMBOL, value: "["),
-          Token(type: Token.Type.SYMBOL, value: "]"),
-          Token(type: Token.Type.SYMBOL, value: "("),
-          Token(type: Token.Type.SYMBOL, value: ")"),
-          Token(type: Token.Type.SYMBOL, value: "->"),
-          Token(type: Token.Type.SYMBOL, value: "."),
-          Token(type: Token.Type.SYMBOL, value: ",")
-        ],
-        optional: true
-      ),
-      GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
-      ], repeat: true, optional: true)
+      Patterns.type,
     ], optional: true, label: "function_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
@@ -87,7 +46,7 @@ data class extends ParserBase implements ScopeableParser {
   ]
 
   override public generateNode() -> FunctionNode {
-    let type = lastMatch.getValue("type")
+    let type = lastMatch.getValue("type_name")
     let name = lastMatch.getValue("name")
     let bracketCount = lastMatch.getValues("bracket_start").count
 

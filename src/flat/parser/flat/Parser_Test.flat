@@ -42,7 +42,7 @@ testable class {
     expect(nodes).toBe([
       FileNode(file: file),
       ClassNode(name: "Test", implicitName: true),
-      FunctionNode(name: "func"),
+      FunctionNode(name: "func", type: "HashMap"),
       IdentifierNode(name: "source"), DotAccessNode(), FunctionCallNode(name: "forEach"), LambdaNode(), LocalScopeNode(),
         IfNode(), PriorityNode(),
           UnaryOperationNode(operator: "!"), IdentifierNode(name: "dest"), DotAccessNode(), FunctionCallNode(name: "containsKey"),
