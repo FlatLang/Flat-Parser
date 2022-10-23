@@ -36,6 +36,7 @@ data class extends ParserBase {
     ArrayInitializerParser(),
     LiteralParser(),
     RegexPatternParser(),
+    UnaryOperationParser(),
     CastParser(),
     PriorityParser(),
   ]
