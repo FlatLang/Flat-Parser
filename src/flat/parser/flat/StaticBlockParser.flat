@@ -1,0 +1,26 @@
+package flat/parser/flat
+
+import flat/ast
+import flat/parser
+import flat/parser/matchers
+import flat/annotations
+import flat/compiler/models/Token
+
+data class extends ParserBase implements ScopeableParser {
+  override lazy TokenPattern pattern => GroupTokenPattern([
+    PreconditionTokenPattern(annotations: [StaticModifier.class]),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
+    NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "scope_body_contents"),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
+  ], label: "static_block")
+
+  override public generateNode() -> StaticBlockNode {
+    return StaticBlockNode()
+  }
+
+  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
+    if (let body = lastMatch.getMatch<NodeGroupTokenMatch>("scope_body_contents")) {
+      return body.getChildNodeMatches()
+    }
+  }
+}

@@ -113,7 +113,8 @@ data class extends ParserBase implements ScopeableParser {
     ArrayOverrideParser(),
     FunctionParser(),
     AssignmentParser(),
-    ClassParser()
+    ClassParser(),
+    StaticBlockParser(),
   ]
 
   override public generateNode() -> ClassNode {
