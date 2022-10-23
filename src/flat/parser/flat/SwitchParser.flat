@@ -9,18 +9,9 @@ import flat/log/Logger
 data class extends ParserBase implements ScopeableParser {
   static Logger log = Logger(SwitchParser.class)
 
-  ParserBase[] switchChildParsers => Array()
-    :addAll([MatchScopeParser()])
-    :addAll(MatchScopeParser().childParsers)
-
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "switch"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "switch_condition"),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-      NodeGroupTokenPattern(switchChildParsers),
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
-    ])
+    Patterns.switchBody
   ], label: "switch")
 
   override public generateNode() -> SwitchNode {

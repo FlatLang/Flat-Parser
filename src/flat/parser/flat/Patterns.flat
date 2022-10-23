@@ -45,6 +45,80 @@ class {
     optional: true
   )
 
+  visible static ParserBase[] switchConditionParsers => [
+    AnnotationParser(),
+    ThrowParser(),
+    IfParser(),
+    TryParser(),
+    CatchParser(),
+    ElseParser(),
+    ExternalParser(),
+    ReturnParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    MatchParser(),
+    SwitchParser(),
+    WhileLoopParser(),
+    ForLoopParser(),
+    ForEachLoopParser(),
+    FallthroughParser(),
+    ContinueParser(),
+    BreakParser(),
+    LocalDeclarationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser(),
+    PriorityParser(),
+  ]
+
+  visible static ParserBase[] switchChildParsers => [
+    AnnotationParser(),
+    ThrowParser(),
+    IfParser(),
+    TryParser(),
+    CatchParser(),
+    ElseParser(),
+    ExternalParser(),
+    ReturnParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    MatchParser(),
+    SwitchParser(),
+    WhileLoopParser(),
+    ForLoopParser(),
+    ForEachLoopParser(),
+    FallthroughParser(),
+    ContinueParser(),
+    BreakParser(),
+    LocalDeclarationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser(),
+    PriorityParser(),
+    LocalScopeParser(),
+  ]
+
+  visible static lazy TokenPattern switchBody => GroupTokenPattern([
+    NodeTokenPattern(LocalScopeParser().valueParsers, label: "switch_condition"),
+    XorTokenPattern([
+      GroupTokenPattern([
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
+        NodeGroupTokenPattern(switchChildParsers),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "}"),
+      ]),
+      GroupTokenPattern([
+        NodeTokenPattern(switchConditionParsers, greedy: false),
+        NodeTokenPattern([MatchCaseParser()]),
+      ], repeat: true),
+    ]),
+  ])
+
   visible static lazy XorTokenPattern type => XorTokenPattern(Array(), label: "type")
 
   visible static lazy GroupTokenPattern valueType => GroupTokenPattern([
