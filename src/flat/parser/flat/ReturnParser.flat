@@ -11,6 +11,7 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
+    :add(LambdaParser())
 
   override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "return")
 
