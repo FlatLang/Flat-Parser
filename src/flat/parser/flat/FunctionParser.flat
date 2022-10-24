@@ -29,7 +29,7 @@ data class extends ParserBase implements ScopeableParser {
     ], optional: true, label: "function_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-      NodeTokenPattern(LocalScopeParser().valueParsers, label: "function_arrow_expression")
+      NodeTokenPattern(arrowExpressionValues, label: "function_arrow_expression")
     ], optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
@@ -43,6 +43,36 @@ data class extends ParserBase implements ScopeableParser {
     AnnotationParser(),
     ParameterParser(),
     FunctionParameterParser()
+  ]
+
+  visible ParserBase[] arrowExpressionValues => [
+    AnnotationParser(),
+    ThrowParser(),
+    IfParser(),
+    TryParser(),
+    CatchParser(),
+    ElseParser(),
+    ExternalParser(),
+    ReturnParser(),
+    LiteralParser(),
+    RegexPatternParser(),
+    MatchParser(),
+    SwitchParser(),
+    WhileLoopParser(),
+    ForLoopParser(),
+    ForEachLoopParser(),
+    FallthroughParser(),
+    ContinueParser(),
+    BreakParser(),
+    LocalDeclarationParser(),
+    FunctionCallParser(),
+    IdentifierParser(),
+    ArrayInstantiationParser(),
+    ArrayInitializerParser(),
+    UnaryOperationParser(),
+    CastParser(),
+    PriorityParser(),
+    LambdaParser()
   ]
 
   override public generateNode() -> FunctionNode {
