@@ -25,8 +25,8 @@ data class extends ParserBase implements ScopeableParser {
     LambdaParser(),
     ArrayInitializerParser(),
     UnaryOperationParser(),
-    CastParser(),
     PriorityParser(),
+    CastParser(),
     LocalDeclarationParser(),
     TernaryParser()
   ]
