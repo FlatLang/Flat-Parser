@@ -23,8 +23,8 @@ data class extends ParserBase implements ScopeableParser {
 
   let ParserBase[] initializerParsers => [
     AnnotationParser(),
+    LocalDeclarationParser(),
     IdentifierParser(),
-    LocalDeclarationParser()
   ]
 
   let ParserBase[] conditionParsers => [

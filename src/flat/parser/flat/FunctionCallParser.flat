@@ -39,6 +39,7 @@ data class extends ParserBase {
     AnnotationParser(),
     NamedArgumentParser(),
     FunctionCallParser(),
+    LocalDeclarationParser(),
     IdentifierParser(),
     LiteralParser(),
     RegexPatternParser(),
@@ -48,7 +49,6 @@ data class extends ParserBase {
     UnaryOperationParser(),
     CastParser(),
     PriorityParser(),
-    LocalDeclarationParser()
   ]
 
   override public generateNode() -> FunctionCallNode {

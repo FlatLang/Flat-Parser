@@ -19,6 +19,7 @@ data class extends ParserBase implements ScopeableParser {
     AnnotationParser(),
     NamedArgumentParser(),
     FunctionCallParser(),
+    LocalDeclarationParser(),
     IdentifierParser(),
     LiteralParser(),
     RegexPatternParser(),
@@ -27,7 +28,6 @@ data class extends ParserBase implements ScopeableParser {
     UnaryOperationParser(),
     CastParser(),
     PriorityParser(),
-    LocalDeclarationParser()
   ]
 
   override public generateNode() -> WhileLoopNode {
