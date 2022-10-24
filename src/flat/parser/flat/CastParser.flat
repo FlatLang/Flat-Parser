@@ -21,25 +21,7 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type_name"),
-      CaptureTokenPattern(
-        label: "generic_parameters",
-        skipGenerics: false,
-        start: Token(value: "<"),
-        end: Token(value: ">"),
-        allowedTokens: [
-          Token(type: Token.Type.IDENTIFIER),
-          Token(type: Token.Type.SYMBOL, value: "<"),
-          Token(type: Token.Type.SYMBOL, value: ">"),
-          Token(type: Token.Type.SYMBOL, value: "["),
-          Token(type: Token.Type.SYMBOL, value: "]"),
-          Token(type: Token.Type.SYMBOL, value: "("),
-          Token(type: Token.Type.SYMBOL, value: ")"),
-          Token(type: Token.Type.SYMBOL, value: "->"),
-          Token(type: Token.Type.SYMBOL, value: "."),
-          Token(type: Token.Type.SYMBOL, value: ",")
-        ],
-        optional: true
-      ),
+      Patterns.genericParameters,
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "bracket_start"),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "bracket_end")

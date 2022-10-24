@@ -5,45 +5,35 @@ import flat/parser/matchers
 import flat/compiler/models/Token
 
 class {
-  visible static lazy TokenPattern genericParameters => CaptureTokenPattern(
-    label: "generic_parameters",
-    skipGenerics: false,
-    start: Token(value: "<"),
-    end: Token(value: ">"),
-    allowedTokens: [
-      Token(type: Token.Type.IDENTIFIER),
-      Token(type: Token.Type.SYMBOL, value: "<"),
-      Token(type: Token.Type.SYMBOL, value: ">"),
-      Token(type: Token.Type.SYMBOL, value: "["),
-      Token(type: Token.Type.SYMBOL, value: "]"),
-      Token(type: Token.Type.SYMBOL, value: "("),
-      Token(type: Token.Type.SYMBOL, value: ")"),
-      Token(type: Token.Type.SYMBOL, value: "->"),
-      Token(type: Token.Type.SYMBOL, value: "."),
-      Token(type: Token.Type.SYMBOL, value: ",")
-    ],
-    optional: true
-  )
+  visible static lazy TokenPattern genericParameter => GroupTokenPattern([
+    type,
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
+      type
+    ], optional: true, label: "default_generic_parameter_type")
+  ])
 
-  visible static lazy TokenPattern genericArguments => CaptureTokenPattern(
-    label: "generic_arguments",
-    skipGenerics: false,
-    start: Token(value: "<"),
-    end: Token(value: ">"),
-    allowedTokens: [
-      Token(type: Token.Type.IDENTIFIER),
-      Token(type: Token.Type.SYMBOL, value: "<"),
-      Token(type: Token.Type.SYMBOL, value: ">"),
-      Token(type: Token.Type.SYMBOL, value: "["),
-      Token(type: Token.Type.SYMBOL, value: "]"),
-      Token(type: Token.Type.SYMBOL, value: "("),
-      Token(type: Token.Type.SYMBOL, value: ")"),
-      Token(type: Token.Type.SYMBOL, value: "->"),
-      Token(type: Token.Type.SYMBOL, value: "."),
-      Token(type: Token.Type.SYMBOL, value: ",")
-    ],
-    optional: true
-  )
+  visible static lazy TokenPattern genericParameters => GroupTokenPattern([
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "<"),
+    genericParameter,
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+      genericParameter,
+    ], repeat: true, optional: true),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ">"),
+  ], optional: true, label: "generic_parameters")
+
+  visible static lazy TokenPattern genericArguments => GroupTokenPattern([
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "<"),
+    type,
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+      type,
+    ], repeat: true, optional: true),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ">"),
+  ], optional: true, label: "generic_arguments")
 
   visible static ParserBase[] switchConditionParsers => [
     AnnotationParser(),

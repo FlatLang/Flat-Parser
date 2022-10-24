@@ -10,93 +10,21 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "class_name"),
-      CaptureTokenPattern(
-        label: "generic_parameters",
-        skipGenerics: false,
-        start: Token(value: "<"),
-        end: Token(value: ">"),
-        allowedTokens: [
-          Token(type: Token.Type.IDENTIFIER),
-          Token(type: Token.Type.SYMBOL, value: "<"),
-          Token(type: Token.Type.SYMBOL, value: ">"),
-          Token(type: Token.Type.SYMBOL, value: "["),
-          Token(type: Token.Type.SYMBOL, value: "]"),
-          Token(type: Token.Type.SYMBOL, value: "("),
-          Token(type: Token.Type.SYMBOL, value: ")"),
-          Token(type: Token.Type.SYMBOL, value: "->"),
-          Token(type: Token.Type.SYMBOL, value: "."),
-          Token(type: Token.Type.SYMBOL, value: ",")
-        ],
-        optional: true
-      )
+      Patterns.genericParameters
     ], optional: true, greedy: false),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
-      CaptureTokenPattern(
-        label: "generic_arguments",
-        skipGenerics: false,
-        start: Token(value: "<"),
-        end: Token(value: ">"),
-        allowedTokens: [
-          Token(type: Token.Type.IDENTIFIER),
-          Token(type: Token.Type.SYMBOL, value: "<"),
-          Token(type: Token.Type.SYMBOL, value: ">"),
-          Token(type: Token.Type.SYMBOL, value: "["),
-          Token(type: Token.Type.SYMBOL, value: "]"),
-          Token(type: Token.Type.SYMBOL, value: "("),
-          Token(type: Token.Type.SYMBOL, value: ")"),
-          Token(type: Token.Type.SYMBOL, value: "->"),
-          Token(type: Token.Type.SYMBOL, value: "."),
-          Token(type: Token.Type.SYMBOL, value: ",")
-        ],
-        optional: true
-      )
+      Patterns.genericArguments
     ], optional: true, label: "extends_class"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "implements"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
-      CaptureTokenPattern(
-        label: "generic_arguments",
-        start: Token(value: "<"),
-        end: Token(value: ">"),
-        skipGenerics: false,
-        allowedTokens: [
-          Token(type: Token.Type.IDENTIFIER),
-          Token(type: Token.Type.SYMBOL, value: "<"),
-          Token(type: Token.Type.SYMBOL, value: ">"),
-          Token(type: Token.Type.SYMBOL, value: "["),
-          Token(type: Token.Type.SYMBOL, value: "]"),
-          Token(type: Token.Type.SYMBOL, value: "("),
-          Token(type: Token.Type.SYMBOL, value: ")"),
-          Token(type: Token.Type.SYMBOL, value: "->"),
-          Token(type: Token.Type.SYMBOL, value: "."),
-          Token(type: Token.Type.SYMBOL, value: ",")
-        ],
-        optional: true
-      ),
+      Patterns.genericArguments,
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
-        CaptureTokenPattern(
-          label: "generic_arguments",
-          start: Token(value: "<"),
-          end: Token(value: ">"),
-          skipGenerics: false,
-          allowedTokens: [
-            Token(type: Token.Type.IDENTIFIER),
-            Token(type: Token.Type.SYMBOL, value: "<"),
-            Token(type: Token.Type.SYMBOL, value: ">"),
-            Token(type: Token.Type.SYMBOL, value: "["),
-            Token(type: Token.Type.SYMBOL, value: "]"),
-            Token(type: Token.Type.SYMBOL, value: "("),
-            Token(type: Token.Type.SYMBOL, value: ")"),
-            Token(type: Token.Type.SYMBOL, value: "->"),
-            Token(type: Token.Type.SYMBOL, value: "."),
-            Token(type: Token.Type.SYMBOL, value: ",")
-          ],
-          optional: true
-        )
+        Patterns.genericArguments
       ], repeat: true, optional: true, label: "implements_class"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true),
