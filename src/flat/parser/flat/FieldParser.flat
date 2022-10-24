@@ -30,7 +30,7 @@ data class extends ParserBase implements ScopeableParser {
       NodeGroupTokenPattern(fieldScopeParsers, label: "field_scope"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], optional: true)
-  ], greedy: false, label: "field")
+  ], label: "field")
 
   ParserBase[] fieldScopeParsers => [
     FieldAccessorFunctionParser(),
