@@ -30,7 +30,7 @@ data class extends ParserBase {
       Patterns.valueType,
       IdentifierParser().pattern,
     ])
-  ], label: "local_declaration")
+  ], greedy: false, label: "local_declaration")
 
   override public generateNode() -> LocalDeclarationNode {
     return LocalDeclarationNode(
