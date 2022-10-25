@@ -25,7 +25,7 @@ data class extends ParserBase {
         NodeTokenPattern(indexParsers, label: "initializer_value")
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    ], label: "initializer_values"),
+    ], optional: true, label: "initializer_values"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ])
 
