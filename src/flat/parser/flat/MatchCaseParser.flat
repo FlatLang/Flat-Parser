@@ -9,8 +9,7 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(MatchParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
+  override ParserBase[] childParsers => LocalScopeParser().valueParsers
 
   override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>")
 
