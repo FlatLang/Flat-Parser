@@ -22,9 +22,7 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.INTEGER),
     SingleTokenPattern(type: Token.Type.BOOL),
     SingleTokenPattern(type: Token.Type.NULL)
-  ])
-
-  override public acceptImmediately() => true
+  ], exact: true)
 
   override public generateNode() -> LiteralNode {
     let token = lastMatch.tokens.first

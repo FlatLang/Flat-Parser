@@ -12,9 +12,7 @@ data class extends ParserBase {
       FieldMutatorFunctionParser()
     ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "{")
-
-  override public acceptImmediately() => true
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "{", exact: true)
 
   override public generateNode() -> FieldScopeNode {
     return FieldScopeNode()

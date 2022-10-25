@@ -17,15 +17,13 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern(parameterParsers, label: "parameter"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-  ], label: "parameters")
+  ], exact: true, label: "parameters")
 
   let ParserBase[] parameterParsers => [
     AnnotationParser(),
     ParameterParser(),
     FunctionParameterParser()
   ]
-
-  override public acceptImmediately() => true
 
   override public generateNode() -> CatchNode {
     return CatchNode()

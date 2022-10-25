@@ -15,10 +15,9 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => CaptureTokenPattern(
     label: "pattern",
     start: Token(value: "/"),
-    end: Token(value: "/")
+    end: Token(value: "/"),
+    exact: true
   )
-
-  override public acceptImmediately() => true
 
   override public generateNode() -> RegexPatternNode {
     return RegexPatternNode(

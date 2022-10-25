@@ -9,9 +9,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "{")
-
-  override public acceptImmediately() => true
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "{", exact: true)
 
   override public generateNode() -> MatchScopeNode {
     return MatchScopeNode()

@@ -88,9 +88,7 @@ data class extends ParserBase {
       PreconditionTokenPattern(parentTypes: ExternalNameModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExternalNameModifier.aliases, label: "alias"),
     ]),
-  ])
-
-  override public acceptImmediately() => true
+  ], exact: true)
 
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")

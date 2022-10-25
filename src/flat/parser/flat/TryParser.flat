@@ -12,9 +12,7 @@ data class extends ParserBase implements ScopeableParser {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "try")
-
-  override public acceptImmediately() => true
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "try", exact: true)
 
   override public generateNode() -> TryNode {
     return TryNode()

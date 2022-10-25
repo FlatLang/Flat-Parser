@@ -11,9 +11,7 @@ data class extends ParserBase implements ScopeableParser {
 
   override ParserBase[] childParsers => [LocalScopeParser()]
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "get")
-
-  override public acceptImmediately() => true
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "get", exact: true)
 
   override public generateNode() -> FieldAccessorFunctionNode {
     return FieldAccessorFunctionNode()

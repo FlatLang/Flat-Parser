@@ -14,9 +14,7 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern([
     PreconditionTokenPattern(parentTypes: ThisModifier.allowedNodeContexts),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias"),
-  ])
-
-  override public acceptImmediately() => true
+  ], exact: true)
 
   override public generateNode() -> ThisModifier {
     let alias = lastMatch.getValue("alias")

@@ -15,9 +15,7 @@ data class extends ParserBase {
     TargetAnnotationParser(),
     TargetRuntimeAnnotationParser(),
     TestSuiteAnnotationParser(),
-  ], label: "annotation")
-
-  override public acceptImmediately() => true
+  ], exact: true, label: "annotation")
 
   override public generateNode() -> AnnotationNode {
     return lastMatch.getMatch<NodeTokenMatch>("annotation").generateNode()

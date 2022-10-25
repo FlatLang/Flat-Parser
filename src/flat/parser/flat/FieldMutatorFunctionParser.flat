@@ -18,15 +18,13 @@ data class extends ParserBase implements ScopeableParser {
       NodeTokenPattern(parameterParsers, label: "parameter"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
     ], optional: true)
-  ])
+  ], exact: true)
 
   let ParserBase[] parameterParsers => [
     AnnotationParser(),
     ParameterParser(),
     FunctionParameterParser()
   ]
-
-  override public acceptImmediately() => true
 
   override public generateNode() -> FieldMutatorFunctionNode {
     return FieldMutatorFunctionNode()

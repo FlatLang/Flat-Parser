@@ -27,9 +27,7 @@ data class extends ParserBase {
       start: Token(value: "{"),
       end: Token(value: "}")
     )
-  ])
-
-  override public acceptImmediately() => true
+  ], exact: true)
 
   override public generateNode() -> ExternalNode {
     return ExternalNode(
