@@ -6,9 +6,7 @@ import flat/ast/CommentNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override visible Bool isMetadata => true
-
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.COMMENT, label: "comment")
+  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.COMMENT, label: "comment", metadata: true)
 
   override public generateNode() -> CommentNode {
     let value = lastMatch.getValue("comment")

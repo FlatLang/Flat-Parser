@@ -9,8 +9,6 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override visible Bool isMetadata => true
-
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
       PreconditionTokenPattern(parentTypes: VisibleModifier.allowedNodeContexts),
@@ -88,7 +86,7 @@ data class extends ParserBase {
       PreconditionTokenPattern(parentTypes: ExternalNameModifier.allowedNodeContexts),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExternalNameModifier.aliases, label: "alias"),
     ]),
-  ], exact: true)
+  ], exact: true, metadata: true)
 
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")

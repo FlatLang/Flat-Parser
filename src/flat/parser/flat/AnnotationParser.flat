@@ -8,14 +8,12 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override visible Bool isMetadata => true
-
   override lazy TokenPattern pattern => NodeTokenPattern([
     ModifierParser(),
     TargetAnnotationParser(),
     TargetRuntimeAnnotationParser(),
     TestSuiteAnnotationParser(),
-  ], exact: true, label: "annotation")
+  ], exact: true, metadata: true, label: "annotation")
 
   override public generateNode() -> AnnotationNode {
     return lastMatch.getMatch<NodeTokenMatch>("annotation").generateNode()
