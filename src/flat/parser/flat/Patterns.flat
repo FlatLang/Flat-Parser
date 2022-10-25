@@ -99,7 +99,10 @@ class {
     XorTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-        NodeGroupTokenPattern(switchChildParsers),
+        GroupTokenPattern([
+          NodeTokenPattern(switchConditionParsers, greedy: false),
+          NodeTokenPattern([MatchCaseParser()]),
+        ], repeat: true, greedy: false),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "}"),
       ]),
       GroupTokenPattern([
