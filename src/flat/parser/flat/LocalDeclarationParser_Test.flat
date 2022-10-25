@@ -84,7 +84,7 @@ testable class {
   test `can match a basic local declaration without let modifier and an explicit type`() {
     let parser = LocalDeclarationParser()
 
-    let context = FlatParseContext()
+    let context = ParseContext()
 
     let matcher = parser.matcher
     let result = matcher.matchAll([
@@ -105,7 +105,7 @@ testable class {
   test `can match a basic local declaration without let modifier and an explicit type with array brackets`() {
     let parser = LocalDeclarationParser()
 
-    let context = FlatParseContext()
+    let context = ParseContext()
 
     let matcher = parser.matcher
     let result = matcher.matchAll([

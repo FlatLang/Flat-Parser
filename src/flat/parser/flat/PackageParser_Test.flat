@@ -12,7 +12,7 @@ import flat/io/File
 testable class {
   test `can parse package declaration`() {
     let parser = PackageParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "package", type: Token.Type.IDENTIFIER),
       Token(value: "flat", type: Token.Type.IDENTIFIER),
@@ -38,7 +38,7 @@ testable class {
 
   test `can parse single letter package declaration`() {
     let parser = PackageParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "package", type: Token.Type.IDENTIFIER),
       Token(value: "a", type: Token.Type.IDENTIFIER),

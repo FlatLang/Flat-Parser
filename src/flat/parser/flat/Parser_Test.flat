@@ -31,7 +31,7 @@ testable class {
       |"
 
     let file = File("Test.flat")
-    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source):emit("start"))
+    let stream = Parser().parse(FileParser(), ParseContext(file: file), Lexer().lex(source):emit("start"))
 
     let nodes = Node[]
 
@@ -85,7 +85,7 @@ testable class {
       |"
 
     let file = File("Test.flat")
-    let stream = Parser().parse(FileParser(), FlatParseContext(file: file), Lexer().lex(source):emit("start"))
+    let stream = Parser().parse(FileParser(), ParseContext(file: file), Lexer().lex(source):emit("start"))
 
     let nodes = Node[]
 

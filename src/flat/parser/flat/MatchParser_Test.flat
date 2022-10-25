@@ -22,7 +22,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "y", type: Token.Type.IDENTIFIER),
       Token(value: "}", type: Token.Type.SYMBOL),
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     expect(result?.tokens).toBe([
       Token(value: "match", type: Token.Type.IDENTIFIER),
@@ -51,7 +51,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "y", type: Token.Type.IDENTIFIER),
       Token(value: "}", type: Token.Type.SYMBOL),
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     expect(result?.tokens).toBe([
       Token(value: "match", type: Token.Type.IDENTIFIER),

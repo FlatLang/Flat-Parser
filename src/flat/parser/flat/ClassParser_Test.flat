@@ -11,7 +11,7 @@ import flat/io/File
 testable class {
   test `can parse declaration`() {
     let parser = ClassParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
 
     parser.matchAll([
       Token(value: "class", type: Token.Type.IDENTIFIER),
@@ -32,7 +32,7 @@ testable class {
     let parser = ClassParser()
 
     let file = File("test.flat")
-    parser.context = FlatParseContext(
+    parser.context = ParseContext(
       file: file,
       parentStack: Stack<Node>([FileNode(file: file)])
     )
@@ -59,7 +59,7 @@ testable class {
       Token(value: "Test", type: Token.Type.IDENTIFIER),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL),
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),
@@ -81,7 +81,7 @@ testable class {
       Token(value: "Test", type: Token.Type.IDENTIFIER),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL),
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),
@@ -121,7 +121,7 @@ testable class {
       Token(value: ">", type: Token.Type.SYMBOL),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL),
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "class", type: Token.Type.IDENTIFIER),

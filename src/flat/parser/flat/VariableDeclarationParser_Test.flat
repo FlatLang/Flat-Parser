@@ -12,7 +12,7 @@ import flat/io/File
 testable class {
   test `can parse declaration`() {
     let parser = VariableDeclarationParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "String", type: Token.Type.IDENTIFIER),
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -33,7 +33,7 @@ testable class {
 
   test `can parse declaration with array type`() {
     let parser = VariableDeclarationParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "String", type: Token.Type.IDENTIFIER),
       Token(value: "[", type: Token.Type.SYMBOL),

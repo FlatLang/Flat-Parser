@@ -16,7 +16,7 @@ testable class {
     let result = matcher.matchAll([
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "{", type: Token.Type.SYMBOL),
@@ -34,7 +34,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "x", type: Token.Type.IDENTIFIER),
@@ -56,7 +56,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "(", type: Token.Type.SYMBOL),
@@ -82,7 +82,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "(", type: Token.Type.SYMBOL),
@@ -112,7 +112,7 @@ testable class {
       Token(value: "=>", type: Token.Type.SYMBOL),
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "(", type: Token.Type.SYMBOL),

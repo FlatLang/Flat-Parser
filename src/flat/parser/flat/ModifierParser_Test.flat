@@ -11,7 +11,7 @@ import flat/compiler/models
 testable class {
   test `can parse visible modifier`() {
     let parser = ModifierParser()
-    parser.context = FlatParseContext(
+    parser.context = ParseContext(
       parserStack: Stack():push(FileParser()):push(ClassParser())
     )
 

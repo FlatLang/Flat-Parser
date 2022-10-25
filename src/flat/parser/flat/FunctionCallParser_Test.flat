@@ -14,7 +14,7 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -35,7 +35,7 @@ testable class {
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -56,7 +56,7 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
       Token(value: "value", type: Token.Type.IDENTIFIER)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     expect(match).toBe(null)
   }
@@ -70,7 +70,7 @@ testable class {
       Token(value: ",", type: Token.Type.SYMBOL),
       Token(value: "arg2", type: Token.Type.IDENTIFIER),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -93,7 +93,7 @@ testable class {
       Token(value: "{", type: Token.Type.SYMBOL),
       Token(value: "}", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -109,7 +109,7 @@ testable class {
 
   test `can generate node for function call with empty lambda argument`() {
     let parser = FunctionCallParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
@@ -129,7 +129,7 @@ testable class {
 
   test `can get child matches for function call with empty lambda argument`() {
     let parser = FunctionCallParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
@@ -164,7 +164,7 @@ testable class {
 
   test `can generate child matches for function call with empty lambda argument`() {
     let parser = FunctionCallParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
@@ -191,7 +191,7 @@ testable class {
       Token(value: "x", type: Token.Type.IDENTIFIER),
       Token(value: "}", type: Token.Type.SYMBOL),
       Token(value: ")", type: Token.Type.SYMBOL)
-    ], FlatParseContext()).last
+    ], ParseContext()).last
 
     let expected = [
       Token(value: "test", type: Token.Type.IDENTIFIER),
@@ -208,7 +208,7 @@ testable class {
 
   test `can generate child matches for function call with simple lambda argument`() {
     let parser = FunctionCallParser()
-    parser.context = FlatParseContext()
+    parser.context = ParseContext()
     let result = parser.matchAll([
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "(", type: Token.Type.SYMBOL),
