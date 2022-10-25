@@ -37,12 +37,11 @@ data class extends ParserBase implements ScopeableParser {
 
   ParserBase[] classBodyParsers => [
     AnnotationParser(),
+    ClassParser(),
+    StaticBlockParser(),
     FieldParser(),
     ArrayOverrideParser(),
     FunctionParser(),
-    AssignmentParser(),
-    ClassParser(),
-    StaticBlockParser(),
   ]
 
   override public generateNode() -> ClassNode {
