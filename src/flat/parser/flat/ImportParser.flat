@@ -22,6 +22,10 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ".", label: "import_subclass_component"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "import_subclass_component")
     ], repeat: true, optional: true),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "as"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "alias")
+    ], optional: true),
   ])
 
   override public generateNode() -> ImportNode {
