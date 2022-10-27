@@ -10,7 +10,7 @@ import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern([
-    PreconditionTokenPattern(parentTypes: ThisModifier.allowedNodeContexts),
+    PreconditionTokenPattern(baseParentTypes: ThisModifier.allowedBaseParents, parentTypes: ThisModifier.allowedParents),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias"),
   ], exact: true, metadata: true)
 

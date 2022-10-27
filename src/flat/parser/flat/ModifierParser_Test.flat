@@ -12,7 +12,8 @@ testable class {
   test `can parse visible modifier`() {
     let parser = ModifierParser()
     parser.context = ParseContext(
-      parserStack: Stack():push(FileParser()):push(ClassParser())
+      parserStack: Stack():push(FileParser()):push(ClassParser()),
+      currentBaseParser: ClassParser()
     )
 
     parser.matchAll([

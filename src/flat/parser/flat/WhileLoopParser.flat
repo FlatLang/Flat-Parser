@@ -6,13 +6,13 @@ import flat/ast/WhileLoopNode
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   static Logger log = Logger(WhileLoopParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
     NodeTokenPattern(conditionParsers, label: "condition"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "while_body"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "while_body"),
   ], label: "while_loop")
 
   ParserBase[] conditionParsers => [

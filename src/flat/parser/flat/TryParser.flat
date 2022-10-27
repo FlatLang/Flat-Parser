@@ -6,7 +6,7 @@ import flat/ast/TryNode
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   static Logger log = Logger(TryParser.class)
 
   override ParserBase[] childParsers => Array()

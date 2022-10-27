@@ -6,7 +6,7 @@ import flat/parser/matchers
 import flat/annotations
 import flat/compiler/models/Token
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern([
     PreconditionTokenPattern(annotations: [StaticModifier.class]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),

@@ -5,7 +5,7 @@ import flat/parser/matchers
 import flat/ast/LambdaNode
 import flat/compiler/models/Token
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   override lazy TokenPattern pattern => XorTokenPattern([
     XorTokenPattern([
       GroupTokenPattern([
@@ -15,15 +15,15 @@ data class extends ParserBase implements ScopeableParser {
           end: Token(value: ")")
         ),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        NodeTokenPattern(LocalScopeParser().valueParsers, label: "lambda_contents"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "lambda_contents"),
       ]),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "param_name"),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        NodeTokenPattern(LocalScopeParser().valueParsers, label: "lambda_contents"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "lambda_contents"),
       ])
     ]),
-    NodeTokenPattern([LocalScopeParser()], label: "lambda_contents"),
+    NodeTokenPattern([LocalScopeParser()], baseParser: true, label: "lambda_contents"),
   ], label: "lambda")
 
   override public generateNode() -> LambdaNode {

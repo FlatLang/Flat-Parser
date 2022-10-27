@@ -6,7 +6,7 @@ import flat/ast/ForEachLoopNode
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   static Logger log = Logger(ForEachLoopParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
@@ -16,7 +16,7 @@ data class extends ParserBase implements ScopeableParser {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "in"),
     NodeTokenPattern(iteratorParsers, label: "iterator", greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "for_each_loop_body"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "for_each_loop_body"),
   ])
 
   let ParserBase[] iteratorParsers => [

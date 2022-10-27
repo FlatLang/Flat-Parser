@@ -5,7 +5,7 @@ import flat/parser/matchers
 import flat/ast/LocalScopeNode
 import flat/compiler/models/Token
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   visible ParserBase[] valueParsers => [
     AnnotationParser(),
     ThrowParser(),

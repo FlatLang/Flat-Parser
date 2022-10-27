@@ -7,7 +7,7 @@ import flat/compiler/models/Token
 import flat/compiler/models/SyntaxTokenFunctions
 import flat/log/Logger
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   static Logger log = Logger(FunctionParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([
@@ -15,10 +15,10 @@ data class extends ParserBase implements ScopeableParser {
     Patterns.genericParameters,
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
-      NodeTokenPattern(parameterParsers, label: "parameter"),
+      NodeTokenPattern(parameterParsers, baseParser: true, label: "parameter"),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern(parameterParsers, label: "parameter")
+        NodeTokenPattern(parameterParsers, baseParser: true, label: "parameter")
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true, label: "function_parameters"),
@@ -29,7 +29,7 @@ data class extends ParserBase implements ScopeableParser {
     ], optional: true, label: "function_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-      NodeTokenPattern(arrowExpressionValues, label: "function_arrow_expression")
+      NodeTokenPattern(arrowExpressionValues, baseParser: true, label: "function_arrow_expression")
     ], optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),

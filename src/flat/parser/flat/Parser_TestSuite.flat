@@ -17,7 +17,6 @@ import flat/parser/matchers
   AnnotationParser_Test,
   FunctionParser_Test,
   CommentParser_Test,
-  ClassScopeParser_Test,
   ParameterParser_Test,
   FunctionCallParser_Test,
   ArrayAccessParser_Test,

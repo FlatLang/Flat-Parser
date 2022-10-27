@@ -6,7 +6,7 @@ import flat/ast/SwitchNode
 import flat/compiler/models/Token
 import flat/log/Logger
 
-data class extends ParserBase implements ScopeableParser {
+data class extends ParserBase {
   static Logger log = Logger(SwitchParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern([

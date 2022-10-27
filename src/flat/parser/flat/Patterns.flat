@@ -84,14 +84,14 @@ class {
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
         GroupTokenPattern([
-          NodeTokenPattern(switchConditionParsers, greedy: false),
-          NodeTokenPattern([MatchCaseParser()]),
+          NodeTokenPattern(switchConditionParsers, baseParser: true, greedy: false),
+          NodeTokenPattern([MatchCaseParser()], baseParser: true),
         ], repeat: true, greedy: false),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "}"),
       ]),
       GroupTokenPattern([
-        NodeTokenPattern(switchConditionParsers, greedy: false),
-        NodeTokenPattern([MatchCaseParser()]),
+        NodeTokenPattern(switchConditionParsers, baseParser: true, greedy: false),
+        NodeTokenPattern([MatchCaseParser()], baseParser: true),
       ], repeat: true),
     ]),
   ])
