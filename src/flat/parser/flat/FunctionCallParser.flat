@@ -20,9 +20,9 @@ data class extends ParserBase {
     MatchCaseParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<FunctionCallNode>([
     IdentifierParser().pattern,
-    Patterns.genericArguments,
+    NodeTokenPattern([GenericArgumentsParser()], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
       NodeTokenPattern(argumentParsers, label: "argument"),

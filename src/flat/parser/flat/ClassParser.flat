@@ -10,21 +10,21 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "class_name"),
-      Patterns.genericParameters
+      NodeTokenPattern([GenericParametersParser()], optional: true)
     ], optional: true, greedy: false),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
-      Patterns.genericArguments
+      NodeTokenPattern([GenericArgumentsParser()], optional: true)
     ], optional: true, label: "extends_class"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "implements"),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
-      Patterns.genericArguments,
+      NodeTokenPattern([GenericArgumentsParser()], optional: true),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
         SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
-        Patterns.genericArguments
+        NodeTokenPattern([GenericArgumentsParser()], optional: true)
       ], repeat: true, optional: true, label: "implements_class"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true),

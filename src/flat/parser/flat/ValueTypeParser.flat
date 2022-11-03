@@ -1,0 +1,19 @@
+package flat/parser/flat
+
+import flat/ast
+import flat/parser
+import flat/parser/matchers
+import flat/compiler/models/Token
+
+data class extends ParserBase {
+  override lazy TokenPattern pattern => GroupTokenPattern<TypeNode>([
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type_name"),
+      NodeTokenPattern([GenericParametersParser()], optional: true),
+    ]),
+    GroupTokenPattern([
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
+    ], repeat: true, optional: true, label: "brackets")
+  ], label: "type")
+}

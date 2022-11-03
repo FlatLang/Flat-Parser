@@ -27,7 +27,7 @@ data class extends ParserBase {
         PreconditionTokenPattern(annotations: [LetModifier.class]),
         PreconditionTokenPattern(annotations: [VarModifier.class])
       ], optional: true, label: "implicit_modifier"),
-      Patterns.valueType,
+      NodeTokenPattern([ValueTypeParser()]),
       IdentifierParser().pattern,
     ])
   ], label: "local_declaration")
