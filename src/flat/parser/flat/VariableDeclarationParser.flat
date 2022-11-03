@@ -25,9 +25,7 @@ data class extends ParserBase {
     let bracketCount = lastMatch.getMatches("brackets").count
 
     return VariableDeclarationNode(
-      type: type,
-      name: name,
-      arrayDimensions: bracketCount
+      name: name
     )
   }
 }

@@ -27,9 +27,7 @@ data class extends ParserBase {
     let bracketCount = lastMatch.getValues("bracket_start").count
 
     return ParameterNode(
-      type: type,
       name: name,
-      arrayDimensions: bracketCount,
       requireName: lastMatch.getValue("require_name") != null
     )
   }

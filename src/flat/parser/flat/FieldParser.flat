@@ -47,9 +47,7 @@ data class extends ParserBase {
     let bracketCount = lastMatch.getValues("bracket_start").count
 
     return FieldNode(
-      type: type,
-      name: name,
-      arrayDimensions: bracketCount
+      name: name
     )
   }
 }

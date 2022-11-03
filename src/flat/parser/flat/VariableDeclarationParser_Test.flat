@@ -25,7 +25,6 @@ testable class {
 
     expect(parser.generateNode()).toBe(
       VariableDeclarationNode(
-        type: "String",
         name: "test"
       )
     )
@@ -50,9 +49,7 @@ testable class {
 
     expect(parser.generateNode()).toBe(
       VariableDeclarationNode(
-        type: "String",
-        name: "test",
-        arrayDimensions: 1
+        name: "test"
       )
     )
   }

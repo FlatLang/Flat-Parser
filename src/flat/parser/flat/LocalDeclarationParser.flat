@@ -34,9 +34,7 @@ data class extends ParserBase {
 
   override public generateNode() -> LocalDeclarationNode {
     return LocalDeclarationNode(
-      type: lastMatch.getValue("type_name"),
-      name: lastMatch.getValue("name"),
-      arrayDimensions: lastMatch.getMatches("brackets").count
+      name: lastMatch.getValue("name")
     )
   }
 }
