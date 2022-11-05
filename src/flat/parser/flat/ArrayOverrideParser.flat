@@ -13,12 +13,7 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
-      NodeTokenPattern([GenericParametersParser()], optional: true),
-      GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "type_bracket_start"),
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "type_bracket_end")
-      ], repeat: true, optional: true)
+      NodeTokenPattern([ValueTypeParser()]),
     ], optional: true, label: "array_overload_type"),
     GroupTokenPattern([
       XorTokenPattern([

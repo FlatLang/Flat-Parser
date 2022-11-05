@@ -19,14 +19,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type_name"),
-      NodeTokenPattern([GenericParametersParser()], optional: true),
-      GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "bracket_start"),
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "bracket_end")
-      ], repeat: true, optional: true, label: "array_brackets")
-    ], label: "type"),
+    NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
   ], label: "cast")
 
