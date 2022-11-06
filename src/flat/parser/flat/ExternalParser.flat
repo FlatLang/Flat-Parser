@@ -12,7 +12,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ExternalNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "external"),
     GroupTokenPattern([
       GroupTokenPattern([
@@ -28,11 +28,4 @@ data class extends ParserBase {
       end: Token(value: "}")
     )
   ], exact: true)
-
-  override public generateNode() -> ExternalNode {
-    return ExternalNode(
-      includes: lastMatch.getValues("include"),
-      excludes: lastMatch.getValues("exclude")
-    )
-  }
 }

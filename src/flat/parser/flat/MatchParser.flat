@@ -9,18 +9,8 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(MatchParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<MatchNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "match"),
     Patterns.switchBody
   ], label: "match")
-
-  override public generateNode() -> MatchNode {
-    return MatchNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let params = lastMatch.getMatch<GroupTokenMatch>("match")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "match_condition" })
-    }
-  }
 }

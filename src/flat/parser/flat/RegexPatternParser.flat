@@ -12,16 +12,10 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LiteralParser().childParsers)
 
-  override lazy TokenPattern pattern => CaptureTokenPattern(
+  override lazy TokenPattern pattern => CaptureTokenPattern<RegexPatternNode>(
     label: "pattern",
     start: Token(value: "/"),
     end: Token(value: "/"),
     exact: true
   )
-
-  override public generateNode() -> RegexPatternNode {
-    return RegexPatternNode(
-      pattern: lastMatch.getMatch("pattern").tokens.map({ _.value }).join() // FIXME: doesnt handle whitespace. Need to upade lexer to handle regex patterns
-    )
-  }
 }

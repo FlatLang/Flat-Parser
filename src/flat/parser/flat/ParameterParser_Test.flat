@@ -42,7 +42,7 @@ testable class {
     ])
     expect(result?.getValue("type_name")).toBe("String")
     expect(result?.getValue("name")).toBe("test")
-    expect(result?.getValue("type_bracket_start")).toBe("[")
-    expect(result?.getValue("type_bracket_end")).toBe("]")
+    expect(result?.getValue("bracket_start")).toBe("[")
+    expect(result?.getValue("bracket_end")).toBe("]")
   }
 }

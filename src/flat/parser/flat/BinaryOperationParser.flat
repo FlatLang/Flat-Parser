@@ -18,17 +18,11 @@ data class extends ParserBase {
     UnaryOperationParser(),
   ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, values: [
+  override lazy TokenPattern pattern => SingleTokenPattern<BinaryOperationNode>(type: Token.Type.SYMBOL, field: "operator", values: [
     "+", "-", "*", "/", "%",
     "+=", "-=", "*=", "/=", "%=",
     "!=", "==", "&&", "&", "||", "|",
     "<", ">", "<=", ">=",
     "?:"
   ])
-
-  override public generateNode() -> BinaryOperationNode {
-    return BinaryOperationNode(
-      operator: lastMatch.tokens.first.value
-    )
-  }
 }

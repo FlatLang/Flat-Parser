@@ -2,44 +2,64 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/ast/LiteralNode
+import flat/ast
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
+  override ParserBase[] childParsers => Patterns.childParsers
+
+  override lazy TokenPattern pattern => NodeTokenPattern([
+    StringLiteralParser(),
+    CharLiteralParser(),
+    IntegerLiteralParser(),
+    BoolLiteralParser(),
+    NullLiteralParser(),
+  ])
+}
+
+class Patterns {
+  static visible ParserBase[] childParsers => [
     DotAccessParser(),
     SafeAccessParser(),
     IntRangeParser(),
     TernaryParser(),
     ColonAccessParser(),
     BinaryOperationParser(),
-    MatchCaseParser()
-  ])
+    MatchCaseParser(),
+  ]
+}
 
-  override lazy TokenPattern pattern => XorTokenPattern([
-    SingleTokenPattern(type: Token.Type.STRING),
-    SingleTokenPattern(type: Token.Type.CHAR),
-    SingleTokenPattern(type: Token.Type.INTEGER),
-    SingleTokenPattern(type: Token.Type.BOOL),
-    SingleTokenPattern(type: Token.Type.NULL)
-  ], exact: true)
+data class StringLiteralParser extends ParserBase {
+  override ParserBase[] childParsers => Patterns.childParsers
 
-  override public generateNode() -> LiteralNode {
-    let token = lastMatch.tokens.first
+  override lazy TokenPattern pattern =>
+    SingleTokenPattern<StringLiteralNode>(type: Token.Type.STRING, field: "value")
+}
 
-    var Int literalType
+data class CharLiteralParser extends ParserBase {
+  override ParserBase[] childParsers => Patterns.childParsers
 
-    match token.type {
-      Token.Type.STRING => literalType = LiteralNode.Type.STRING
-      Token.Type.CHAR => literalType = LiteralNode.Type.CHAR
-      Token.Type.INTEGER => literalType = LiteralNode.Type.INTEGER
-      Token.Type.BOOL => literalType = LiteralNode.Type.BOOL
-      Token.Type.NULL => literalType = LiteralNode.Type.NULL
-    }
+  override lazy TokenPattern pattern =>
+    SingleTokenPattern<CharLiteralNode>(type: Token.Type.CHAR, field: "value")
+}
 
-    return LiteralNode(
-      value: token.value,
-      literalType: literalType
-    )
-  }
+data class IntegerLiteralParser extends ParserBase {
+  override ParserBase[] childParsers => Patterns.childParsers
+
+  override lazy TokenPattern pattern =>
+    SingleTokenPattern<IntegerLiteralNode>(type: Token.Type.INTEGER, field: "value")
+}
+
+data class BoolLiteralParser extends ParserBase {
+  override ParserBase[] childParsers => Patterns.childParsers
+
+  override lazy TokenPattern pattern =>
+    SingleTokenPattern<BoolLiteralNode>(type: Token.Type.BOOL, field: "value")
+}
+
+data class NullLiteralParser extends ParserBase {
+  override ParserBase[] childParsers => Patterns.childParsers
+
+  override lazy TokenPattern pattern =>
+    SingleTokenPattern<NullLiteralNode>(type: Token.Type.NULL)
 }

@@ -10,7 +10,7 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ImportNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "import"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "static", optional: true, label: "static"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "import_location_component"),

@@ -12,7 +12,7 @@ data class extends ParserBase {
   override ParserBase[] childParsers => Array()
     :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<CatchNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "catch"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern(parameterParsers, label: "parameter"),
@@ -24,14 +24,4 @@ data class extends ParserBase {
     ParameterParser(),
     FunctionParameterParser()
   ]
-
-  override public generateNode() -> CatchNode {
-    return CatchNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let params = lastMatch.getMatch<GroupTokenMatch>("parameters")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
-    }
-  }
 }

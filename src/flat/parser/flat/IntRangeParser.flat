@@ -21,9 +21,5 @@ data class extends ParserBase {
     RegexPatternParser()
   ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "..", label: "int_range")
-
-  override public generateNode() -> IntRangeNode {
-    return IntRangeNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<IntRangeNode>(type: Token.Type.SYMBOL, value: "..", label: "int_range")
 }

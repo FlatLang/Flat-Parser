@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(IfParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<IfNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "if"),
     NodeTokenPattern(conditionParsers, label: "condition"),
     NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "if_body"),
@@ -30,14 +30,4 @@ data class extends ParserBase {
     LocalDeclarationParser(),
     TernaryParser()
   ]
-
-  override public generateNode() -> IfNode {
-    return IfNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let params = lastMatch.getMatch<GroupTokenMatch>("if")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter(m => m.label == "condition" || m.label == "if_body")
-    }
-  }
 }

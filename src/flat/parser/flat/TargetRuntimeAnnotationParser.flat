@@ -12,7 +12,7 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<TargetRuntimeAnnotation>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: TargetRuntimeAnnotation.identifier),
     XorTokenPattern([
@@ -24,11 +24,4 @@ data class extends ParserBase {
     ], repeat: true, greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ], label: "target_annotation")
-
-  override public generateNode() -> TargetRuntimeAnnotation => null {
-    return TargetRuntimeAnnotation(
-      includes: lastMatch.getValues("include"),
-      excludes: lastMatch.getValues("exclude")
-    )
-  }
 }

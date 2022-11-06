@@ -6,7 +6,7 @@ import flat/ast/LambdaNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => XorTokenPattern([
+  override lazy TokenPattern pattern => XorTokenPattern<LambdaNode>([
     XorTokenPattern([
       GroupTokenPattern([
         CaptureTokenPattern(
@@ -25,14 +25,4 @@ data class extends ParserBase {
     ]),
     NodeTokenPattern([LocalScopeParser()], baseParser: true, label: "lambda_contents"),
   ], label: "lambda")
-
-  override public generateNode() -> LambdaNode {
-    return LambdaNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let contents = lastMatch.getMatch<NodeTokenMatch>("lambda_contents")) {
-      return [contents]
-    }
-  }
 }

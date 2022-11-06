@@ -17,16 +17,9 @@ data class extends ParserBase {
     PriorityParser(),
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<CastNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
   ], label: "cast")
-
-  override public generateNode() -> CastNode {
-    return CastNode(
-      type: lastMatch.getValue("type_name"),
-      arrayDimensions: lastMatch.getMatches("array_brackets").count
-    )
-  }
 }

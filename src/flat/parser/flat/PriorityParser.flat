@@ -22,19 +22,9 @@ data class extends ParserBase {
     MatchCaseParser()
   ]
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<PriorityNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern(LocalScopeParser().valueParsers, label: "value"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
   ], label: "priority")
-
-  override public generateNode() -> PriorityNode {
-    return PriorityNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let priority = lastMatch.getMatch<GroupTokenMatch>("priority")) {
-      return (NodeTokenMatch[])priority.tokenMatches.filter({ _.label == "value" })
-    }
-  }
 }

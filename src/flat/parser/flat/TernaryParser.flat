@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(TernaryParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<TernaryNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "?"),
     NodeTokenPattern(conditionParsers, label: "true_value", greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
@@ -29,15 +29,4 @@ data class extends ParserBase {
     CastParser(),
     PriorityParser(),
   ]
-
-  override public generateNode() -> TernaryNode {
-    return TernaryNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    return [
-      lastMatch.getMatch<NodeTokenMatch>("true_value"),
-      lastMatch.getMatch<NodeTokenMatch>("false_value"),
-    ]
-  }
 }

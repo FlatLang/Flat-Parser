@@ -10,7 +10,7 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<PackageNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "package"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "package_location_component"),
     GroupTokenPattern([

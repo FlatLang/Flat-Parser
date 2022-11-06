@@ -9,9 +9,5 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(FallthroughParser.class)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "fallthrough", exact: true)
-
-  override public generateNode() -> FallthroughNode {
-    return FallthroughNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<FallthroughNode>(type: Token.Type.IDENTIFIER, value: "fallthrough", exact: true)
 }

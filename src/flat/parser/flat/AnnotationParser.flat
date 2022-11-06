@@ -4,10 +4,13 @@ import flat/parser
 import flat/parser/matchers
 import flat/ast/AnnotationNode
 import flat/compiler/models/Token
+import flat/log
 
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
+  static Logger log = Logger(AnnotationParser.class)
+
   override lazy TokenPattern pattern => NodeTokenPattern([
     ModifierParser(),
     TargetAnnotationParser(),
@@ -15,7 +18,10 @@ data class extends ParserBase {
     TestSuiteAnnotationParser(),
   ], exact: true, metadata: true, label: "annotation")
 
-  override public generateNode() -> AnnotationNode {
-    return lastMatch.getMatch<NodeTokenMatch>("annotation").generateNode()
+  override public generateNode() -> AnnotationNode => null {
+    if (let annotationMatch = lastMatch.getMatch<NodeTokenMatch>("annotation")) {
+      log.traceFunc({"Generating node for annotation match: #{annotationMatch}"})
+      return annotationMatch.generateNode()
+    }
   }
 }

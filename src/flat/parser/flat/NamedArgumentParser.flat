@@ -19,14 +19,8 @@ data class extends ParserBase {
     PriorityParser(),
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+  override lazy TokenPattern pattern => GroupTokenPattern<NamedArgumentNode>([
+    IdentifierParser().pattern,
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
   ], label: "named_argument")
-
-  override public generateNode() -> NamedArgumentNode {
-    return NamedArgumentNode(
-      name: lastMatch.getValue("name")
-    )
-  }
 }

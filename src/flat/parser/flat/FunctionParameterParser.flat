@@ -14,8 +14,8 @@ data class extends ParserBase {
     AssignmentParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+  override lazy TokenPattern pattern => GroupTokenPattern<FunctionParameterNode>([
+    IdentifierParser().pattern,
     NodeTokenPattern([GenericParametersParser()], optional: true),
     CaptureTokenPattern(
       label: "parameters",
@@ -27,16 +27,4 @@ data class extends ParserBase {
       NodeTokenPattern([ValueTypeParser()]),
     ], optional: true)
   ])
-
-  override public generateNode() -> FunctionParameterNode {
-    let type = lastMatch.getValue("type")
-    let name = lastMatch.getValue("name")
-    let bracketCount = lastMatch.getValues("bracket_start").count
-
-    return FunctionParameterNode(
-      type: type,
-      name: name,
-      arrayDimensions: bracketCount
-    )
-  }
 }

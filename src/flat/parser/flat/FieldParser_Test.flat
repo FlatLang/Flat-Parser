@@ -24,9 +24,7 @@ testable class {
     ])
 
     expect(parser.generateNode()).toBe(
-      FieldNode(
-        name: "test"
-      )
+      FieldNode()
     )
   }
 
@@ -48,9 +46,7 @@ testable class {
     ])
 
     expect(parser.generateNode()).toBe(
-      FieldNode(
-        name: "test"
-      )
+      FieldNode()
     )
   }
 }

@@ -9,9 +9,5 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(BreakParser.class)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "break", exact: true)
-
-  override public generateNode() -> BreakNode {
-    return BreakNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<BreakNode>(type: Token.Type.IDENTIFIER, value: "break", exact: true)
 }

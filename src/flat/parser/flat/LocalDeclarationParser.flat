@@ -2,7 +2,7 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/ast/LocalDeclarationNode
+import flat/ast
 import flat/compiler/models/Token
 import flat/annotations/LetModifier
 import flat/annotations/VarModifier
@@ -14,27 +14,21 @@ data class extends ParserBase {
     AssignmentParser()
   ]
 
-  override lazy TokenPattern pattern => XorTokenPattern([
+  override lazy TokenPattern pattern => XorTokenPattern<LocalDeclarationNode>([
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern(annotations: [LetModifier.class]),
-        PreconditionTokenPattern(annotations: [VarModifier.class])
+        PreconditionTokenPattern<LetModifier>(annotations: [LetModifier.class]),
+        PreconditionTokenPattern<VarModifier>(annotations: [VarModifier.class])
       ], label: "implicit_modifier"),
       IdentifierParser().pattern,
     ]),
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern(annotations: [LetModifier.class]),
-        PreconditionTokenPattern(annotations: [VarModifier.class])
+        PreconditionTokenPattern<LetModifier>(annotations: [LetModifier.class]),
+        PreconditionTokenPattern<VarModifier>(annotations: [VarModifier.class])
       ], optional: true, label: "implicit_modifier"),
       NodeTokenPattern([ValueTypeParser()]),
       IdentifierParser().pattern,
     ])
   ], label: "local_declaration")
-
-  override public generateNode() -> LocalDeclarationNode {
-    return LocalDeclarationNode(
-      name: lastMatch.getValue("name")
-    )
-  }
 }

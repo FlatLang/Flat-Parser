@@ -9,9 +9,5 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(ContinueParser.class)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "continue", exact: true)
-
-  override public generateNode() -> ContinueNode {
-    return ContinueNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<ContinueNode>(type: Token.Type.IDENTIFIER, value: "continue", exact: true)
 }

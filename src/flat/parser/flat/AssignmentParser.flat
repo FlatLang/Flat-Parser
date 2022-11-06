@@ -20,9 +20,5 @@ data class extends ParserBase {
     LambdaParser(),
   ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "=")
-
-  override public generateNode() -> AssignmentNode {
-    return AssignmentNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<AssignmentNode>(type: Token.Type.SYMBOL, value: "=")
 }

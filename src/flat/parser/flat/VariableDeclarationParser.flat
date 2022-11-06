@@ -10,7 +10,7 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<VariableDeclarationNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_type"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
@@ -18,14 +18,4 @@ data class extends ParserBase {
     ], repeat: true, optional: true, label: "brackets"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_name")
   ])
-
-  override public generateNode() -> VariableDeclarationNode {
-    let type = lastMatch.getValue("declaration_type")
-    let name = lastMatch.getValue("declaration_name")
-    let bracketCount = lastMatch.getMatches("brackets").count
-
-    return VariableDeclarationNode(
-      name: name
-    )
-  }
 }

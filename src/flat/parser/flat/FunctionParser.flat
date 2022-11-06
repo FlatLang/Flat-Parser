@@ -2,7 +2,7 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/ast/FunctionNode
+import flat/ast
 import flat/compiler/models/Token
 import flat/compiler/models/SyntaxTokenFunctions
 import flat/log/Logger
@@ -10,8 +10,8 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(FunctionParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    IdentifierParser().pattern,
+  override lazy TokenPattern pattern => GroupTokenPattern<FunctionNode>([
+    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name"),
     NodeTokenPattern([GenericParametersParser()], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
@@ -74,32 +74,4 @@ data class extends ParserBase {
     PriorityParser(),
     LambdaParser()
   ]
-
-  override public generateNode() -> FunctionNode {
-    let type = lastMatch.getValue("type_name")
-    let name = lastMatch.getValue("name")
-    let bracketCount = lastMatch.getValues("bracket_start").count
-
-    return FunctionNode(
-      type: type,
-      name: name,
-      arrayDimensions: bracketCount
-    )
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    let matches = NodeTokenMatch[]
-
-    if (let params = lastMatch.getMatch<GroupTokenMatch>("function_parameters")) {
-      matches.addAll(params.tokenMatches.filter({ _.label == "parameter" }))
-    }
-    if (let arrowExpression = lastMatch.getMatch<NodeTokenMatch>("function_arrow_expression")) {
-      matches.add(arrowExpression)
-    }
-    if (let scope = lastMatch.getMatch<NodeGroupTokenMatch>("function_body_scope")) {
-      matches.addAll(scope.getChildNodeMatches())
-    }
-
-    return matches
-  }
 }

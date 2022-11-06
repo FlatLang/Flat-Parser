@@ -19,11 +19,5 @@ data class extends ParserBase {
     MatchCaseParser()
   ]
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name")
-
-  override public generateNode() -> IdentifierNode {
-    return IdentifierNode(
-      name: lastMatch.getValue("name")
-    )
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name")
 }

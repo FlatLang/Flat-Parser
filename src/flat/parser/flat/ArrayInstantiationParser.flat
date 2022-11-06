@@ -15,19 +15,7 @@ data class extends ParserBase {
     ArrayAccessParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "type"),
-    NodeTokenPattern([GenericParametersParser()], optional: true),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-    ], repeat: true, label: "brackets")
+  override lazy TokenPattern pattern => GroupTokenPattern<ArrayInstantiationNode>([
+    NodeTokenPattern([ValueTypeParser()]),
   ])
-
-  override public generateNode() -> ArrayInstantiationNode {
-    return ArrayInstantiationNode(
-      type: lastMatch.getValue("type"),
-      arrayDimensions: lastMatch.getMatches("brackets").count
-    )
-  }
 }

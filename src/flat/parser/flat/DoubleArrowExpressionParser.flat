@@ -8,9 +8,5 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override ParserBase[] childParsers => Array():addAll(AssignmentParser().childParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "<=>")
-
-  override public generateNode() -> DoubleArrowExpressionNode {
-    return DoubleArrowExpressionNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<DoubleArrowExpressionNode>(type: Token.Type.SYMBOL, value: "<=>")
 }

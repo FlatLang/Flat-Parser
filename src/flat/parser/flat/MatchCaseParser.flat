@@ -11,9 +11,5 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => LocalScopeParser().valueParsers
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>")
-
-  override public generateNode() -> MatchCaseNode {
-    return MatchCaseNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<MatchCaseNode>(type: Token.Type.SYMBOL, value: "=>")
 }

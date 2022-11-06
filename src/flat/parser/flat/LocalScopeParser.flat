@@ -36,7 +36,7 @@ data class extends ParserBase {
     LocalScopeParser(),
   ]
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<LocalScopeNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
     NodeGroupTokenPattern(valueParsers, optional: true, label: "scope_body_contents"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")

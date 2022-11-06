@@ -16,7 +16,7 @@ data class extends ParserBase {
     ArrayAccessParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ArrayInitializerNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     GroupTokenPattern([
       NodeTokenPattern(indexParsers, label: "initializer_value"),
@@ -38,14 +38,4 @@ data class extends ParserBase {
     LambdaParser(),
     ArrayInitializerParser()
   ]
-
-  override public generateNode() -> ArrayInitializerNode {
-    return ArrayInitializerNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let args = lastMatch.getMatch<GroupTokenMatch>("initializer_values")) {
-      return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "initializer_value" })
-    }
-  }
 }

@@ -23,16 +23,11 @@ data class extends ParserBase {
     PriorityParser(),
   ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(
+  override lazy TokenPattern pattern => SingleTokenPattern<UnaryOperationNode>(
     type: Token.Type.SYMBOL,
     values: [
       "++", "--", "!", "$", "-"
-    ]
+    ],
+    field: "operator"
   )
-
-  override public generateNode() -> UnaryOperationNode {
-    return UnaryOperationNode(
-      operator: lastMatch.tokens.first.value
-    )
-  }
 }

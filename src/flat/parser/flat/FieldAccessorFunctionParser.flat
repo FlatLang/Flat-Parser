@@ -11,9 +11,5 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => [LocalScopeParser()]
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "get", exact: true)
-
-  override public generateNode() -> FieldAccessorFunctionNode {
-    return FieldAccessorFunctionNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<FieldAccessorFunctionNode>(type: Token.Type.IDENTIFIER, value: "get", exact: true)
 }

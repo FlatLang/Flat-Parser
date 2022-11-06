@@ -6,7 +6,7 @@ import flat/ast/ArrayOverrideNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ArrayOverrideNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "this"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     ParameterParser().pattern,
@@ -33,8 +33,4 @@ data class extends ParserBase {
     FieldAccessorFunctionParser(),
     FieldMutatorFunctionParser()
   ]
-
-  override public generateNode() -> ArrayOverrideNode {
-    return ArrayOverrideNode()
-  }
 }

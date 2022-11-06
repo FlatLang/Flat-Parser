@@ -22,7 +22,7 @@ data class extends ParserBase {
     MatchCaseParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ArrayAccessNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     NodeTokenPattern(indexParsers, label: "index"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
@@ -40,10 +40,6 @@ data class extends ParserBase {
     CastParser(),
     PriorityParser(),
   ]
-
-  override public generateNode() -> ArrayAccessNode {
-    return ArrayAccessNode()
-  }
 
   override public getChildNodeTokenMatches() => NodeTokenMatch[] {
     if (let args = lastMatch.getMatch<GroupTokenMatch>("array_access")) {

@@ -9,7 +9,7 @@ import flat/log/Logger
 data class extends ParserBase {
   static Logger log = Logger(ForEachLoopParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ForEachLoopNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "for"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
@@ -25,8 +25,4 @@ data class extends ParserBase {
     PriorityParser(),
     FunctionCallParser()
   ]
-
-  override public generateNode() -> ForEachLoopNode {
-    return ForEachLoopNode()
-  }
 }

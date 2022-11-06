@@ -11,7 +11,7 @@ data class extends ParserBase {
 
   override ParserBase[] childParsers => [LocalScopeParser()]
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<FieldMutatorFunctionNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "set"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
@@ -25,14 +25,4 @@ data class extends ParserBase {
     ParameterParser(),
     FunctionParameterParser()
   ]
-
-  override public generateNode() -> FieldMutatorFunctionNode {
-    return FieldMutatorFunctionNode()
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let params = lastMatch.getMatch<GroupTokenMatch>("parameters")) {
-      return (NodeTokenMatch[])params.tokenMatches.filter({ _.label == "parameter" })
-    }
-  }
 }

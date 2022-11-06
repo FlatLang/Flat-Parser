@@ -13,17 +13,6 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern([
     NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":", label: "require_name", optional: true),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name")
+    IdentifierParser().pattern
   ], label: "parameter")
-
-  override public generateNode() -> ParameterNode {
-    let type = lastMatch.getValue("type")
-    let name = lastMatch.getValue("name")
-    let bracketCount = lastMatch.getValues("bracket_start").count
-
-    return ParameterNode(
-      name: name,
-      requireName: lastMatch.getValue("require_name") != null
-    )
-  }
 }

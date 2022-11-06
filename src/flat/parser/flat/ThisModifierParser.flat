@@ -9,14 +9,8 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ThisModifier>([
     PreconditionTokenPattern(baseParentTypes: ThisModifier.allowedBaseParents, parentTypes: ThisModifier.allowedParents),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias", field: "aliasUsed"),
   ], exact: true, metadata: true)
-
-  override public generateNode() -> ThisModifier {
-    let alias = lastMatch.getValue("alias")
-
-    return ThisModifier(aliasUsed: alias)
-  }
 }

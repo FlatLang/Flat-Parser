@@ -2,28 +2,28 @@ package flat/parser/flat
 
 import flat/parser
 import flat/parser/matchers
-import flat/ast/ClassNode
+import flat/ast
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ClassNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], label: "class_type"),
     GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "class_name"),
+      SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "class_name", field: "name"),
       NodeTokenPattern([GenericParametersParser()], optional: true)
     ], optional: true, greedy: false),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "name"),
+      SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name"),
       NodeTokenPattern([GenericArgumentsParser()], optional: true)
     ], optional: true, label: "extends_class"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "implements"),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
+      SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "implements_class_name", field: "name"),
       NodeTokenPattern([GenericArgumentsParser()], optional: true),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "implements_class_name"),
+        SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "implements_class_name", field: "name"),
         NodeTokenPattern([GenericArgumentsParser()], optional: true)
       ], repeat: true, optional: true, label: "implements_class"),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
@@ -43,21 +43,4 @@ data class extends ParserBase {
     ArrayOverrideParser(),
     FunctionParser(),
   ]
-
-  override public generateNode() -> ClassNode {
-    let className = lastMatch.getValue("class_name")
-    let extendedClassName = lastMatch.getMatch("extends_class")?.getValue("name")
-    let implementsClassNames = lastMatch.getMatches("extends_class").map({ _.getValue("name") })
-
-    return ClassNode(
-      name: className ?: context.file?.rootName,
-      implicitName: className == null
-    )
-  }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let body = lastMatch.getMatch<NodeGroupTokenMatch>("class_body_contents")) {
-      return body.getChildNodeMatches()
-    }
-  }
 }

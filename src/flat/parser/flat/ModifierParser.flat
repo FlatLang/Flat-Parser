@@ -5,10 +5,13 @@ import flat/parser/matchers
 import flat/annotations
 import flat/ast
 import flat/compiler/models/Token
+import flat/log
 
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
+  static Logger log = Logger(ModifierParser.class)
+
   override lazy TokenPattern pattern => XorTokenPattern([
     GroupTokenPattern([
       PreconditionTokenPattern(baseParentTypes: VisibleModifier.allowedBaseParents, parentTypes: VisibleModifier.allowedParents),
@@ -90,6 +93,8 @@ data class extends ParserBase {
 
   override public generateNode() -> AnnotationNode => null {
     let alias = lastMatch.getValue("alias")
+
+    log.traceFunc({"Generating annotation for alias '#{alias}'"})
 
     if (VisibleModifier.aliases.any({ _ == alias})) return VisibleModifier(aliasUsed: alias)
     if (PublicModifier.aliases.any({ _ == alias})) return PublicModifier(aliasUsed: alias)

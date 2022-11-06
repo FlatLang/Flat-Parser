@@ -11,9 +11,5 @@ data class extends ParserBase {
     FunctionCallParser()
   ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern(type: Token.Type.SYMBOL, value: ":")
-
-  override public generateNode() -> ColonAccessNode {
-    return ColonAccessNode()
-  }
+  override lazy TokenPattern pattern => SingleTokenPattern<ColonAccessNode>(type: Token.Type.SYMBOL, value: ":")
 }
