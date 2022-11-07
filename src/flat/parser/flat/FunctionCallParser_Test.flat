@@ -124,7 +124,7 @@ testable class {
 
     expect(node).toBe([
       FunctionCallNode(),
-      IdentifierNode(name: "test"),
+      IdentifierNode(name: Token(value: "test", type: Token.Type.IDENTIFIER)),
       LambdaNode(),
       LocalScopeNode(),
     ])
@@ -147,7 +147,7 @@ testable class {
 
     expect(nodes).toBe([
       FunctionCallNode(),
-      IdentifierNode(name: "test"),
+      IdentifierNode(name: Token(value: "test", type: Token.Type.IDENTIFIER)),
       LambdaNode(),
       LocalScopeNode(),
     ])
@@ -195,10 +195,10 @@ testable class {
 
     expect(nodes).toBe([
       FunctionCallNode(),
-      IdentifierNode(name: "test"),
+      IdentifierNode(name: Token(value: "test", type: Token.Type.IDENTIFIER)),
       LambdaNode(),
       LocalScopeNode(),
-      IdentifierNode(name: "x")
+      IdentifierNode(name: Token(value: "x", type: Token.Type.IDENTIFIER))
     ])
   }
 }

@@ -22,7 +22,7 @@ testable class {
 
     expect(parser.generateNodes()).toBe([
       ClassNode(),
-      IdentifierNode(name: "Bob"),
+      IdentifierNode(name: Token(value: "Bob", type: Token.Type.IDENTIFIER)),
     ])
   }
 
