@@ -40,10 +40,4 @@ data class extends ParserBase {
     CastParser(),
     PriorityParser(),
   ]
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let args = lastMatch.getMatch<GroupTokenMatch>("array_access")) {
-      return (NodeTokenMatch[])args.tokenMatches.filter({ _.label == "index" })
-    }
-  }
 }

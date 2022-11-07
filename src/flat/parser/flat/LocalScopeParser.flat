@@ -45,10 +45,4 @@ data class extends ParserBase {
   override public generateNode() -> LocalScopeNode {
     return LocalScopeNode()
   }
-
-  override public getChildNodeTokenMatches() => NodeTokenMatch[] {
-    if (let body = lastMatch.getMatch<NodeGroupTokenMatch>("scope_body_contents")) {
-      return body.getChildNodeMatches()
-    }
-  }
 }

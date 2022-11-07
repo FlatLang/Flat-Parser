@@ -51,27 +51,4 @@ testable class {
     ])
     expect(parser.matcher.partial).toBe(false)
   }
-
-  test `can get child node matches`() {
-    let parser = ArrayAccessParser()
-    parser.context = ParseContext()
-    let result = parser.matchAll([
-      Token(value: "[", type: Token.Type.SYMBOL),
-      Token(value: "1", type: Token.Type.INTEGER),
-      Token(value: "]", type: Token.Type.SYMBOL)
-    ]).last
-
-    expect(result?.tokens).toBe([
-      Token(value: "[", type: Token.Type.SYMBOL),
-      Token(value: "1", type: Token.Type.INTEGER),
-      Token(value: "]", type: Token.Type.SYMBOL)
-    ])
-
-    let childMatches = parser.getChildNodeTokenMatches()
-
-    expect(childMatches.count).toBe(1)
-    expect(childMatches.first.tokens).toBe([
-      Token(value: "1", type: Token.Type.INTEGER)
-    ])
-  }
 }
