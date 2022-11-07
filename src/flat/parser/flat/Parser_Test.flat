@@ -39,7 +39,7 @@ testable class {
 
     let nodes = Node[]
 
-    stream.on<Node>("data", { nodes.add(_) })
+    stream.on<NodeResult>("data", { nodes.add(_.node) })
     stream.emit("start")
     stream.waitFor("close")
 
@@ -58,14 +58,14 @@ testable class {
           IdentifierNode(name: ident("pair")), DotAccessNode(), IdentifierNode(name: ident("value")), DotAccessNode(), IdentifierNode(name: ident("class")), DotAccessNode(), FunctionCallNode(), IdentifierNode(name: ident("isOfType")),
             IdentifierNode(name: ident("HashMap")), DotAccessNode(), IdentifierNode(name: ident("class")),
         LocalScopeNode(),
-          LocalDeclarationNode(), LetModifier(),
+          LetModifier(aliasUsed: "let"), LocalDeclarationNode(),
               TypeNode(name: ident("HashMap")), GenericParametersNode(),
                 GenericParameterNode(), TypeNode(name: ident("String")),
                 GenericParameterNode(), TypeNode(name: ident("Object")),
               IdentifierNode(name: ident("hashmap")),
             AssignmentNode(),
             CastNode(), TypeNode(name: ident("HashMap")), IdentifierNode(name: ident("pair")), DotAccessNode(), IdentifierNode(name: ident("value")),
-          LocalDeclarationNode(), LetModifier(),
+          LetModifier(aliasUsed: "let"), LocalDeclarationNode(),
               TypeNode(name: ident("HashMap")), GenericParametersNode(),
                 GenericParameterNode(), TypeNode(name: ident("String")),
                 GenericParameterNode(), TypeNode(name: ident("Object")),
@@ -104,7 +104,7 @@ testable class {
 
     let nodes = Node[]
 
-    stream.on<Node>("data", { nodes.add(_) })
+    stream.on<NodeResult>("data", { nodes.add(_.node) })
     stream.emit("start")
     stream.waitFor("close")
 
@@ -113,7 +113,7 @@ testable class {
       FunctionNode(), IdentifierNode(name: ident("func")),
         IdentifierNode(name: ident("context")), DotAccessNode(), IdentifierNode(name: ident("currentParsers")), DotAccessNode(), FunctionCallNode(), IdentifierNode(name: ident("forEach")), LambdaNode(), LocalScopeNode(),
           IfNode(), PriorityNode(),
-            LocalDeclarationNode(), LetModifier(),
+            LetModifier(aliasUsed: "let"), LocalDeclarationNode(),
               IdentifierNode(name: ident("match")),
             AssignmentNode(),
             IdentifierNode(name: ident("parser")), DotAccessNode(), FunctionCallNode(), IdentifierNode(name: ident("match")), IdentifierNode(name: ident("token")), IdentifierNode(name: ident("context")),

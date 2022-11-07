@@ -61,5 +61,5 @@ data class NullLiteralParser extends ParserBase {
   override ParserBase[] childParsers => Patterns.childParsers
 
   override lazy TokenPattern pattern =>
-    SingleTokenPattern<NullLiteralNode>(type: Token.Type.NULL)
+    SingleTokenPattern<NullLiteralNode>(type: Token.Type.NULL, value: "null")
 }

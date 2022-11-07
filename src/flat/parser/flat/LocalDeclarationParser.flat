@@ -17,15 +17,15 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => XorTokenPattern<LocalDeclarationNode>([
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern<LetModifier>(annotations: [LetModifier.class]),
-        PreconditionTokenPattern<VarModifier>(annotations: [VarModifier.class])
+        PreconditionTokenPattern(annotations: [LetModifier.class]),
+        PreconditionTokenPattern(annotations: [VarModifier.class])
       ], label: "implicit_modifier"),
       IdentifierParser().pattern,
     ]),
     GroupTokenPattern([
       XorTokenPattern([
-        PreconditionTokenPattern<LetModifier>(annotations: [LetModifier.class]),
-        PreconditionTokenPattern<VarModifier>(annotations: [VarModifier.class])
+        PreconditionTokenPattern(annotations: [LetModifier.class]),
+        PreconditionTokenPattern(annotations: [VarModifier.class])
       ], optional: true, label: "implicit_modifier"),
       NodeTokenPattern([ValueTypeParser()]),
       IdentifierParser().pattern,

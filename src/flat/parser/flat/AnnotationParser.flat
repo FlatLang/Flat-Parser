@@ -18,10 +18,10 @@ data class extends ParserBase {
     TestSuiteAnnotationParser(),
   ], exact: true, metadata: true, label: "annotation")
 
-  override public generateNode() -> AnnotationNode => null {
+  override public traverseNodes(func(Node, ParseContext, TokenPattern)) {
     if (let annotationMatch = lastMatch.getMatch<NodeTokenMatch>("annotation")) {
       log.traceFunc({"Generating node for annotation match: #{annotationMatch}"})
-      return annotationMatch.generateNode()
+      annotationMatch.traverseNodes(func)
     }
   }
 }

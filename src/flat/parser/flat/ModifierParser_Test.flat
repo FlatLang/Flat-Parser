@@ -1,11 +1,11 @@
 package flat/parser/flat
 
+import flat/ast
 import flat/parser
 import flat/parser/matchers
 import flat/datastruct
 import flat/datastruct/list
 import flat/annotations
-import flat/ast
 import flat/compiler/models
 
 testable class {

@@ -41,8 +41,4 @@ data class extends ParserBase {
     NodeGroupTokenPattern(valueParsers, optional: true, label: "scope_body_contents"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
   ], label: "local_scope")
-
-  override public generateNode() -> LocalScopeNode {
-    return LocalScopeNode()
-  }
 }

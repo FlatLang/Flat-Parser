@@ -28,12 +28,16 @@ data class extends ParserBase {
     ], optional: true),
   ])
 
-  override public generateNode() -> ImportNode {
+  override public traverseNodes(func(Node, ParseContext, TokenPattern)) {
     let components = lastMatch.getValues("import_location_component").plus(lastMatch.getValues("import_subclass_component"))
 
-    return ImportNode(
-      location: components.join(),
-      staticImport: lastMatch.getValues("static").isNotEmpty
+    func(
+      ImportNode(
+        location: components.join(),
+        staticImport: lastMatch.getValues("static").isNotEmpty
+      ),
+      lastMatch.context,
+      lastMatch.pattern
     )
   }
 }
