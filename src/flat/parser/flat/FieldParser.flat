@@ -17,13 +17,7 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<FieldNode>([
     NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "declaration_name", field: "name"),
-    GroupTokenPattern([
-      XorTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "<=>")
-      ]),
-      NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "field_arrow_value")
-    ], optional: true),
+    NodeTokenPattern([ArrowExpressionParser(), DoubleArrowExpressionParser()], baseParser: true, optional: true, label: "field_arrow_value"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
       NodeGroupTokenPattern(fieldScopeParsers, label: "field_scope"),

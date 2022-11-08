@@ -15,13 +15,7 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
       NodeTokenPattern([ValueTypeParser()]),
     ], optional: true, label: "array_overload_type"),
-    GroupTokenPattern([
-      XorTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: "<=>")
-      ]),
-      NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "array_override_arrow_value")
-    ], optional: true),
+    NodeTokenPattern([ArrowExpressionParser(), DoubleArrowExpressionParser()], baseParser: true, optional: true, label: "array_override_arrow_value"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
       NodeGroupTokenPattern(arrayOverrideScopeParsers, label: "array_override_scope"),
