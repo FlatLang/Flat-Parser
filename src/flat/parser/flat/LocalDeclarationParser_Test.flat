@@ -14,7 +14,7 @@ testable class {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
-      annotations: [LetModifier(aliasUsed: "let")]
+      annotations: [LetModifier(aliasUsed: Token(value: "let", type: Token.Type.IDENTIFIER))]
     )
 
     let matcher = parser.matcher
@@ -34,7 +34,7 @@ testable class {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
-      annotations: [LetModifier(aliasUsed: "let")]
+      annotations: [LetModifier(aliasUsed: Token(value: "let", type: Token.Type.IDENTIFIER))]
     )
 
     let matcher = parser.matcher
@@ -57,7 +57,7 @@ testable class {
     let parser = LocalDeclarationParser()
 
     let context = ParseContext(
-      annotations: [LetModifier(aliasUsed: "let")]
+      annotations: [LetModifier(aliasUsed: Token(value: "let", type: Token.Type.IDENTIFIER))]
     )
 
     let matcher = parser.matcher

@@ -13,107 +13,81 @@ data class extends ParserBase {
   static Logger log = Logger(ModifierParser.class)
 
   override lazy TokenPattern pattern => XorTokenPattern([
-    GroupTokenPattern([
+    GroupTokenPattern<VisibleModifier>([
       PreconditionTokenPattern(baseParentTypes: VisibleModifier.allowedBaseParents, parentTypes: VisibleModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VisibleModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VisibleModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<PublicModifier>([
       PreconditionTokenPattern(baseParentTypes: PublicModifier.allowedBaseParents, parentTypes: PublicModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PublicModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PublicModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<PrivateModifier>([
       PreconditionTokenPattern(baseParentTypes: PrivateModifier.allowedBaseParents, parentTypes: PrivateModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PrivateModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: PrivateModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<LetModifier>([
       PreconditionTokenPattern(baseParentTypes: LetModifier.allowedBaseParents, parentTypes: LetModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LetModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LetModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<VarModifier>([
       PreconditionTokenPattern(baseParentTypes: VarModifier.allowedBaseParents, parentTypes: VarModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VarModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: VarModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<StaticModifier>([
       PreconditionTokenPattern(baseParentTypes: StaticModifier.allowedBaseParents, parentTypes: StaticModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: StaticModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: StaticModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<AsyncModifier>([
       PreconditionTokenPattern(baseParentTypes: AsyncModifier.allowedBaseParents, parentTypes: AsyncModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AsyncModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AsyncModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<AwaitModifier>([
       PreconditionTokenPattern(baseParentTypes: AwaitModifier.allowedBaseParents, parentTypes: AwaitModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AwaitModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AwaitModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<DataModifier>([
       PreconditionTokenPattern(baseParentTypes: DataModifier.allowedBaseParents, parentTypes: DataModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: DataModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: DataModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<ExtensionModifier>([
       PreconditionTokenPattern(baseParentTypes: ExtensionModifier.allowedBaseParents, parentTypes: ExtensionModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExtensionModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExtensionModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<LazyModifier>([
       PreconditionTokenPattern(baseParentTypes: LazyModifier.allowedBaseParents, parentTypes: LazyModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LazyModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: LazyModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<NativeModifier>([
       PreconditionTokenPattern(baseParentTypes: NativeModifier.allowedBaseParents, parentTypes: NativeModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: NativeModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: NativeModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<TestableModifier>([
       PreconditionTokenPattern(baseParentTypes: TestableModifier.allowedBaseParents, parentTypes: TestableModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestableModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestableModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<TestModifier>([
       PreconditionTokenPattern(baseParentTypes: TestModifier.allowedBaseParents, parentTypes: TestModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<InitTestModifier>([
       PreconditionTokenPattern(baseParentTypes: InitTestModifier.allowedBaseParents, parentTypes: InitTestModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: InitTestModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: InitTestModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<CleanTestModifier>([
       PreconditionTokenPattern(baseParentTypes: CleanTestModifier.allowedBaseParents, parentTypes: CleanTestModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: CleanTestModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: CleanTestModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<OverrideModifier>([
       PreconditionTokenPattern(baseParentTypes: OverrideModifier.allowedBaseParents, parentTypes: OverrideModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: OverrideModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: OverrideModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<AbstractModifier>([
       PreconditionTokenPattern(baseParentTypes: AbstractModifier.allowedBaseParents, parentTypes: AbstractModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AbstractModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: AbstractModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
-    GroupTokenPattern([
+    GroupTokenPattern<ExternalNameModifier>([
       PreconditionTokenPattern(baseParentTypes: ExternalNameModifier.allowedBaseParents, parentTypes: ExternalNameModifier.allowedParents),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExternalNameModifier.aliases, label: "alias"),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ExternalNameModifier.aliases, label: "alias", field: "aliasUsed"),
     ]),
   ], exact: true, metadata: true)
-
-  override public traverseNodes(func(Node, ParseContext, TokenPattern)) {
-    let alias = lastMatch.getValue("alias")
-
-    log.traceFunc({"Generating annotation for alias '#{alias}'"})
-
-    if (VisibleModifier.aliases.any({ _ == alias})) func(VisibleModifier(aliasUsed: alias), context, pattern)
-    if (PublicModifier.aliases.any({ _ == alias})) func(PublicModifier(aliasUsed: alias), context, pattern)
-    if (PrivateModifier.aliases.any({ _ == alias})) func(PrivateModifier(aliasUsed: alias), context, pattern)
-    if (LetModifier.aliases.any({ _ == alias})) func(LetModifier(aliasUsed: alias), context, pattern)
-    if (VarModifier.aliases.any({ _ == alias})) func(VarModifier(aliasUsed: alias), context, pattern)
-    if (StaticModifier.aliases.any({ _ == alias})) func(StaticModifier(aliasUsed: alias), context, pattern)
-    if (AsyncModifier.aliases.any({ _ == alias})) func(AsyncModifier(aliasUsed: alias), context, pattern)
-    if (AwaitModifier.aliases.any({ _ == alias})) func(AwaitModifier(aliasUsed: alias), context, pattern)
-    if (DataModifier.aliases.any({ _ == alias})) func(DataModifier(aliasUsed: alias), context, pattern)
-    if (ExtensionModifier.aliases.any({ _ == alias})) func(ExtensionModifier(aliasUsed: alias), context, pattern)
-    if (LazyModifier.aliases.any({ _ == alias})) func(LazyModifier(aliasUsed: alias), context, pattern)
-    if (NativeModifier.aliases.any({ _ == alias})) func(NativeModifier(aliasUsed: alias), context, pattern)
-    if (TestableModifier.aliases.any({ _ == alias})) func(TestableModifier(aliasUsed: alias), context, pattern)
-    if (TestModifier.aliases.any({ _ == alias})) func(TestModifier(aliasUsed: alias), context, pattern)
-    if (InitTestModifier.aliases.any({ _ == alias})) func(InitTestModifier(aliasUsed: alias), context, pattern)
-    if (CleanTestModifier.aliases.any({ _ == alias})) func(CleanTestModifier(aliasUsed: alias), context, pattern)
-    if (OverrideModifier.aliases.any({ _ == alias})) func(OverrideModifier(aliasUsed: alias), context, pattern)
-    if (AbstractModifier.aliases.any({ _ == alias})) func(AbstractModifier(aliasUsed: alias), context, pattern)
-    if (ExternalNameModifier.aliases.any({ _ == alias})) func(ExternalNameModifier(aliasUsed: alias), context, pattern)
-  }
 }

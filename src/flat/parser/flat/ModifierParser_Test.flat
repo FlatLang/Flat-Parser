@@ -24,7 +24,7 @@ testable class {
 
     expect(parser.generateNode()).toBe(
       VisibleModifier(
-        aliasUsed: "visible"
+        aliasUsed: Token(value: "visible", type: Token.Type.IDENTIFIER)
       )
     )
   }
