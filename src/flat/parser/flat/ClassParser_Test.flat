@@ -31,8 +31,7 @@ testable class {
 
     let file = File("test.flat")
     parser.context = ParseContext(
-      file: file,
-      parentStack: Stack<Node>([FileNode(file: file)])
+      file: file
     )
 
     parser.matchAll([
