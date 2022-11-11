@@ -12,7 +12,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<ImportNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "import"),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "static", optional: true, label: "static"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "static", optional: true, label: "import_type", field: "type"),
     SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "import_location_component"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "/", label: "import_location_component"),
@@ -30,11 +30,12 @@ data class extends ParserBase {
 
   override public traverseNodes(func(Node, ParseContext, TokenPattern)) {
     let components = lastMatch.getValues("import_location_component").plus(lastMatch.getValues("import_subclass_component"))
+    let importType = lastMatch.getValue("import_type")
 
     func(
       ImportNode(
         location: components.join(),
-        staticImport: lastMatch.getValues("static").isNotEmpty
+        type: importType ? Token(type: Token.Type.IDENTIFIER, value: importType) : null
       ),
       lastMatch.context,
       lastMatch.pattern
