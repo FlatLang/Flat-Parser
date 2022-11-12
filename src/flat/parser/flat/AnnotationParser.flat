@@ -11,7 +11,7 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   static Logger log = Logger(AnnotationParser.class)
 
-  override lazy TokenPattern pattern => NodeTokenPattern([
+  override lazy TokenPattern pattern => NodeTokenPattern<AnnotationNode>([
     ModifierParser(),
     TargetAnnotationParser(),
     TargetRuntimeAnnotationParser(),
