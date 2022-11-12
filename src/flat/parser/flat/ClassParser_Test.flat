@@ -21,7 +21,7 @@ testable class {
     ])
 
     expect(parser.generateNodes()).toBe([
-      ClassNode(),
+      ClassNode(type: Token(value: "class", type: Token.Type.IDENTIFIER)),
       IdentifierNode(name: Token(value: "Bob", type: Token.Type.IDENTIFIER)),
     ])
   }
@@ -41,7 +41,7 @@ testable class {
     ])
 
     expect(parser.generateNodes()).toBe([
-      ClassNode()
+      ClassNode(type: Token(value: "class", type: Token.Type.IDENTIFIER))
     ])
   }
 
