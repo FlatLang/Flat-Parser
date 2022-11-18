@@ -27,10 +27,7 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
       NodeTokenPattern([TypeParser()]),
     ], optional: true, label: "function_type"),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-      NodeTokenPattern(arrowExpressionValues, baseParser: true, label: "function_arrow_expression")
-    ], optional: true),
+    NodeTokenPattern([ArrowExpressionParser()], baseParser: true, optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
       NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "function_body_scope"),
