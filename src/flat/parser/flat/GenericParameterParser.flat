@@ -11,6 +11,6 @@ data class extends ParserBase {
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
       NodeTokenPattern([ValueTypeParser()]),
-    ], optional: true, label: "default_generic_parameter_type")
+    ], optional: true)
   ])
 }

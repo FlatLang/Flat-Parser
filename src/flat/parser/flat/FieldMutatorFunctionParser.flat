@@ -15,7 +15,7 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "set"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-      NodeTokenPattern(parameterParsers, label: "parameter"),
+      NodeTokenPattern(parameterParsers),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
     ], optional: true)
   ], exact: true)

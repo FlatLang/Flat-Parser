@@ -11,9 +11,9 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<IfNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "if"),
-    NodeTokenPattern(conditionParsers, label: "condition"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "if_body"),
-  ], label: "if")
+    NodeTokenPattern(conditionParsers),
+    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
+  ])
 
   ParserBase[] conditionParsers => [
     AnnotationParser(),

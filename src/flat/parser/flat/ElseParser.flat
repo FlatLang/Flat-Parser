@@ -11,6 +11,6 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<ElseNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "else"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "else_body"),
-  ], label: "else")
+    NodeTokenPattern(LocalScopeParser().valueParsers),
+  ])
 }

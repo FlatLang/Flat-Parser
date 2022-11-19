@@ -17,12 +17,12 @@ data class extends ParserBase {
     GroupTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
-        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "exclude"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER),
       ], optional: true),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true, label: "include")
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true)
     ], repeat: true, optional: true),
     CaptureTokenPattern(
-      label: "body",
+
       skipGenerics: false,
       start: Token(value: "{"),
       end: Token(value: "}")

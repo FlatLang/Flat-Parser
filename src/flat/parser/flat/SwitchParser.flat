@@ -12,5 +12,5 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<SwitchNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "switch"),
     Patterns.switchBody
-  ], label: "switch")
+  ])
 }

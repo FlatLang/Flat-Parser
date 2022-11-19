@@ -11,6 +11,6 @@ import flat/extensions/SyntaxStringFunctions
 data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<ThisModifier>([
     PreconditionTokenPattern(baseParentTypes: ThisModifier.allowedBaseParents, parentTypes: ThisModifier.allowedParents),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, label: "alias", field: "aliasUsed"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ThisModifier.aliases, field: "aliasUsed"),
   ], exact: true, metadata: true)
 }

@@ -11,29 +11,29 @@ data class extends ParserBase {
   static Logger log = Logger(FunctionParser.class)
 
   override lazy TokenPattern pattern => GroupTokenPattern<FunctionNode>([
-    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name"),
+    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name"),
     NodeTokenPattern([GenericParametersParser()], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern<ParametersNode>([
-      NodeTokenPattern(parameterParsers, baseParser: true, label: "parameter"),
+      NodeTokenPattern(parameterParsers, baseParser: true),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern(parameterParsers, baseParser: true, label: "parameter")
+        NodeTokenPattern(parameterParsers, baseParser: true)
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    ], optional: true, label: "function_parameters"),
+    ], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
       NodeTokenPattern([TypeParser()]),
-    ], optional: true, label: "function_type"),
+    ], optional: true),
     NodeTokenPattern([ArrowExpressionParser()], baseParser: true, optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-      NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "function_body_scope"),
+      NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], optional: true)
-  ], label: "function")
+  ])
 
   let ParserBase[] parameterParsers => [
     ThisModifierParser(),

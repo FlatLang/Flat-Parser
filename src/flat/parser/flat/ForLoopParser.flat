@@ -12,13 +12,13 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<ForLoopNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "for"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    NodeTokenPattern(initializerParsers, label: "initializer", optional: true),
+    NodeTokenPattern(initializerParsers, optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ";"),
-    NodeTokenPattern(conditionParsers, label: "condition", optional: true),
+    NodeTokenPattern(conditionParsers, optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ";"),
-    NodeTokenPattern(incrementorParsers, label: "incrementor", optional: true),
+    NodeTokenPattern(incrementorParsers, optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "for_loop_body"),
+    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
   ])
 
   let ParserBase[] initializerParsers => [

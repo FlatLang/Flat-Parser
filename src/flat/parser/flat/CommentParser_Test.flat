@@ -15,7 +15,6 @@ testable class {
     let result = matcher.match(Token(value: "// 9/11 was an inside job", type: Token.Type.COMMENT))
 
     expect(result?.tokens).toBe([Token(value: "// 9/11 was an inside job", type: Token.Type.COMMENT)])
-    expect(result?.getValue("comment")).toBe("// 9/11 was an inside job")
     expect(matcher.partial).toBe(false)
   }
 }

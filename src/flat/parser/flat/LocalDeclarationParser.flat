@@ -19,16 +19,16 @@ data class extends ParserBase {
       XorTokenPattern([
         PreconditionTokenPattern(annotations: [LetModifier.class]),
         PreconditionTokenPattern(annotations: [VarModifier.class])
-      ], label: "implicit_modifier"),
+      ]),
       IdentifierParser().pattern,
     ]),
     GroupTokenPattern([
       XorTokenPattern([
         PreconditionTokenPattern(annotations: [LetModifier.class]),
         PreconditionTokenPattern(annotations: [VarModifier.class])
-      ], optional: true, label: "implicit_modifier"),
+      ], optional: true),
       NodeTokenPattern([ValueTypeParser()]),
       IdentifierParser().pattern,
     ])
-  ], label: "local_declaration")
+  ])
 }

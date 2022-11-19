@@ -11,11 +11,11 @@ data class extends ParserBase {
   override lazy TokenMatcher matcher => pattern.getMatcher()
 
   override lazy TokenPattern pattern => GroupTokenPattern<VariableDeclarationNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_type"),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-    ], repeat: true, optional: true, label: "brackets"),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "declaration_name")
+    ], repeat: true, optional: true),
+    SingleTokenPattern(type: Token.Type.IDENTIFIER)
   ])
 }

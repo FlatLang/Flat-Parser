@@ -13,7 +13,7 @@ data class extends ParserBase {
     :addAll(LiteralParser().childParsers)
 
   override lazy TokenPattern pattern => CaptureTokenPattern<RegexPatternNode>(
-    label: "pattern",
+
     start: Token(value: "/"),
     end: Token(value: "/"),
     exact: true

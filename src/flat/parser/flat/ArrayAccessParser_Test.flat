@@ -24,10 +24,6 @@ testable class {
       Token(value: "test", type: Token.Type.IDENTIFIER),
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
-
-    expect(result?.getMatch<NodeTokenMatch>("index")?.tokens).toBe([
-      Token(value: "test", type: Token.Type.IDENTIFIER)
-    ])
     expect(parser.matcher.partial).toBe(false)
   }
 
@@ -44,10 +40,6 @@ testable class {
       Token(value: "[", type: Token.Type.SYMBOL),
       Token(value: "1", type: Token.Type.INTEGER),
       Token(value: "]", type: Token.Type.SYMBOL)
-    ])
-
-    expect(result?.getMatch<NodeTokenMatch>("index")?.tokens).toBe([
-      Token(value: "1", type: Token.Type.INTEGER)
     ])
     expect(parser.matcher.partial).toBe(false)
   }

@@ -10,7 +10,7 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<StaticBlockNode>([
     PreconditionTokenPattern(annotations: [StaticModifier.class]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-    NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true, label: "scope_body_contents"),
+    NodeGroupTokenPattern(LocalScopeParser().valueParsers, optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
-  ], label: "static_block")
+  ])
 }

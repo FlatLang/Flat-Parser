@@ -22,5 +22,5 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<NamedArgumentNode>([
     IdentifierParser().pattern,
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
-  ], label: "named_argument")
+  ])
 }

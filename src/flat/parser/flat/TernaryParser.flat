@@ -11,10 +11,10 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<TernaryNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "?"),
-    NodeTokenPattern(conditionParsers, label: "true_value", greedy: false),
+    NodeTokenPattern(conditionParsers, greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":"),
-    NodeTokenPattern(conditionParsers, label: "false_value"),
-  ], label: "ternary")
+    NodeTokenPattern(conditionParsers),
+  ])
 
   visible ParserBase[] conditionParsers => [
     AnnotationParser(),

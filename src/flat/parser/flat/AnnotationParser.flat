@@ -16,12 +16,5 @@ data class extends ParserBase {
     TargetAnnotationParser(),
     TargetRuntimeAnnotationParser(),
     TestSuiteAnnotationParser(),
-  ], exact: true, metadata: true, label: "annotation")
-
-  override public traverseNodes(func(Node, ParseContext, TokenPattern)) {
-    if (let annotationMatch = lastMatch.getMatch<NodeTokenMatch>("annotation")) {
-      log.traceFunc({"Generating node for annotation match: #{annotationMatch}"})
-      annotationMatch.traverseNodes(func)
-    }
-  }
+  ], exact: true, metadata: true)
 }

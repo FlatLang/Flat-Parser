@@ -49,7 +49,7 @@ class {
   ]
 
   visible static lazy TokenPattern switchBody => GroupTokenPattern([
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "switch_condition"),
+    NodeTokenPattern(LocalScopeParser().valueParsers),
     XorTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),

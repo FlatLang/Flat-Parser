@@ -25,8 +25,7 @@ testable class {
       Token(value: "]", type: Token.Type.SYMBOL)
     ])
 
-    expect(result?.getValue("type_name")).toBe("test")
-    expect(result?.getMatches("brackets").count).toBe(1)
+    expect(result).toNotBe(null)
     expect(matcher.partial).toBe(true)
   }
 }

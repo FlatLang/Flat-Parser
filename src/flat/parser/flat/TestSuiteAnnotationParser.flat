@@ -24,7 +24,7 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], repeat: true, optional: true, greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-  ], label: "test_suite_annotation")
+  ])
 
   GroupTokenPattern testClassesPattern => GroupTokenPattern([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),

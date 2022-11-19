@@ -15,9 +15,9 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<CatchNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "catch"),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    NodeTokenPattern(parameterParsers, label: "parameter"),
+    NodeTokenPattern(parameterParsers),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-  ], exact: true, label: "parameters")
+  ], exact: true)
 
   let ParserBase[] parameterParsers => [
     AnnotationParser(),

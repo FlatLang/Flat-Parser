@@ -18,10 +18,10 @@ data class extends ParserBase {
     XorTokenPattern([
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
-        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "exclude"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER),
       ]),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "include")
+      SingleTokenPattern(type: Token.Type.IDENTIFIER)
     ], repeat: true, greedy: false),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-  ], label: "target_annotation")
+  ])
 }

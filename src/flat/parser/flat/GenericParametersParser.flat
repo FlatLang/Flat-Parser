@@ -15,5 +15,5 @@ data class extends ParserBase {
     ], repeat: true, optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ">"),
-  ], optional: true, label: "generic_arguments")
+  ], optional: true)
 }

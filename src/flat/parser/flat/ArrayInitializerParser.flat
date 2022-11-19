@@ -19,13 +19,13 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<ArrayInitializerNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
     GroupTokenPattern([
-      NodeTokenPattern(indexParsers, label: "initializer_value"),
+      NodeTokenPattern(indexParsers),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern(indexParsers, label: "initializer_value")
+        NodeTokenPattern(indexParsers)
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    ], optional: true, label: "initializer_values"),
+    ], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
   ])
 

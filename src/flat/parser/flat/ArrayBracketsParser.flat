@@ -7,7 +7,7 @@ import flat/compiler/models/Token
 
 data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<ArrayBracketsNode>([
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "[", label: "bracket_start"),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]", label: "bracket_end")
-  ], label: "brackets")
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
+  ])
 }

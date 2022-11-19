@@ -18,7 +18,7 @@ data class extends ParserBase {
     IdentifierParser().pattern,
     NodeTokenPattern([GenericParametersParser()], optional: true),
     CaptureTokenPattern(
-      label: "parameters",
+
       start: Token(value: "("),
       end: Token(value: ")")
     ),

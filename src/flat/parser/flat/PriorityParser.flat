@@ -24,7 +24,7 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<PriorityNode>([
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    NodeTokenPattern(LocalScopeParser().valueParsers, label: "value"),
+    NodeTokenPattern(LocalScopeParser().valueParsers),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-  ], label: "priority")
+  ])
 }

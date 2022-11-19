@@ -21,17 +21,17 @@ data class extends ParserBase {
   ])
 
   override lazy TokenPattern pattern => GroupTokenPattern<FunctionCallNode>([
-    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name"),
+    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name"),
     NodeTokenPattern([GenericArgumentsParser()], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern([
-      NodeTokenPattern(argumentParsers, label: "argument"),
+      NodeTokenPattern(argumentParsers),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern(argumentParsers, label: "argument")
+        NodeTokenPattern(argumentParsers)
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    ], label: "arguments", optional: true),
+    ], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
   ])
 

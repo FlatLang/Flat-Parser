@@ -21,5 +21,5 @@ data class extends ParserBase {
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-  ], label: "cast")
+  ])
 }

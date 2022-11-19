@@ -10,19 +10,19 @@ data class extends ParserBase {
     XorTokenPattern([
       GroupTokenPattern([
         CaptureTokenPattern(
-          label: "parameters",
+
           start: Token(value: "("),
           end: Token(value: ")")
         ),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "lambda_contents"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
       ]),
       GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.IDENTIFIER, label: "param_name"),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
-        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "lambda_contents"),
+        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
       ])
     ]),
-    NodeTokenPattern([LocalScopeParser()], baseParser: true, label: "lambda_contents"),
-  ], label: "lambda")
+    NodeTokenPattern([LocalScopeParser()], baseParser: true),
+  ])
 }

@@ -19,5 +19,5 @@ data class extends ParserBase {
     MatchCaseParser()
   ]
 
-  override lazy TokenPattern pattern => SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, label: "name", field: "name")
+  override lazy TokenPattern pattern => SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name")
 }

@@ -14,14 +14,14 @@ data class extends ParserBase {
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
       NodeTokenPattern([ValueTypeParser()]),
-    ], optional: true, label: "array_overload_type"),
-    NodeTokenPattern([ArrowExpressionParser(), DoubleArrowExpressionParser()], baseParser: true, optional: true, label: "array_override_arrow_value"),
+    ], optional: true),
+    NodeTokenPattern([ArrowExpressionParser(), DoubleArrowExpressionParser()], baseParser: true, optional: true),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-      NodeGroupTokenPattern(arrayOverrideScopeParsers, label: "array_override_scope"),
+      NodeGroupTokenPattern(arrayOverrideScopeParsers),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "}")
     ], optional: true),
-  ], label: "array_override")
+  ])
 
   ParserBase[] arrayOverrideScopeParsers => [
     FieldAccessorFunctionParser(),

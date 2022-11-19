@@ -11,9 +11,9 @@ data class extends ParserBase {
 
   override lazy TokenPattern pattern => GroupTokenPattern<WhileLoopNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
-    NodeTokenPattern(conditionParsers, label: "condition"),
-    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true, label: "while_body"),
-  ], label: "while_loop")
+    NodeTokenPattern(conditionParsers),
+    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
+  ])
 
   ParserBase[] conditionParsers => [
     AnnotationParser(),
