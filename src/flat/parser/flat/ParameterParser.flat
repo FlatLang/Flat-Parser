@@ -10,7 +10,7 @@ data class extends ParserBase {
     AssignmentParser()
   ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern([
+  override lazy TokenPattern pattern => GroupTokenPattern<ParameterNode>([
     NodeTokenPattern([ValueTypeParser()]),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: ":", optional: true),
     IdentifierParser().pattern
