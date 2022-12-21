@@ -8,10 +8,8 @@ import flat/compiler/models/Token
 data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<ClassNode>([
     SingleTokenPattern(type: Token.Type.IDENTIFIER, values: ["class", "trait", "interface"], field: "type"),
-    GroupTokenPattern([
-      SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name"),
-      NodeTokenPattern([GenericParametersParser()], optional: true)
-    ], optional: true, greedy: false),
+    SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name", optional: true, greedy: false),
+    NodeTokenPattern([GenericParametersParser()], optional: true),
     GroupTokenPattern<ClassExtendsNode>([
       SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "extends"),
       SingleTokenPattern<IdentifierNode>(type: Token.Type.IDENTIFIER, field: "name"),
