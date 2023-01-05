@@ -1,11 +1,10 @@
 package flat/parser/flat
 
+import flat/ast
 import flat/parser
 import flat/parser/matchers
-import flat/ast/FunctionParameterNode
-import flat/compiler/models/Token
-import flat/compiler/models/SyntaxTokenFunctions
-import flat/log/Logger
+import flat/compiler/models
+import flat/log
 
 data class extends ParserBase {
   static Logger log = Logger(FunctionParameterParser.class)
@@ -17,11 +16,16 @@ data class extends ParserBase {
   override lazy TokenPattern pattern => GroupTokenPattern<FunctionParameterNode>([
     IdentifierParser().pattern,
     NodeTokenPattern([GenericParametersParser()], optional: true),
-    CaptureTokenPattern(
-
-      start: Token(value: "("),
-      end: Token(value: ")")
-    ),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
+    GroupTokenPattern<ParametersNode>([
+      NodeTokenPattern([TypeParser()]),
+      GroupTokenPattern([
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+        NodeTokenPattern([TypeParser()]),
+      ], optional: true, repeat: true),
+      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+    ], optional: true),
+    SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
     GroupTokenPattern([
       SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
       NodeTokenPattern([ValueTypeParser()]),

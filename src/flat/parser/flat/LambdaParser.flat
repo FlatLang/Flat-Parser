@@ -1,19 +1,36 @@
 package flat/parser/flat
 
+import flat/ast
 import flat/parser
 import flat/parser/matchers
-import flat/ast/LambdaNode
-import flat/compiler/models/Token
+import flat/compiler/models
 
 data class extends ParserBase {
   override lazy TokenPattern pattern => XorTokenPattern<LambdaNode>([
     XorTokenPattern([
       GroupTokenPattern([
-        CaptureTokenPattern(
-
-          start: Token(value: "("),
-          end: Token(value: ")")
-        ),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
+        GroupTokenPattern<ParametersNode>([
+          XorTokenPattern([
+            GroupTokenPattern([
+              NodeTokenPattern([TypeParser()]),
+              NodeTokenPattern([IdentifierParser()]),
+            ]),
+            NodeTokenPattern([IdentifierParser()]),
+          ]),
+          GroupTokenPattern([
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+            XorTokenPattern([
+              GroupTokenPattern([
+                NodeTokenPattern([TypeParser()]),
+                NodeTokenPattern([IdentifierParser()]),
+              ]),
+              NodeTokenPattern([IdentifierParser()]),
+            ]),
+          ], optional: true, repeat: true),
+          SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+        ], optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
         SingleTokenPattern(type: Token.Type.SYMBOL, value: "=>"),
         NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
       ]),

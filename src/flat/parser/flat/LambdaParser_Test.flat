@@ -71,6 +71,32 @@ testable class {
     expect(matcher.partial).toBe(false)
   }
 
+  test `can match basic lambda with single typed parameter with parentheses with brace`() {
+    let matcher = LambdaParser().matcher
+    let result = matcher.matchAll([
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ], ParseContext()).last
+
+    let expected = [
+      Token(value: "(", type: Token.Type.SYMBOL),
+      Token(value: "String", type: Token.Type.IDENTIFIER),
+      Token(value: "x", type: Token.Type.IDENTIFIER),
+      Token(value: ")", type: Token.Type.SYMBOL),
+      Token(value: "=>", type: Token.Type.SYMBOL),
+      Token(value: "{", type: Token.Type.SYMBOL),
+      Token(value: "}", type: Token.Type.SYMBOL)
+    ]
+
+    expect(result?.tokens).toBe(expected)
+    expect(matcher.partial).toBe(false)
+  }
+
   test `can match basic lambda with two parameters with brace`() {
     let matcher = LambdaParser().matcher
     let result = matcher.matchAll([
