@@ -22,7 +22,6 @@ data class extends ParserBase {
       SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true)
     ], repeat: true, optional: true),
     CaptureTokenPattern(
-
       skipGenerics: false,
       start: Token(value: "{"),
       end: Token(value: "}")
