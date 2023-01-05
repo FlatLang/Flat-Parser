@@ -18,10 +18,10 @@ data class extends ParserBase {
     NodeTokenPattern([GenericParametersParser()], optional: true),
     SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
     GroupTokenPattern<ParametersNode>([
-      NodeTokenPattern([TypeParser()]),
+      NodeTokenPattern(parameterParsers),
       GroupTokenPattern([
         SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern([TypeParser()]),
+        NodeTokenPattern(parameterParsers),
       ], optional: true, repeat: true),
       SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
     ], optional: true),
@@ -31,4 +31,11 @@ data class extends ParserBase {
       NodeTokenPattern([ValueTypeParser()]),
     ], optional: true)
   ])
+
+  let ParserBase[] parameterParsers => [
+    AnnotationParser(),
+    ParameterParser(),
+    FunctionParameterParser(),
+    TypeParser(),
+  ]
 }
