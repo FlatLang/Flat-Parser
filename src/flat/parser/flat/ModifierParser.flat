@@ -61,6 +61,10 @@ data class extends ParserBase {
       PreconditionTokenPattern(baseParentTypes: NativeModifier.allowedBaseParents, parentTypes: NativeModifier.allowedParents),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: NativeModifier.aliases, field: "aliasUsed"),
     ]),
+    GroupTokenPattern<NativeArrayModifier>([
+      PreconditionTokenPattern(baseParentTypes: NativeArrayModifier.allowedBaseParents, parentTypes: NativeArrayModifier.allowedParents),
+      SingleTokenPattern(type: Token.Type.IDENTIFIER, values: NativeArrayModifier.aliases, field: "aliasUsed"),
+    ]),
     GroupTokenPattern<TestableModifier>([
       PreconditionTokenPattern(baseParentTypes: TestableModifier.allowedBaseParents, parentTypes: TestableModifier.allowedParents),
       SingleTokenPattern(type: Token.Type.IDENTIFIER, values: TestableModifier.aliases, field: "aliasUsed"),
