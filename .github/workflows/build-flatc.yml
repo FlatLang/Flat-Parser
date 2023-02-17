@@ -1,4 +1,4 @@
-name: Test Flat-Parser
+name: Build Flat-Parser flatc
 
 on:
   push:
@@ -55,16 +55,10 @@ jobs:
         run: |
           node airship.js install --link
 
-      - name: Build Flat-Parser Test
+      - name: Build Flat-Parser with flatc
+        env:
+          LOGGING_DEFAULT_SHOW_PREFIX: false
+          LOGGING_DEFAULT_LOGGING_LEVEL: INFO
         run: |
-          node airship.js install test -t es6
-
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: test.js
-          path: dist/es6/test.js
-
-      - name: Run Flat-Parser Test
-        run: |
-          node airship.js run test -t es6
+          . ~/.flat/env
+          airship install --flatc-runtime flat -t es6
