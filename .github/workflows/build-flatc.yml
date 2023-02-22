@@ -61,4 +61,6 @@ jobs:
           LOGGING_DEFAULT_LOGGING_LEVEL: INFO
         run: |
           . ~/.flat/env
+          tail ~/.flat/env
+          ls ~/.flat/bin
           airship install --flatc-runtime flat -t es6
