@@ -7,22 +7,22 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(FieldMutatorFunctionParser.class)
+    static Logger log = Logger(FieldMutatorFunctionParser.class)
 
-  override ParserBase[] childParsers => [LocalScopeParser()]
+    override ParserBase[] childParsers => [LocalScopeParser()]
 
-  override lazy TokenPattern pattern => GroupTokenPattern<FieldMutatorFunctionNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "set"),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-      NodeTokenPattern(parameterParsers),
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-    ], optional: true)
-  ], exact: true)
+    override lazy TokenPattern pattern => GroupTokenPattern<FieldMutatorFunctionNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "set"),
+        GroupTokenPattern([
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
+            NodeTokenPattern(parameterParsers),
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
+        ], optional: true)
+    ], exact: true)
 
-  let ParserBase[] parameterParsers => [
-    AnnotationParser(),
-    ParameterParser(),
-    FunctionParameterParser()
-  ]
+    let ParserBase[] parameterParsers => [
+        AnnotationParser(),
+        ParameterParser(),
+        FunctionParameterParser()
+    ]
 }

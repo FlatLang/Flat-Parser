@@ -8,14 +8,14 @@ import flat/compiler/models/Token
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override lazy TokenMatcher matcher => pattern.getMatcher()
+    override lazy TokenMatcher matcher => pattern.getMatcher()
 
-  override lazy TokenPattern pattern => GroupTokenPattern<VariableDeclarationNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
-    ], repeat: true, optional: true),
-    SingleTokenPattern(type: Token.Type.IDENTIFIER)
-  ])
+    override lazy TokenPattern pattern => GroupTokenPattern<VariableDeclarationNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER),
+        GroupTokenPattern([
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: "["),
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: "]")
+        ], repeat: true, optional: true),
+        SingleTokenPattern(type: Token.Type.IDENTIFIER)
+    ])
 }

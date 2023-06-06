@@ -7,21 +7,21 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(CatchParser.class)
+    static Logger log = Logger(CatchParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
+    override ParserBase[] childParsers => Array()
+        :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => GroupTokenPattern<CatchNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "catch"),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    NodeTokenPattern(parameterParsers),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
-  ], exact: true)
+    override lazy TokenPattern pattern => GroupTokenPattern<CatchNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "catch"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
+        NodeTokenPattern(parameterParsers),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ")")
+    ], exact: true)
 
-  let ParserBase[] parameterParsers => [
-    AnnotationParser(),
-    ParameterParser(),
-    FunctionParameterParser()
-  ]
+    let ParserBase[] parameterParsers => [
+        AnnotationParser(),
+        ParameterParser(),
+        FunctionParameterParser()
+    ]
 }

@@ -7,11 +7,11 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(ReturnParser.class)
+    static Logger log = Logger(ReturnParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
-    :add(LambdaParser())
+    override ParserBase[] childParsers => Array()
+        :addAll(LocalScopeParser().valueParsers)
+        :add(LambdaParser())
 
-  override lazy TokenPattern pattern => SingleTokenPattern<ReturnNode>(type: Token.Type.IDENTIFIER, value: "return", exact: true)
+    override lazy TokenPattern pattern => SingleTokenPattern<ReturnNode>(type: Token.Type.IDENTIFIER, value: "return", exact: true)
 }

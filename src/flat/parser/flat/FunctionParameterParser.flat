@@ -7,35 +7,35 @@ import flat/compiler/models
 import flat/log
 
 data class extends ParserBase {
-  static Logger log = Logger(FunctionParameterParser.class)
+    static Logger log = Logger(FunctionParameterParser.class)
 
-  override ParserBase[] childParsers => Array():addAll([
-    AssignmentParser()
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        AssignmentParser()
+    ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern<FunctionParameterNode>([
-    IdentifierParser().pattern,
-    NodeTokenPattern([GenericParametersParser()], optional: true),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
-    GroupTokenPattern<ParametersNode>([
-      NodeTokenPattern(parameterParsers),
-      GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-        NodeTokenPattern(parameterParsers),
-      ], optional: true, repeat: true),
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    ], optional: true),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
-      NodeTokenPattern([ValueTypeParser()]),
-    ], optional: true)
-  ])
+    override lazy TokenPattern pattern => GroupTokenPattern<FunctionParameterNode>([
+        IdentifierParser().pattern,
+        NodeTokenPattern([GenericParametersParser()], optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "("),
+        GroupTokenPattern<ParametersNode>([
+            NodeTokenPattern(parameterParsers),
+            GroupTokenPattern([
+                SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+                NodeTokenPattern(parameterParsers),
+            ], optional: true, repeat: true),
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+        ], optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ")"),
+        GroupTokenPattern([
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: "->"),
+            NodeTokenPattern([ValueTypeParser()]),
+        ], optional: true)
+    ])
 
-  let ParserBase[] parameterParsers => [
-    AnnotationParser(),
-    ParameterParser(),
-    FunctionParameterParser(),
-    TypeParser(),
-  ]
+    let ParserBase[] parameterParsers => [
+        AnnotationParser(),
+        ParameterParser(),
+        FunctionParameterParser(),
+        TypeParser(),
+    ]
 }

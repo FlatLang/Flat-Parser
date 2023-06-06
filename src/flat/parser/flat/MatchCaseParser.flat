@@ -7,9 +7,9 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(MatchParser.class)
+    static Logger log = Logger(MatchParser.class)
 
-  override ParserBase[] childParsers => LocalScopeParser().valueParsers
+    override ParserBase[] childParsers => LocalScopeParser().valueParsers
 
-  override lazy TokenPattern pattern => SingleTokenPattern<MatchCaseNode>(type: Token.Type.SYMBOL, value: "=>")
+    override lazy TokenPattern pattern => SingleTokenPattern<MatchCaseNode>(type: Token.Type.SYMBOL, value: "=>")
 }

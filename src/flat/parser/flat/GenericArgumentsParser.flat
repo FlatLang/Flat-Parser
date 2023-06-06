@@ -6,14 +6,14 @@ import flat/parser/matchers
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => GroupTokenPattern<GenericArgumentsNode>([
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "<"),
-    NodeTokenPattern([GenericArgumentParser()]),
-    GroupTokenPattern([
-      SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
-      NodeTokenPattern([GenericArgumentParser()]),
-    ], repeat: true, optional: true),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: ">"),
-  ], optional: true)
+    override lazy TokenPattern pattern => GroupTokenPattern<GenericArgumentsNode>([
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "<"),
+        NodeTokenPattern([GenericArgumentParser()]),
+        GroupTokenPattern([
+            SingleTokenPattern(type: Token.Type.SYMBOL, value: ","),
+            NodeTokenPattern([GenericArgumentParser()]),
+        ], repeat: true, optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ",", optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: ">"),
+    ], optional: true)
 }

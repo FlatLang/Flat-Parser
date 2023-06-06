@@ -6,9 +6,9 @@ import flat/parser/matchers
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => GroupTokenPattern<TypeNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, field: "name"),
-    NodeTokenPattern([GenericParametersParser()], optional: true),
-    NodeTokenPattern([ArrayBracketsParser()], repeat: true, optional: true),
-  ])
+    override lazy TokenPattern pattern => GroupTokenPattern<TypeNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, field: "name"),
+        NodeTokenPattern([GenericParametersParser()], optional: true),
+        NodeTokenPattern([ArrayBracketsParser()], repeat: true, optional: true),
+    ])
 }

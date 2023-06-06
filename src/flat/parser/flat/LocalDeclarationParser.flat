@@ -10,25 +10,25 @@ import flat/annotations/VarModifier
 import flat/extensions/SyntaxStringFunctions
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => [
-    AssignmentParser()
-  ]
+    override ParserBase[] childParsers => [
+        AssignmentParser()
+    ]
 
-  override lazy TokenPattern pattern => XorTokenPattern<LocalDeclarationNode>([
-    GroupTokenPattern([
-      XorTokenPattern([
-        PreconditionTokenPattern(annotations: [LetModifier.class]),
-        PreconditionTokenPattern(annotations: [VarModifier.class])
-      ]),
-      IdentifierParser().pattern,
-    ]),
-    GroupTokenPattern([
-      XorTokenPattern([
-        PreconditionTokenPattern(annotations: [LetModifier.class]),
-        PreconditionTokenPattern(annotations: [VarModifier.class])
-      ], optional: true),
-      NodeTokenPattern([ValueTypeParser()]),
-      IdentifierParser().pattern,
+    override lazy TokenPattern pattern => XorTokenPattern<LocalDeclarationNode>([
+        GroupTokenPattern([
+            XorTokenPattern([
+                PreconditionTokenPattern(annotations: [LetModifier.class]),
+                PreconditionTokenPattern(annotations: [VarModifier.class])
+            ]),
+            IdentifierParser().pattern,
+        ]),
+        GroupTokenPattern([
+            XorTokenPattern([
+                PreconditionTokenPattern(annotations: [LetModifier.class]),
+                PreconditionTokenPattern(annotations: [VarModifier.class])
+            ], optional: true),
+            NodeTokenPattern([ValueTypeParser()]),
+            IdentifierParser().pattern,
+        ])
     ])
-  ])
 }

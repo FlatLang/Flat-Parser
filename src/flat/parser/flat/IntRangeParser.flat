@@ -7,19 +7,19 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(IntRangeParser.class)
+    static Logger log = Logger(IntRangeParser.class)
 
-  override ParserBase[] childParsers => Array():addAll([
-    AnnotationParser(),
-    FunctionCallParser(),
-    IdentifierParser(),
-    ArrayInstantiationParser(),
-    ArrayInitializerParser(),
-    CastParser(),
-    PriorityParser(),
-    LiteralParser(),
-    RegexPatternParser()
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        AnnotationParser(),
+        FunctionCallParser(),
+        IdentifierParser(),
+        ArrayInstantiationParser(),
+        ArrayInitializerParser(),
+        CastParser(),
+        PriorityParser(),
+        LiteralParser(),
+        RegexPatternParser()
+    ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern<IntRangeNode>(type: Token.Type.SYMBOL, value: "..")
+    override lazy TokenPattern pattern => SingleTokenPattern<IntRangeNode>(type: Token.Type.SYMBOL, value: "..")
 }

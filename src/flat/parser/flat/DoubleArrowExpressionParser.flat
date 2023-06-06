@@ -6,7 +6,7 @@ import flat/ast/DoubleArrowExpressionNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll(AssignmentParser().childParsers)
+    override ParserBase[] childParsers => Array():addAll(AssignmentParser().childParsers)
 
-  override lazy TokenPattern pattern => SingleTokenPattern<DoubleArrowExpressionNode>(type: Token.Type.SYMBOL, value: "<=>")
+    override lazy TokenPattern pattern => SingleTokenPattern<DoubleArrowExpressionNode>(type: Token.Type.SYMBOL, value: "<=>")
 }

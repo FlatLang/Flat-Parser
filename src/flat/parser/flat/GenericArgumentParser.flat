@@ -5,5 +5,5 @@ import flat/parser
 import flat/parser/matchers
 
 data class extends ParserBase {
-  override lazy TokenPattern pattern => NodeTokenPattern<GenericArgumentNode>([TypeParser()])
+    override lazy TokenPattern pattern => NodeTokenPattern<GenericArgumentNode>([TypeParser()])
 }

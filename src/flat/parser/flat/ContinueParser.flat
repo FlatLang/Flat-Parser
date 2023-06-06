@@ -7,7 +7,7 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(ContinueParser.class)
+    static Logger log = Logger(ContinueParser.class)
 
-  override lazy TokenPattern pattern => SingleTokenPattern<ContinueNode>(type: Token.Type.IDENTIFIER, value: "continue", exact: true)
+    override lazy TokenPattern pattern => SingleTokenPattern<ContinueNode>(type: Token.Type.IDENTIFIER, value: "continue", exact: true)
 }

@@ -6,19 +6,19 @@ import flat/ast/AssignmentNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
-    AnnotationParser(),
-    IdentifierParser(),
-    ArrayInstantiationParser(),
-    ArrayInitializerParser(),
-    LiteralParser(),
-    RegexPatternParser(),
-    FunctionCallParser(),
-    CastParser(),
-    PriorityParser(),
-    UnaryOperationParser(),
-    LambdaParser(),
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        AnnotationParser(),
+        IdentifierParser(),
+        ArrayInstantiationParser(),
+        ArrayInitializerParser(),
+        LiteralParser(),
+        RegexPatternParser(),
+        FunctionCallParser(),
+        CastParser(),
+        PriorityParser(),
+        UnaryOperationParser(),
+        LambdaParser(),
+    ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern<AssignmentNode>(type: Token.Type.SYMBOL, value: "=")
+    override lazy TokenPattern pattern => SingleTokenPattern<AssignmentNode>(type: Token.Type.SYMBOL, value: "=")
 }

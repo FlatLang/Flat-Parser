@@ -7,26 +7,26 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(WhileLoopParser.class)
+    static Logger log = Logger(WhileLoopParser.class)
 
-  override lazy TokenPattern pattern => GroupTokenPattern<WhileLoopNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
-    NodeTokenPattern(conditionParsers),
-    NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
-  ])
+    override lazy TokenPattern pattern => GroupTokenPattern<WhileLoopNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "while"),
+        NodeTokenPattern(conditionParsers),
+        NodeTokenPattern(LocalScopeParser().valueParsers, baseParser: true),
+    ])
 
-  ParserBase[] conditionParsers => [
-    AnnotationParser(),
-    NamedArgumentParser(),
-    FunctionCallParser(),
-    LocalDeclarationParser(),
-    IdentifierParser(),
-    LiteralParser(),
-    RegexPatternParser(),
-    LambdaParser(),
-    ArrayInitializerParser(),
-    UnaryOperationParser(),
-    CastParser(),
-    PriorityParser(),
-  ]
+    ParserBase[] conditionParsers => [
+        AnnotationParser(),
+        NamedArgumentParser(),
+        FunctionCallParser(),
+        LocalDeclarationParser(),
+        IdentifierParser(),
+        LiteralParser(),
+        RegexPatternParser(),
+        LambdaParser(),
+        ArrayInitializerParser(),
+        UnaryOperationParser(),
+        CastParser(),
+        PriorityParser(),
+    ]
 }

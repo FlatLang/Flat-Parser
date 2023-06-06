@@ -6,23 +6,23 @@ import flat/ast/BinaryOperationNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
-    IdentifierParser(),
-    ArrayInstantiationParser(),
-    ArrayInitializerParser(),
-    LiteralParser(),
-    CastParser(),
-    PriorityParser(),
-    RegexPatternParser(),
-    FunctionCallParser(),
-    UnaryOperationParser(),
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        IdentifierParser(),
+        ArrayInstantiationParser(),
+        ArrayInitializerParser(),
+        LiteralParser(),
+        CastParser(),
+        PriorityParser(),
+        RegexPatternParser(),
+        FunctionCallParser(),
+        UnaryOperationParser(),
+    ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern<BinaryOperationNode>(type: Token.Type.SYMBOL, field: "operator", values: [
-    "+", "-", "*", "/", "%",
-    "+=", "-=", "*=", "/=", "%=",
-    "!=", "==", "&&", "&", "||", "|",
-    "<", ">", "<=", ">=",
-    "?:"
-  ])
+    override lazy TokenPattern pattern => SingleTokenPattern<BinaryOperationNode>(type: Token.Type.SYMBOL, field: "operator", values: [
+        "+", "-", "*", "/", "%",
+        "+=", "-=", "*=", "/=", "%=",
+        "!=", "==", "&&", "&", "||", "|",
+        "<", ">", "<=", ">=",
+        "?:"
+    ])
 }

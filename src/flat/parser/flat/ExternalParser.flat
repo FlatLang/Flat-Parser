@@ -7,22 +7,22 @@ import flat/compiler/models/Token
 import flat/log/Logger
 
 data class extends ParserBase {
-  static Logger log = Logger(ExternalParser.class)
+    static Logger log = Logger(ExternalParser.class)
 
-  override ParserBase[] childParsers => Array()
-    :addAll(LocalScopeParser().valueParsers)
+    override ParserBase[] childParsers => Array()
+        :addAll(LocalScopeParser().valueParsers)
 
-  override lazy TokenPattern pattern => GroupTokenPattern<ExternalNode>([
-    SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "external"),
-    GroupTokenPattern([
-      GroupTokenPattern([
-        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
-        SingleTokenPattern(type: Token.Type.IDENTIFIER),
-      ], optional: true),
-      SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true)
-    ], repeat: true, optional: true),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
-    SingleTokenPattern(type: Token.Type.CODE, field: "code"),
-    SingleTokenPattern(type: Token.Type.SYMBOL, value: "}"),
-  ], exact: true)
+    override lazy TokenPattern pattern => GroupTokenPattern<ExternalNode>([
+        SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "external"),
+        GroupTokenPattern([
+            GroupTokenPattern([
+                SingleTokenPattern(type: Token.Type.IDENTIFIER, value: "not"),
+                SingleTokenPattern(type: Token.Type.IDENTIFIER),
+            ], optional: true),
+            SingleTokenPattern(type: Token.Type.IDENTIFIER, optional: true)
+        ], repeat: true, optional: true),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "{"),
+        SingleTokenPattern(type: Token.Type.CODE, field: "code"),
+        SingleTokenPattern(type: Token.Type.SYMBOL, value: "}"),
+    ], exact: true)
 }

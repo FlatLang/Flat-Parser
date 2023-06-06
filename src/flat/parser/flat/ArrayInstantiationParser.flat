@@ -6,16 +6,16 @@ import flat/ast/ArrayInstantiationNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
-    DotAccessParser(),
-    SafeAccessParser(),
-    IntRangeParser(),
-    ColonAccessParser(),
-    AssignmentParser(),
-    ArrayAccessParser()
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        DotAccessParser(),
+        SafeAccessParser(),
+        IntRangeParser(),
+        ColonAccessParser(),
+        AssignmentParser(),
+        ArrayAccessParser()
+    ])
 
-  override lazy TokenPattern pattern => GroupTokenPattern<ArrayInstantiationNode>([
-    NodeTokenPattern([ValueTypeParser()]),
-  ])
+    override lazy TokenPattern pattern => GroupTokenPattern<ArrayInstantiationNode>([
+        NodeTokenPattern([ValueTypeParser()]),
+    ])
 }

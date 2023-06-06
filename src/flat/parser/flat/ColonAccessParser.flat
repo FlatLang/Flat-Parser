@@ -6,10 +6,10 @@ import flat/ast/ColonAccessNode
 import flat/compiler/models/Token
 
 data class extends ParserBase {
-  override ParserBase[] childParsers => Array():addAll([
-    IdentifierParser(),
-    FunctionCallParser()
-  ])
+    override ParserBase[] childParsers => Array():addAll([
+        IdentifierParser(),
+        FunctionCallParser()
+    ])
 
-  override lazy TokenPattern pattern => SingleTokenPattern<ColonAccessNode>(type: Token.Type.SYMBOL, value: ":")
+    override lazy TokenPattern pattern => SingleTokenPattern<ColonAccessNode>(type: Token.Type.SYMBOL, value: ":")
 }
