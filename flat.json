@@ -12,24 +12,24 @@
     "main": {
       "source": "src",
       "dependencies": {
-        "github:FlatLang/System": "master",
-        "github:FlatLang/IO": "master",
-        "github:FlatLang/Flat-AST": "master",
-        "github:FlatLang/Compiler-String-Extensions": "master",
-        "github:FlatLang/Time": "master",
-        "github:FlatLang/Flat-Annotations": "master",
-        "github:FlatLang/Flat-Compiler-Models": "master",
-        "github:FlatLang/Parser-Core": "master",
-        "github:FlatLang/Logger": "master",
-        "github:FlatLang/CoLorIzer": "master"
+        "https://github.com/FlatLang/System": "master",
+        "https://github.com/FlatLang/IO": "master",
+        "https://github.com/FlatLang/Flat-AST": "master",
+        "https://github.com/FlatLang/Compiler-String-Extensions": "master",
+        "https://github.com/FlatLang/Time": "master",
+        "https://github.com/FlatLang/Flat-Annotations": "master",
+        "https://github.com/FlatLang/Flat-Compiler-Models": "master",
+        "https://github.com/FlatLang/Parser-Core": "master",
+        "https://github.com/FlatLang/Logger": "master",
+        "https://github.com/FlatLang/CoLorIzer": "master"
       }
     },
     "test": {
       "mainClass": "flat/parser/flat/Parser_TestSuite",
       "source": "src/**/*_Test*.flat",
       "dependencies": {
-        "github:FlatLang/Test": "master",
-        "github:FlatLang/Flat-Lexer": "master"
+        "https://github.com/FlatLang/Test": "master",
+        "https://github.com/FlatLang/Flat-Lexer": "master"
       }
     }
   }
