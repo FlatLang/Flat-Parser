@@ -47,20 +47,9 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Setup Airship
-        run: |
-          node airship.js setup
-
-      - name: Link Flat-Parser
-        run: |
-          node airship.js install --link
-
       - name: Build Flat-Parser with flatc
         env:
           LOGGING_DEFAULT_SHOW_PREFIX: false
           LOGGING_DEFAULT_LOGGING_LEVEL: INFO
         run: |
-          . ~/.flat/env
-          tail ~/.flat/env
-          ls ~/.flat/bin
-          airship install --flatc-runtime flat -t es6
+          node airship.js install --flatc-runtime flat -t es6
