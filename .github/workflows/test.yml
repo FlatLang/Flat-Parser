@@ -2,11 +2,11 @@ name: Test Flat-Parser
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   schedule:
-    - cron: '0 8 * * *'
+    - cron: "0 8 * * *"
 
 env:
   LOGGING_DEFAULT_SHOW_PREFIX: true
@@ -15,7 +15,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
